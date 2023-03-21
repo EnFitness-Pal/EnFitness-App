@@ -13,9 +13,6 @@ const Slider = () => {
   const scrollX = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
   const handleGetting = () => {
-    // navigation.navigate('SignIn');
-    // // await storeData(HAS_LAUNCHED, 'true');
-    // dispatch(setLauch(true));
   }
   const handleOnScroll = event => {
     Animated.event(
