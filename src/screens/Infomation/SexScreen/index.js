@@ -1,21 +1,29 @@
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React, { useState } from 'react';
 import HeaderGetting from '../../../components/HeaderGetting';
 import  Ionicons  from 'react-native-vector-icons/Ionicons';
 import Button from '../../../components/Button';
 import { colors, heightScreen, widthScreen } from '../../../utility';
-
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 const SexScreen = () => {
 
-  const [isActive, setIsActive] = useState(false);
   const [gender, setGender] = useState('');
-
   const handleGenderSelection = (selectedGender) => {
     setGender(selectedGender);
   };
+  const handleNext = () => {
+    if (gender === '')
+    {
+      Alert.alert('Select a gender', 'Please select a gender to continue!');
+    }
+    else {
+      navigation.push('AgeScreen', {
+              gender:gender,
+            })
+    }
+  }
   const navigation = useNavigation();
   return (
     <SafeAreaView
@@ -59,7 +67,7 @@ const SexScreen = () => {
         icon = 'right'
         stylesTitle={{color:colors.WHITE}}
         stylesIcon={{ fontSize: 20, color: colors.WHITE }}
-        onPress= {()  =>  navigation.navigate('AgeScreen')}
+        onPress={handleNext}
         />
     </SafeAreaView>
   )
@@ -75,7 +83,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.BG,
   },
   containerbody: {
-    flex: 0.95,
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column',

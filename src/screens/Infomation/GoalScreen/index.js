@@ -1,7 +1,8 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const GoalScreen = () => {
+const GoalScreen = ({ route }) => {
+  console.log(route.params)
   return (
     <View>
       <Text>index</Text>
