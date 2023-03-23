@@ -22,16 +22,16 @@ const HeightScreen = ({ route }) => {
     })
   }
   return (
-<SafeAreaView style={styles.container}>
+  <SafeAreaView style={styles.container}>
       <HeaderGetting
         title1={"What's your height?"}
         title2={'This help us create your personalized plan.'}
         stylesText={{ paddingHorizontal: widthScreen * 0.15 }}
         stylesContainer={{flex:1}}
       />
-      <View style = {styles.containerAge}>
+      <View style = {styles.containerHeight}>
       <WheelPicker
-        selectedIndex={72}
+        selectedIndex={height-100}
         containerStyle={{backgroundColor: colors.BG, width: widthScreen *  0.4, alignSelf: 'center'}}
         itemTextStyle={styles.itemstyle}
         selectedIndicatorStyle={styles.selected}
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
     width: widthScreen * 0.35,
     marginHorizontal:widthScreen * 0.2
   },
-  containerAge: {
+  containerHeight: {
     height: heightScreen * 0.5,
     width: widthScreen * 0.2,
     marginVertical: heightScreen * 0.12
