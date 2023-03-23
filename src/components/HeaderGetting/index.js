@@ -2,10 +2,10 @@ import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 
-const HeaderGetting = ({title1, title2, stylesText, stylesContainer}) => {
+const HeaderGetting = ({title1, title2, stylesText, stylesText1, stylesContainer}) => {
   return (
     <View style = { [styles.container, stylesContainer] }>
-        <Text style = { styles.text1 }>{title1}</Text>
+        <Text style = { [styles.text1, stylesText1] }>{title1}</Text>
         <Text style = { [styles.text2, stylesText] }>{title2}</Text>
     </View>
   )

@@ -31,7 +31,7 @@ const AgeScreen = ({route}) => {
       />
       <View style = {styles.containerAge}>
       <WheelPicker
-        selectedIndex={7}
+        selectedIndex={age-15}
         containerStyle={{backgroundColor: colors.BG, width: widthScreen *  0.3, alignSelf: 'center'}}
         itemTextStyle={styles.itemstyle}
         selectedIndicatorStyle={styles.selected}

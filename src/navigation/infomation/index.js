@@ -6,6 +6,7 @@ import HeightScreen from '../../screens/Infomation/HeightScreen'
 import GoalScreen from '../../screens/Infomation/GoalScreen'
 import BaselineScreen from '../../screens/Infomation/BaselineScreen'
 import GWScreen from '../../screens/Infomation/GWScreen'
+import BFScreen from '../../screens/Infomation/BFScreen'
 import Slider from '../../components/Slider';
 
 const Stack = createNativeStackNavigator();
@@ -20,7 +21,8 @@ const InfoNavigation = () => {
             <Stack.Screen options={{ headerShown: false }} name="HeightScreen" component={HeightScreen} />
             <Stack.Screen options={{ headerShown: false }} name="GoalScreen" component={GoalScreen} />
             <Stack.Screen options={{ headerShown: false }} name="BaselineScreen" component={BaselineScreen} />
-            <Stack.Screen options={{ headerShown: false }} name="GWScreen" component={GWScreen} />        
+            <Stack.Screen options={{ headerShown: false }} name="GWScreen" component={GWScreen} />
+            <Stack.Screen options={{ headerShown: false }} name="BFScreen" component={BFScreen} />   
         </Stack.Navigator>
     )
 }
