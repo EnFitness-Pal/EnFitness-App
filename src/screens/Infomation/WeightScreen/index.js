@@ -36,12 +36,13 @@ const WeightScreen = ({ route }) => {
         unitTextStyle={{color: colors.WHITE, fontSize:15}}
         fractionDigits={0}
         initialValue={50}
-        onValueChange={(number) => setWeight(number)}
-        onValueChangeEnd={(number) => setWeight(number)}
+        onValueChange={(number) => setWeight(Number(number))}
+        onValueChangeEnd={(number) => setWeight(Number(number))}
         unit="kg"
     />
       <View style={styles.containerbutton}>
       <ButtonBack
+        name = {'chevron-back'}
         styleButton={styles.buttonback}
         onPress = {()=>{navigation.goBack()}}
       />

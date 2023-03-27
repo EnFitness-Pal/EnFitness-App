@@ -42,6 +42,7 @@ const BFScreen = ({ route }) => {
     />
       <View style={styles.containerbutton}>
       <ButtonBack
+        name = {'chevron-back'}
         styleButton={styles.buttonback}
         onPress = {()=>{navigation.goBack()}}
       />

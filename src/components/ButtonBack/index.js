@@ -6,14 +6,14 @@ import { colors, heightScreen, widthScreen } from '../../utility'
 const ButtonBack = ({
     styleButton,
     onPress,
-
+    name
 }) => {
   return (
     <TouchableOpacity
           onPress={onPress}
           style = {[styles.container, styleButton]}
       >
-          <Ionicons name="chevron-back" size={24} color={colors.WHITE} />
+          <Ionicons name={name} size={24} color={colors.WHITE} />
     </TouchableOpacity>
   )
 }

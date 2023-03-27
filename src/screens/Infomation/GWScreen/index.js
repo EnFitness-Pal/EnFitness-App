@@ -10,7 +10,8 @@ import { colors, heightScreen, widthScreen } from '../../../utility'
 
 const GWScreen = ({ route }) => {
   const GWdata = [];
-  for (let i = route.params.weight - 30; i <= route.params.weight + 30; i++) {
+  const w = route.params.weight
+  for (i = w - 30; i <= w + 30; i++) {
     GWdata.push(i.toString());
   }
   const [GW, setGW] = useState(route.params.weight + 10);
@@ -43,6 +44,7 @@ const GWScreen = ({ route }) => {
       </View>
       <View style={styles.containerbutton}>
       <ButtonBack
+        name = {'chevron-back'}      
         styleButton={styles.buttonback}
         onPress = {()=>{navigation.goBack()}}
       />

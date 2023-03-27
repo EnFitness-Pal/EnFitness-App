@@ -14,7 +14,7 @@ const InfoNavigation = () => {
     return (
         
         <Stack.Navigator>
-            <Stack.Screen name="GettingStarted" options={{ headerShown: false }} component={Slider} />   
+            <Stack.Screen options={{ headerShown: false }} name="GettingStarted" component={Slider} />   
             <Stack.Screen options={{ headerShown: false }} name="SexScreen" component={SexScreen} />
             <Stack.Screen options={{ headerShown: false }} name="AgeScreen" component={AgeScreen} />
             <Stack.Screen options={{ headerShown: false }} name="WeightScreen" component={WeightScreen} />

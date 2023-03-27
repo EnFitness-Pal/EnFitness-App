@@ -51,6 +51,7 @@ const BaselineScreen = ({ route }) => {
       </View>
       <View style={styles.containerbutton}>
       <ButtonBack
+        name = {'chevron-back'}
         styleButton={styles.buttonback}
         onPress = {()=>{navigation.goBack()}}
       />

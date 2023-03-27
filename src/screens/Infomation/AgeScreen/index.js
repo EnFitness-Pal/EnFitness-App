@@ -41,7 +41,8 @@ const AgeScreen = ({route}) => {
       />
       </View>
       <View style={styles.containerbutton}>
-      <ButtonBack
+        <ButtonBack
+        name = {'chevron-back'}
         styleButton={styles.buttonback}
         onPress = {()=>{navigation.goBack()}}
       />
