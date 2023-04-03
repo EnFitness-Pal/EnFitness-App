@@ -1,76 +1,19 @@
-// import { StyleSheet, Text, View } from 'react-native'
-// import React, { useContext, useEffect } from 'react'
-// import { AuthContext } from '../../context/AuthContext'
-// import { AxiosContext } from '../../context/AxiosContext';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import { baseURL } from '../../utility';
-
-// const AppStack = () => {
-//     const authContext = useContext(AuthContext);
-//   const { axiosInstance } = useContext(AxiosContext);
-//   const [data, setData] = React.useState();
-
-//   const getAllAccount = async () => { 
-//         const accessToken = await AsyncStorage.getItem('AccessToken');
-//         console.log(accessToken);
-//         let config = {
-//             method: 'get',
-//             maxBodyLength: Infinity,
-//             url: `${baseURL}/api/account`,
-//             headers: {
-//                 Authorization: `Bearer ${authContext.getAccessToken()}`,
-//             },
-//         };
-//         await axiosInstance
-//             .request(config)
-//             .then(response => {
-//               console.log('response', JSON.stringify(response?.data));
-//               setData(response?.data);
-//             })
-//             .catch(error => {
-//                 console.log('error',error);
-//             });
-//     }
-
-
-//     useEffect(() => {
-//         getAllAccount();
-
-//     },[])
-
-//   const { logout } = useContext(AuthContext)
-//   return (
-//     <View style = {styles.container}>
-//       <Text onPress={() => logout()}>Sign Out</Text>
-//     </View>
-//   )
-// }
-
-// export default AppStack
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     backgroundColor: '#F5FCFF',
-//   }
-// })
-
-
-
-  import React from 'react';
-  import {
-    Alert,
-    Animated,
-    StyleSheet,
-    TouchableOpacity,
-    View,
-  } from 'react-native';
-  import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
-  import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors } from '../../utility';
+import React from 'react';
+import {
+  Alert,
+  Animated,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { colors, heightScreen } from '../../utility';
+import ProfileScreen from '../../screens/ProfileScreen';
+import InsigntScreen from '../../screens/InsigntScreen';
+import MealScreen from '../../screens/MealScreen';
 import HomeScreen from '../../screens/HomeScreen';
+import WorkoutScreen from '../../screens/WorkoutScreen';
 
   const AppStack = () => {
     const _renderIcon = (routeName, selectedTab) => {
@@ -78,23 +21,41 @@ import HomeScreen from '../../screens/HomeScreen';
 
       switch (routeName) {
         case 'title1':
-          icon = 'ios-home-outline';
-          return (
+          icon = 'ios-home';
+        return (
             <Ionicons
               name={icon}
-              size={25}
+              size={28}
               color={routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT}
             />
           );
         case 'title2':
-          icon = 'settings-outline';
-          break;
+          icon = 'ios-nutrition';
+        return (
+            <Ionicons
+              name={icon}
+              size={28}
+              color={routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT}
+            />
+          );
         case 'title3':
-          icon = 'settings-outline';
-          break;
+          icon = 'ios-body';
+        return (
+            <Ionicons
+              name={icon}
+              size={28}
+              color={routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT}
+            />
+          );
         case 'title4':
-          icon = 'settings-outline';
-          break;
+          icon = 'ios-person';
+        return (
+            <Ionicons
+              name={icon}
+              size={28}
+              color={routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT}
+            />
+          );
       }
 
     };
@@ -117,7 +78,7 @@ import HomeScreen from '../../screens/HomeScreen';
             style={styles.bottomBar}
             strokeWidth={0.5}
             strokeColor={colors.BG}
-            height={60}
+            height={70}
             circleWidth={50}
             bgColor={colors.GRAYDARK}
             initialRouteName="title1"
@@ -125,15 +86,22 @@ import HomeScreen from '../../screens/HomeScreen';
             screenOptions={{
               headerShown: false,
             }}
-            renderCircle={({ selectedTab, navigate }) => (
+            renderCircle={({ selectedTab,routeName, navigate }) => (
               <Animated.View style={styles.btnCircle}>
                 <TouchableOpacity
                   style={{
                     flex: 1,
+                    alignItems: 'center',
                     justifyContent: 'center',
+                    width: 60,
+                    height: 60,
+                    borderRadius:20,
                   }}
-                  onPress={() => Alert.alert('Click Action')}>
-                  <Ionicons name={'apps-sharp'} color="gray" size={25} />
+                  onPress={() => {
+                    navigate(routeName);
+                  }}
+                >
+                  <Ionicons name={'ios-stats-chart'} color={routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT} size={27} />
                 </TouchableOpacity>
               </Animated.View>
             )}
@@ -141,28 +109,27 @@ import HomeScreen from '../../screens/HomeScreen';
             <CurvedBottomBar.Screen
               name="title1"
               position="LEFT"
-              component={() => (
-                <View style={{ backgroundColor: '#BFEFFF', flex: 1 }} />
-              )}
+              component={HomeScreen}
             />
             <CurvedBottomBar.Screen
               name="title2"
               position="LEFT"
               options={{headerShown: false}}
-              component={() => (
-                <View style={{ backgroundColor: '#BFEFFF', flex: 1 }} />
-              )}
+              component={MealScreen}
+            />
+            <CurvedBottomBar.Screen
+              name="title0"
+              component={InsigntScreen}
+              position="CIRCLE"
             />
             <CurvedBottomBar.Screen
               name="title3"
-              component={() => (
-                <View style={{ backgroundColor: '#FFEBCD', flex: 1 }} />
-              )}
+              component={WorkoutScreen}
               position="RIGHT"
             />
             <CurvedBottomBar.Screen
               name="title4"
-              component={HomeScreen}
+              component={ProfileScreen}
               position="RIGHT"
             />
           </CurvedBottomBar.Navigator>
@@ -177,7 +144,9 @@ import HomeScreen from '../../screens/HomeScreen';
     button: {
       marginVertical: 5,
     },
-    bottomBar: {},
+    bottomBar: {
+      paddingBottom: heightScreen * 0.012,
+    },
     btnCircle: {
       width: 60,
       height: 60,
@@ -195,14 +164,5 @@ import HomeScreen from '../../screens/HomeScreen';
       shadowRadius: 1.41,
       elevation: 1,
       bottom: 30,
-    },
-    imgCircle: {
-      width: 30,
-      height: 30,
-      tintColor: 'gray',
-    },
-    img: {
-      width: 30,
-      height: 30,
     },
   });

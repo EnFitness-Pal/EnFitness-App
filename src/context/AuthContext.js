@@ -92,9 +92,11 @@ export const AuthProvider = ({ children }) => {
                 Alert.alert('Too Long!', 'Please login again.')
                 logout();
             }
+            
             setLoading(false);
         } catch (err) {
             console.log(err);
+            setLoading(false);
         }
     }
     useEffect(() => { 
