@@ -1,7 +1,7 @@
 import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useLayoutEffect, useState } from 'react'
 import HeaderGetting from '../../components/HeaderGetting'
-import { colors, heightScreen, widthScreen } from '../../utility'
+import { colors, heightScreen, regexEmail, widthScreen } from '../../utility'
 import ButtonBack from '../../components/ButtonBack'
 import { useNavigation } from '@react-navigation/native'
 import Input from '../../components/Input'
@@ -18,7 +18,6 @@ const ForgotScreen = ({ navigation }) => {
     const handleError = (error, input) => {
         setErrors(prevState => ({...prevState, [input]: error}));
     };
-    const regexEmail = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
     const [errors, setErrors] = useState({});
     const [inputs, setInputs] = useState({
         email: '',

@@ -44,13 +44,14 @@ export const AuthProvider = ({ children }) => {
             })
             .catch(err => {
                 console.log('err:', err);
-                setLoading(false); 
-                if(err.response.status === 500) {
-                    Alert.alert('Login Error','Email or password is incorrect');
-                }
-                if(err.response.status === 400) {
-                    Alert.alert('Login Error','Email or password is incorrect');
-                }
+                setLoading(false);
+                Alert.alert('Login Error','Email or password is incorrect');
+                // if(err.response.status === 500) {
+                //     Alert.alert('Login Error','Email or password is incorrect');
+                // }
+                // if(err.response.status === 400) {
+                //     Alert.alert('Login Error','Email or password is incorrect');
+                // }
             })
 
     }

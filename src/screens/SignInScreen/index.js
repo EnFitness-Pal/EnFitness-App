@@ -1,6 +1,6 @@
 import { KeyboardAvoidingView, SafeAreaView, StyleSheet, Text, View, ScrollView, TouchableOpacity, Keyboard } from 'react-native'
 import React, { useContext, useState } from 'react'
-import { colors, heightScreen, widthScreen } from '../../utility'
+import { colors, heightScreen, regexEmail, widthScreen } from '../../utility'
 import Input from '../../components/Input'
 import ButtonBack from '../../components/ButtonBack'
 import Button from '../../components/Button'
@@ -14,9 +14,7 @@ const SignInScreen = () => {
     const [inputs, setInputs] = useState({
         email: '',
         password: ''
-    });
-    const regexEmail = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-    
+    });    
     const handleOnchange = (text, input) => {
         setInputs(prevState => ({...prevState, [input]: text}));
     };

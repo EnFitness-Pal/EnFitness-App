@@ -1,7 +1,7 @@
 import { Alert, Image, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
-import { colors, heightScreen, widthScreen } from '../../utility'
+import { colors, heightScreen, regexEmail, regexPassword, widthScreen } from '../../utility'
 import Input from '../../components/Input'
 import ButtonBack from '../../components/ButtonBack'
 import Button from '../../components/Button'
@@ -12,8 +12,6 @@ import { signUp } from '../../api/Auth/SignUp'
 const SignUpScreen = ({ data }) => {
     const navigation = useNavigation();
     const [errors, setErrors] = useState({});
-    const regexEmail = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
-    const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+~`|{}[\]:";'<>?,./])(?!.*\s).{8,15}$/;
     const [inputs, setInputs] = useState({
         name: '',
         email: '',

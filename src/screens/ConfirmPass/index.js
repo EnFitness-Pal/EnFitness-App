@@ -1,7 +1,7 @@
 import { Alert, SafeAreaView, StyleSheet, Text, View } from 'react-native'
 import React, { useState } from 'react'
 import HeaderGetting from '../../components/HeaderGetting';
-import { colors, heightScreen, widthScreen } from '../../utility';
+import { colors, heightScreen, regexPassword, widthScreen } from '../../utility';
 import ButtonBack from '../../components/ButtonBack';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -16,7 +16,6 @@ const ConfirmPass = ({ route, navigation }) => {
         password: '',
         rePassword: '',
     });
-    const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+~`|{}[\]:";'<>?,./])(?!.*\s).{8,15}$/;
     const handleOnchange = (text, input) => {
         setInputs(prevState => ({...prevState, [input]: text}));
     };
