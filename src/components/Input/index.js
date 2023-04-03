@@ -1,7 +1,9 @@
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { colors, heightScreen, widthScreen } from '../../utility';
+import { Tooltip, Icon } from '@rneui/themed';
 
 const Input = ({
     title,
@@ -26,7 +28,49 @@ const Input = ({
 }) => {
 
     let [state, setState] = useState(secureTextEntry);
+    const [open, setOpen] = React.useState(false);
     const [isFocused, setIsFocused] = useState(false);
+
+    const renderIcon = () => {
+        if (error) {
+            return (
+                <Tooltip
+                    popover={<Text style={{color:colors.WHITE, fontWeight:"600"}}>{error}</Text>}
+                    visible={open}
+                    onOpen={() => setOpen(true)}
+                    onClose={() => setOpen(false)}
+                    withOverlay={false}
+                    closeOnlyOnBackdropPress={true}
+                    backgroundColor={"#333"}         
+                    height={heightScreen*0.04}
+                    width={widthScreen*0.8}
+                    pointerStyle={{marginTop:-heightScreen*0.05, marginLeft:widthScreen*0.36}}
+                    containerStyle={{marginLeft:-widthScreen*0.06, marginTop:-heightScreen*0.05}}
+                    >
+                    <MaterialIcons name="error" color={colors.DEL} size={25} style={styles.iconError} />
+                </Tooltip>)
+        } else if (secureTextEntry) {
+            return (
+                <View
+                style={styles.icon}>
+                <TouchableOpacity 
+                style={ {alignItems:"center"} }
+                onPress= {() => setState(!state)}>
+                    <Ionicons
+                    name = {state ? "eye" : "eye-off"}
+                    size = {25}
+                    color = {colors.GRAYLIGHT}
+                    ></Ionicons>
+                </TouchableOpacity>
+                </View> 
+            );
+        } else {
+            return null;
+        }
+    }
+
+
+
     return (
         <View style={[ styles.container, stylesContainer]}>
             <Text 
@@ -57,11 +101,31 @@ const Input = ({
             editable={editable}
             onChangeValue={onChangeValue}
             onSubmitEditing = {onSubmitEditing}
-            ></TextInput>
-            <Text style={{color: "red", fontSize: 12, marginTop:heightScreen*0.005, paddingLeft:widthScreen*0.035}}>
+            />
+            {/* <Text style={{color: "red", fontSize: 12, marginTop:heightScreen*0.005, paddingLeft:widthScreen*0.035}}>
             {error}
-            </Text>
+            </Text> */}
             {
+                error? 
+                <Tooltip
+                    popover={<Text style={{color:colors.WHITE, fontWeight:"600"}}>{error}</Text>}
+                    visible={open}
+                    onOpen={() => setOpen(true)}
+                    onClose={() => setOpen(false)}
+                    withOverlay={false}
+                    closeOnlyOnBackdropPress={true}
+                    backgroundColor={"#333"}         
+                    height={heightScreen*0.04}
+                    width={widthScreen*0.8}
+                    pointerStyle={{marginTop:-heightScreen*0.05, marginLeft:widthScreen*0.36}}
+                    containerStyle={{marginLeft:-widthScreen*0.06, marginTop:-heightScreen*0.05}}
+                    >
+                    <MaterialIcons name="error" color={colors.DEL} size={25} style={styles.iconError} />
+                </Tooltip>
+                : <></>
+            }
+            
+            {/* {
                 secureTextEntry ?
                 <View
                 style={styles.icon}>
@@ -77,7 +141,8 @@ const Input = ({
                 </View> 
                 :
                 <></>
-            }
+            } */}
+            {renderIcon()}
             </View>
         </View>
     )
@@ -113,5 +178,10 @@ const styles = StyleSheet.create({
         right:widthScreen * 0.02,
         top:heightScreen*0.01
         
+    },
+    iconError: {
+        position:'absolute',
+        right: widthScreen * 0.02,
+        bottom:10,
     }
 })

@@ -1,20 +1,25 @@
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useState } from 'react'
-import LoginNavigation from '../Login'
+import React, { useContext, useEffect, useState } from 'react'
 import InfoNavigation from '../infomation'
 import AppStack from '../AppStack'
 import { AuthContext, AuthProvider } from '../../context/AuthContext'
 import { NavigationContainer } from '@react-navigation/native'
 import { colors } from '../../utility'
 import AuthNavigation from '../AuthNavigation'
+import LoginNav from '../LoginNav'
+import Lottie from 'lottie-react-native';
 
 const AppNavigation = () => {
-    const { loading, userToken } = useContext(AuthContext);
-    console.log(userToken)
+    const { loading, token } = useContext(AuthContext);
     if (loading) {
         return (
-            <View style={{flex:1,justifyContent:'center', alignItems:'center'}}>
-                <ActivityIndicator size="large" color={colors.MAIN} />
+            <View style={{flex:1,justifyContent:'center', alignItems:'center', backgroundColor:colors.BG}}>
+                <Lottie
+                    source={require('../../assets/lottie/Ejercicio.json')}
+                    autoPlay
+                    loop
+                    style={{width: 250, height: 250}}
+                    />
             </View>            
         )
 
@@ -22,8 +27,7 @@ const AppNavigation = () => {
     
     return (
         <NavigationContainer>
-            {userToken ? <AppStack /> : <AuthNavigation />}
-            {/* <InfoNavigation /> */}
+            {token?.RefreshToken ? <AppStack /> : <InfoNavigation />}
         </NavigationContainer>
     )
 }

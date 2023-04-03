@@ -6,6 +6,7 @@ import Button from '../../../components/Button';
 import { colors, heightScreen, widthScreen } from '../../../utility';
 import { useNavigation } from '@react-navigation/native'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import ButtonBack from '../../../components/ButtonBack';
 
 const SexScreen = () => {
 
@@ -21,7 +22,7 @@ const SexScreen = () => {
     else {
       navigation.push('AgeScreen', {
               gender:gender,
-            })
+      })
     }
   }
   const navigation = useNavigation();
@@ -60,7 +61,12 @@ const SexScreen = () => {
             Female</Text>
         </TouchableOpacity>        
       </View>
-
+      <View style={styles.containerbutton}>
+      <ButtonBack
+        name = {'chevron-back'}
+        styleButton={styles.buttonback}
+        onPress = {()=>{navigation.goBack()}}
+      />
       <Button
         stylesContainer={styles.button}
         title={'Next'}
@@ -69,6 +75,7 @@ const SexScreen = () => {
         stylesIcon={{ fontSize: 20, color: colors.WHITE }}
         onPress={handleNext}
         />
+      </View>
     </SafeAreaView>
   )
 }
@@ -89,10 +96,15 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     backgroundColor: colors.BG,
   },
+  containerbutton: {
+    flexDirection: 'row',
+  },
+  buttonback: {
+    marginHorizontal:widthScreen * 0.2
+  }, 
   button: {
     width: widthScreen * 0.35,
-    marginRight: widthScreen * 0.05,
-    alignSelf: 'flex-end',
+    marginHorizontal:widthScreen * 0.2
   },
   buttongender: {
     width: heightScreen * 0.17,

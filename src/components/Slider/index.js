@@ -1,18 +1,23 @@
 import {Animated, FlatList, StyleSheet,View} from 'react-native';
-import React, {useRef, useState} from 'react';
+import React, {useContext, useRef, useState} from 'react';
 import Slides from '../../assets/GettingData';
 import SlideItem from '../SlideItem';
 import Pagination from '../Pagination';
 import Button from '../Button';
 import { colors, heightScreen, widthScreen } from '../../utility';
 import { useNavigation } from '@react-navigation/native';
+import { useDispatch } from 'react-redux';
+import { setLauch } from '../../redux/features/state/stateSlice';
 
 
 const Slider = () => {
   const [index, setIndex] = useState(0);
+  const dispatch = useDispatch();
   const scrollX = useRef(new Animated.Value(0)).current;
   const navigation = useNavigation();
   const handleGetting = () => {
+      navigation.navigate('Login')
+      dispatch(setLauch(true));
   }
   const handleOnScroll = event => {
     Animated.event(
@@ -62,7 +67,7 @@ const Slider = () => {
                   icon = 'right'
                   stylesTitle={{color:colors.WHITE}}
           stylesIcon={{ fontSize: 20, color: colors.WHITE }}
-          onPress= {()  =>  navigation.navigate('SexScreen')}
+          onPress={handleGetting}
                 />
           }
         <Pagination data={Slides} scrollX={scrollX} index={index} />

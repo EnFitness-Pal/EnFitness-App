@@ -9,8 +9,8 @@ import { useNavigation } from '@react-navigation/native'
 import { colors, heightScreen, widthScreen } from '../../../utility'
 
 const BaselineScreen = ({ route }) => {
-  const baselinedata = ['Not very active', 'Lightly active', 'Active', 'Very active' ];
-  const [baseline, setBaseline] = useState('Active');
+  const baselinedata = ['Sedentary', 'Lightly Active', 'Moderately Active', 'Very Active', 'Extremely Active' ];
+  const [baseline, setBaseline] = useState(2);
   const navigation = useNavigation();
   const handleNext = () => {
     navigation.push('GWScreen', {
@@ -19,15 +19,7 @@ const BaselineScreen = ({ route }) => {
     })
   }
   const handleData = (data) => {
-    if(data === 0) {
-      setBaseline('Not very active');
-    } else if(data === 2) {
-      setBaseline('Active');
-    } else if(data === 1){
-      setBaseline('Lightly active');
-    } else if(data === 3){
-      setBaseline('Very active');
-    }
+    setBaseline(data);
   }
   console.log(route.params);
   return (
@@ -40,7 +32,7 @@ const BaselineScreen = ({ route }) => {
       />
       <View style = {styles.containerBL}>
       <WheelPicker
-        selectedIndex={baselinedata.indexOf(baseline)}
+        selectedIndex={baseline}
         containerStyle={{ backgroundColor: colors.BG, width: widthScreen * 0.8, alignSelf: 'center' }}
         itemTextStyle={styles.itemstyle}
         selectedIndicatorStyle={styles.selected}

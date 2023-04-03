@@ -8,41 +8,43 @@ import Button from '../../../components/Button'
 import { useNavigation } from '@react-navigation/native'
 import { colors, heightScreen, widthScreen } from '../../../utility'
 
-const GWScreen = ({ route }) => {
-  const GWdata = ['Maintenance','Cutting', 'Bulking'];
-  const [GW, setGW] = useState(1);
+const MacroNutrients = ({ route }) => {
+  const MNdata = ['Default','Moderate Carb', 'Lower Carb','Higher Carb'];
+  const [MN, setMN] = useState(2);
   const navigation = useNavigation();
   const handleNext = () => {
-    navigation.push('BFScreen', {
+    navigation.push('Login', {
       ...route.params,
-      GW: GW,
+      MN: MN,
     })
   }
   const handleData = (data) => {
-    setGW(data);
+    setMN(data);
   }
+  console.log(route.params);
   return (
-  <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <HeaderGetting
-        title1={"What's your goal weight?"}
+        title1={"What's your Macro Nutrients?"}
         title2={'This help us create your personalized plan.'}
         stylesText={{ paddingHorizontal: widthScreen * 0.15 }}
+        stylesText1={{ fontSize: 25 }}
         stylesContainer={{flex:1}}
       />
-      <View style = {styles.containerHeight}>
+      <View style = {styles.containerGoal}>
       <WheelPicker
-        selectedIndex={GW}
+        selectedIndex={MN}
         containerStyle={{ backgroundColor: colors.BG, width: widthScreen * 0.8, alignSelf: 'center' }}
         itemTextStyle={styles.itemstyle}
         selectedIndicatorStyle={styles.selected}
         itemHeight={70}
-        options={GWdata}
+        options={MNdata}
         onChange={(data) => handleData(data)}
       />
       </View>
       <View style={styles.containerbutton}>
       <ButtonBack
-        name = {'chevron-back'}      
+        name = {'chevron-back'}
         styleButton={styles.buttonback}
         onPress = {()=>{navigation.goBack()}}
       />
@@ -59,10 +61,16 @@ const GWScreen = ({ route }) => {
   )
 }
 
-export default GWScreen
+export default MacroNutrients
 
 const styles = StyleSheet.create({
-    container: {
+    item: {
+    fontSize: 25,
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  container: {
     flex: 1,
     alignItems: 'center',
     backgroundColor: colors.BG,
@@ -80,7 +88,7 @@ const styles = StyleSheet.create({
     width: widthScreen * 0.35,
     marginHorizontal:widthScreen * 0.2
   },
-  containerHeight: {
+  containerGoal: {
     height: heightScreen * 0.5,
     width: widthScreen * 0.2,
     marginVertical: heightScreen * 0.12
@@ -99,12 +107,4 @@ const styles = StyleSheet.create({
     borderTopColor: colors.MAIN,
     borderBottomColor: colors.MAIN
   },
-  textcm:{
-    position: 'absolute',
-    color: colors.WHITE,
-    fontSize: 15,
-    fontWeight: '400',
-    marginTop: heightScreen * 0.495,
-    left: widthScreen * 0.64,
-  }
 })

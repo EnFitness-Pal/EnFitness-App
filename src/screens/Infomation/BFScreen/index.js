@@ -10,12 +10,12 @@ import { RulerPicker } from 'react-native-ruler-picker';
 
 const BFScreen = ({ route }) => {
   const navigation = useNavigation();
-  // const handleNext = () => {
-  //   navigation.push('HeightScreen', {
-  //     ...route.params,
-  //     BF: BF
-  //   })
-  // }
+  const handleNext = () => {
+    navigation.push('MacroNutrients', {
+      ...route.params,
+      BF: BF
+    })
+  }
   const [BF, setBF] = useState(10);
   return (
     <SafeAreaView style = {styles.container}>
@@ -52,7 +52,7 @@ const BFScreen = ({ route }) => {
         icon = 'right'
         stylesTitle={{color:colors.WHITE}}
         stylesIcon={{ fontSize: 20, color: colors.WHITE }}
-        onPress={()=>{}}
+        onPress={handleNext}
       />        
       </View>
     </SafeAreaView>

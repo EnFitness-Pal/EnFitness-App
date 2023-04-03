@@ -8,7 +8,8 @@ import Slider from '../../components/Slider';
 
 const GettingStarted = () => {
     return (
-        <Stack.Screen name="GettingStarted" options={{ headerShown: false }} component={Slider} />   
+        <Stack.Screen name="GettingStarted" options={{ headerShown: false }} component={Slider} />
+        
   )
 }
 

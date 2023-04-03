@@ -22,12 +22,12 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center',
         color: colors.WHITE,
-        paddingVertical: heightScreen * 0.02,
+        marginVertical: heightScreen * 0.02,
     },
     text2: {
         fontSize: 16,
         textAlign: 'center',
         color: colors.TEXTGRAY,
-        paddingHorizontal: widthScreen * 0.2,
+        paddingHorizontal: widthScreen * 0.05
     },
 })

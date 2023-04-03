@@ -1,46 +1,148 @@
-import { Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { Alert, Image, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import React, { useContext, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Input from '../../components/Input'
 import ButtonBack from '../../components/ButtonBack'
 import Button from '../../components/Button'
+import { AuthContext } from '../../context/AuthContext'
+import { useNavigation } from '@react-navigation/native'
+import { signUp } from '../../api/Auth/SignUp'
 
-const SignUpScreen = () => {
+const SignUpScreen = ({ data }) => {
+    const navigation = useNavigation();
+    const [errors, setErrors] = useState({});
+    const regexEmail = /^[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?$/;
+    const regexPassword = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+~`|{}[\]:";'<>?,./])(?!.*\s).{8,15}$/;
+    const [inputs, setInputs] = useState({
+        name: '',
+        email: '',
+        password: '',
+        passwordAgain: '',
+    });
+    const handleOnchange = (text, input) => {
+        setInputs(prevState => ({...prevState, [input]: text}));
+    };
+    const handleError = (error, input) => {
+        setErrors(prevState => ({...prevState, [input]: error}));
+    };
+    const {setLoading } = useContext(AuthContext);
+
+    const handleSignUp = () => {
+        Keyboard.dismiss();
+        let isValid = true;
+        if (!inputs.email) {
+            handleError('Email is a required field.', 'email');
+            isValid = false;
+        } else if (!inputs.email.match(regexEmail)) {
+            handleError('Email must be a valid email.', 'email');
+            isValid = false;
+        }
+
+        if (!inputs.name) {
+            handleError('Name is a required field.', 'name');
+            isValid = false;
+        } else if(inputs.name.length < 3) {
+            handleError('Name must be at least 3 characters.', 'name');
+            isValid = false;
+        }
+
+        if (!inputs.password) {
+            handleError('Password is a required field.', 'password');
+            isValid = false;
+        } else if (!inputs.password.match(regexPassword)) {
+            handleError('Password must be a valid password', 'password');
+            isValid = false;
+        }
+
+        if (!inputs.passwordAgain) {
+            handleError('Re-Password is a required field.', 'passwordAgain');
+            isValid = false;
+        } else if (inputs.passwordAgain !== inputs.password){
+            handleError('Password confirmation must match password.', 'passwordAgain');
+            isValid = false;
+        }
+        if (isValid) {
+            setLoading(true);
+            signUp(
+                inputs.name,
+                data?.age,
+                data?.gender == 'male' ? true : false,
+                data?.height,
+                data?.weight,
+                data?.BF,
+                data?.baseline,
+                data?.GW,
+                data?.MN,
+                inputs.email,
+                inputs.password,
+            ).then(res => {
+                console.log('res:', res);
+                Alert.alert('Success', 'Please login to continue');
+                navigation.replace('Loging')
+                setLoading(false);
+            })
+            .catch(err => {
+                Alert.alert('Register Error','Try register again.');
+                console.log('err:', err);
+                setLoading(false);
+            })            
+        }
+
+        
+     }
+
+
   return (
     <KeyboardAvoidingView style = {styles.container} behavior="padding">
     <ScrollView >
     <Input
         title="Full name"
         placeholder="Enter your full name"
+        onFocus={() => handleError(null, 'name')}
         placeholderTextColor={colors.GRAYDARK}
+        onChangeText={(text) => handleOnchange(text, 'name')}
+        onSubmitEditing={Keyboard.dismiss}
+        error={errors.name}
     />
     <Input
         title="Email"
         placeholder="Enter your email"
         placeholderTextColor={colors.GRAYDARK}
-    />
-    <Input
-        title="Address"
-        placeholder="Enter your full name"
-        placeholderTextColor={colors.GRAYDARK}
+        onFocus={() => handleError(null, 'email')}
+        onChangeText={(text) => handleOnchange(text, 'email')}
+        onSubmitEditing={Keyboard.dismiss}
+        error={errors.email}
     />
     <Input
         title="Password"
         secureTextEntry
         placeholder="Enter your password"
         placeholderTextColor={colors.GRAYDARK}
+        onFocus={() => handleError(null, 'password')}
+        onChangeText={(text) => handleOnchange(text, 'password')}
+        onSubmitEditing={Keyboard.dismiss}
+        error={errors.password}
     />
     <Input
         title="Password again"
         secureTextEntry
         placeholder="Enter your password"
         placeholderTextColor={colors.GRAYDARK}
+        onFocus={() => handleError(null, 'passwordAgain')}
+        onChangeText={(text) => handleOnchange(text, 'passwordAgain')}
+        onSubmitEditing={Keyboard.dismiss}
+        error={errors.passwordAgain}
+        
     />
     <View style = {styles.button}>
         <ButtonBack name={'logo-apple'} styleButton={{marginVertical:heightScreen *0.03}}/>
         <ButtonBack name={'logo-google'} styleButton={{ marginHorizontal: widthScreen * 0.05}}/>
-        <Button title={'Sign up'} stylesContainer={{width:widthScreen*0.3, marginLeft:widthScreen * 0.2}}/>
+        <Button
+            title={'Sign up'} 
+            stylesContainer={{width:widthScreen*0.3, marginLeft:widthScreen * 0.2}}
+            onPress = {()=> {handleSignUp()}}
+        />
     </View>              
     </ScrollView>
 
