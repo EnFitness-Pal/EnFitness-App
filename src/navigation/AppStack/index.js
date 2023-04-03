@@ -70,6 +70,7 @@
   import { CurvedBottomBar } from 'react-native-curved-bottom-bar';
   import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors } from '../../utility';
+import HomeScreen from '../../screens/HomeScreen';
 
   const AppStack = () => {
     const _renderIcon = (routeName, selectedTab) => {
@@ -85,7 +86,6 @@ import { colors } from '../../utility';
               color={routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT}
             />
           );
-          break;
         case 'title2':
           icon = 'settings-outline';
           break;
@@ -119,7 +119,7 @@ import { colors } from '../../utility';
             strokeColor={colors.BG}
             height={60}
             circleWidth={50}
-            bgColor={colors.BG}
+            bgColor={colors.GRAYDARK}
             initialRouteName="title1"
             borderTopLeftRight
             screenOptions={{
@@ -162,9 +162,7 @@ import { colors } from '../../utility';
             />
             <CurvedBottomBar.Screen
               name="title4"
-              component={() => (
-                <View style={{ backgroundColor: '#FFEBCD', flex: 1 }} />
-              )}
+              component={HomeScreen}
               position="RIGHT"
             />
           </CurvedBottomBar.Navigator>
@@ -186,7 +184,7 @@ import { colors } from '../../utility';
       borderRadius: 35,
       alignItems: 'center',
       justifyContent: 'center',
-      backgroundColor:colors.BG,
+      backgroundColor:colors.GRAYDARK,
       padding: 10,
       shadowColor: '#000',
       shadowOffset: {

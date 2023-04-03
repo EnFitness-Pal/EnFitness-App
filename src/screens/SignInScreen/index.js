@@ -21,7 +21,7 @@ const SignInScreen = () => {
     const handleError = (error, input) => {
         setErrors(prevState => ({...prevState, [input]: error}));
     };
-    const handleLogin = () => { 
+    const handleLogin = () => {
         Keyboard.dismiss();
         if (inputs.email.length === 0) {
             handleError('Please fill email fields', 'email');
