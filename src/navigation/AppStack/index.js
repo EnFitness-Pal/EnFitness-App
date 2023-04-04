@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   Animated,
@@ -18,7 +18,10 @@ import WorkoutScreen from '../../screens/WorkoutScreen';
   const AppStack = () => {
     const _renderIcon = (routeName, selectedTab) => {
       let icon = '';
-
+      const [data, setData] = useState();
+      const getData = async () => { 
+        
+      }
       switch (routeName) {
         case 'title1':
           icon = 'ios-home';
