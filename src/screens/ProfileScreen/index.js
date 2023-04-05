@@ -10,31 +10,31 @@ const ProfileScreen = () => {
   const { axiosInstance } = useContext(AxiosContext);
   const [data, setData] = React.useState();
 
-  const getAllAccount = async () => { 
-        const accessToken = await AsyncStorage.getItem('AccessToken');
-        console.log(accessToken);
-        let config = {
-            method: 'get',
-            maxBodyLength: Infinity,
-            url: `${baseURL}/api/account`,
-            headers: {
-                Authorization: `Bearer ${authContext.getAccessToken()}`,
-            },
-        };
-        await axiosInstance
-            .request(config)
-            .then(response => {
-              console.log('response', JSON.stringify(response?.data));
-              setData(response?.data);
-            })
-            .catch(error => {
-                console.log('error',error);
-            });
-    }
+  // const getAllAccount = async () => { 
+  //       const accessToken = await AsyncStorage.getItem('AccessToken');
+  //       console.log(accessToken);
+  //       let config = {
+  //           method: 'get',
+  //           maxBodyLength: Infinity,
+  //           url: `${baseURL}/api/account`,
+  //           headers: {
+  //               Authorization: `Bearer ${authContext.getAccessToken()}`,
+  //           },
+  //       };
+  //       await axiosInstance
+  //           .request(config)
+  //           .then(response => {
+  //             console.log('response', JSON.stringify(response?.data));
+  //             setData(response?.data);
+  //           })
+  //           .catch(error => {
+  //               console.log('error',error);
+  //           });
+  //   }
 
 
     useEffect(() => {
-        getAllAccount();
+        // getAllAccount();
 
     },[])
 

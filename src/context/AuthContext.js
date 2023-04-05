@@ -7,6 +7,7 @@ import { signUp} from '../api/Auth/SignUp';
 
 export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
+    const [userID, setUserID] = useState(null);
     const [token, setToken] = useState({
         AccessToken: null,
         RefreshToken: null,
@@ -37,9 +38,11 @@ export const AuthProvider = ({ children }) => {
                     RefreshToken: res.data.RefreshToken
                 });
                 setTokenExpired(res.data.TokenExpired);
+                setUserID(res.data.UserId);
                 AsyncStorage.setItem('AccessToken', res.data.Token);
                 AsyncStorage.setItem('RefreshToken', res.data.RefreshToken);
                 AsyncStorage.setItem('TokenExpired', res.data.TokenExpired);
+                AsyncStorage.setItem('UserID', String(res.data.UserId));
                 setLoading(false);  
             })
             .catch(err => {
@@ -82,10 +85,12 @@ export const AuthProvider = ({ children }) => {
             let refreshToken = await AsyncStorage.getItem('RefreshToken');
             let accessToken = await AsyncStorage.getItem('AccessToken');
             let tokenExpired = await AsyncStorage.getItem('TokenExpired');
+            let userID = await AsyncStorage.getItem('UserID');
             setToken({
                 AccessToken: accessToken,
                 RefreshToken: refreshToken,
             });
+            setUserID(Number(userID));
             setTokenExpired(tokenExpired);
             if (TokenExpired < date.toISOString()) {
                 console.log('Token Expired');
@@ -112,7 +117,8 @@ export const AuthProvider = ({ children }) => {
                 getAccessToken,
                 setToken,
                 setLoading,
-                forgotpassword
+                forgotpassword,
+                userID
             }}>
             {children}
         </AuthContext.Provider>

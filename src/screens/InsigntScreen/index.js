@@ -1,23 +1,49 @@
 import { Animated, Modal, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import CalendarStrip from 'react-native-calendar-strip';
 import { Calendar } from 'react-native-calendars';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import Fontisto from 'react-native-vector-icons/Fontisto';
+import CircularProgress from 'react-native-circular-progress-indicator';
+import { AuthContext } from '../../context/AuthContext';
+import { getTotalTracking } from '../../api/Calories';
 
 const InsigntScreen = () => {
   const [date, setDate] = useState(new Date())
+  const authContext = useContext(AuthContext);
   const [showCalendar, setShowCalendar] = useState(false);
+  const [data, setData] = useState();
+  const [loading, setLoading] = useState(false);
   const onHeaderSelected = (date) => {
     console.log(date);
     setShowCalendar(true);
   };
   const onDayPress = (day) => {
-    console.log('day',day);
-    setDate(day.dateString);
+    setDate((day.dateString))
+    console.log('day',day.dateString);
     setShowCalendar(false);
   };
-  console.log(date);
+  const getTotalTrackingStack = async () => { 
+    await getTotalTracking(authContext.userID, new Date(date)?.toISOString().split("T").shift())
+      .then(res => {
+        console.log('res', res.data);
+        setData(res.data);
+      })
+      .catch(err => { 
+        console.log('err:', err);
+      })
+  }
+
+
+
+
+  useEffect(() => {
+    getTotalTrackingStack();
+  }, [date]);
+
+
+
   return (
     <View style={styles.container}>
       <CalendarStrip
@@ -84,6 +110,108 @@ const InsigntScreen = () => {
           </TouchableOpacity>
         </View>
       </Modal>
+      <View style={styles.containerBody}>
+          <View style = {{alignItems: 'center', width:widthScreen * 0.25}}>
+          <Text style={{ color: colors.GRAYLIGHT, fontSize: 13, fontWeight: 'bold', marginBottom: 10 }}>Eaten</Text>
+          <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.SumCalories}</Text>
+          <Ionicons name={'ios-fast-food-outline'} size = {20} color={colors.MAIN} />
+          </View>
+          <View style = {{   alignSelf: "center", alignItems: 'center', marginHorizontal:10}}>
+            <CircularProgress
+                value={(data?.DailyCalories / data?.TDEECalories)* 100} 
+                progressFormatter={(value) => {
+                'worklet';
+                  return `${((value * data?.TDEECalories) / 100)?.toFixed(0)}`;
+                }}
+                radius={80}
+                activeStrokeColor={'#A77C06'}
+                activeStrokeWidth={10}
+                inActiveStrokeColor={colors.GRAYDARK}
+                activeStrokeSecondaryColor={colors.MAIN}
+                title='Active Calories'
+                titleColor={colors.GRAYLIGHT}
+                titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
+                progressValueColor={colors.WHITE}
+                progressValueStyle={{ fontSize: 36, fontWeight: '300' }}
+                subtitle={'/'+data?.TDEECalories}
+                subtitleStyle={{ fontSize: 15, fontWeight: 'bold' }}
+          />          
+          </View>
+        <View style = {{alignItems: 'center',  width:widthScreen * 0.25}}>
+          <Text style={{ color: colors.GRAYLIGHT, fontSize: 13, fontWeight: 'bold'}}>Burned</Text>
+          <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.ExerciseCalories}</Text>
+          <Fontisto name={'fire'} size = {20} color={'#FE1B17'} />
+          </View>
+      </View>
+      <View style = {styles.containerTracking}>
+          <CircularProgress
+              value={
+                  ((data?.DailyCarbs / data?.TDEECarbs) * 100) > 100 ? 100 : (data?.DailyCarbs / data?.TDEECarbs) * 100
+                } 
+                progressFormatter={(value) => {
+                  'worklet';
+                  return `${(data?.DailyCarbs)?.toFixed(0)}`;
+                }}
+                radius={50}
+                activeStrokeColor={'#rgba(116,18,203,1)'}
+                activeStrokeWidth={6}
+                inActiveStrokeColor={colors.GRAYDARK}
+                activeStrokeSecondaryColor={'#rgba(230,46,131,1)'}
+                title='Cabs'
+                titleColor={colors.GRAYLIGHT}
+                titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
+                progressValueColor={colors.WHITE}
+                progressValueStyle={{ fontSize: 25, fontWeight: '300' }}
+                subtitle={'/'+data?.TDEECarbs}
+                subtitleColor={'#rgba(230,46,131,1)'}
+                subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
+        /> 
+        <CircularProgress
+              value={
+                  ((data?.DailyProtein / data?.TDEEProtein) * 100) > 100 ? 100 : (data?.DailyProtein / data?.TDEEProtein) * 100
+                } 
+                progressFormatter={(value) => {
+                'worklet';
+                  return `${(data?.DailyProtein)?.toFixed(0)}`;
+                }}
+                maxValue={100}
+                radius={50}
+                activeStrokeColor={'#rgba(89,0,114,1)'}
+                activeStrokeWidth={6}
+                inActiveStrokeColor={colors.GRAYDARK}
+                activeStrokeSecondaryColor={'#rgba(0,124,198,1) '}
+                title='Protein'
+                titleColor={colors.GRAYLIGHT}
+                titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
+                progressValueColor={colors.WHITE}
+                progressValueStyle={{ fontSize: 25, fontWeight: '300' }}
+                subtitle={'/'+data?.TDEEProtein}
+                subtitleColor={'#rgba(0,124,198,1)'}
+                subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
+        />  
+        <CircularProgress
+              value={
+                  ((data?.DailyFat / data?.TDEEFat) * 100) > 100 ? 100 : (data?.DailyFat / data?.TDEEFat) * 100
+                } 
+                progressFormatter={(value) => {
+                'worklet';
+                  return `${(data?.DailyFat)?.toFixed(0)}`;
+                }}
+                radius={50}
+                activeStrokeColor={'#rgba(71,139,214,1)'}
+                activeStrokeWidth={6}
+                inActiveStrokeColor={colors.GRAYDARK}
+                activeStrokeSecondaryColor={'#rgba(37,216,211,1)'}
+                title='Fats'
+                titleColor={colors.GRAYLIGHT}
+                titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
+                progressValueColor={colors.WHITE}
+                progressValueStyle={{ fontSize: 25, fontWeight: '300' }}
+                subtitle={'/'+data?.TDEEFat}
+                subtitleColor={'#rgba(37,216,211,1)'}
+                subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
+          />  
+      </View>
     </View>
   )
 }
@@ -110,5 +238,18 @@ const styles = StyleSheet.create({
     // marginBottom: 10,
     zIndex: 1,
 
+  },
+  containerBody: {
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    alignSelf: 'center',
+    marginTop: heightScreen * 0.04,
+    flexDirection: 'row',
+  },
+  containerTracking: {
+    marginTop: heightScreen * 0.04,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   }
 })

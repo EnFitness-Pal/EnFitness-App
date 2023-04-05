@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   Alert,
   Animated,
@@ -14,14 +14,27 @@ import InsigntScreen from '../../screens/InsigntScreen';
 import MealScreen from '../../screens/MealScreen';
 import HomeScreen from '../../screens/HomeScreen';
 import WorkoutScreen from '../../screens/WorkoutScreen';
+import { AuthContext } from '../../context/AuthContext';
+import { getPerson } from '../../api/Person/GetPerson';
+import { Image } from '@rneui/base';
 
-  const AppStack = () => {
+const AppStack = () => {
+    const authContext = useContext(AuthContext);
+    const [person, setPerson] = useState(null);
+    const getPersonStack = async () => {
+        await getPerson(authContext.userID)
+            .then(res => {
+                setPerson(res.data);
+            })
+            .catch(err => {
+                console.log('err:', err);
+            })
+    }
+    useEffect(() => { 
+      getPersonStack();
+    }, []);
     const _renderIcon = (routeName, selectedTab) => {
       let icon = '';
-      const [data, setData] = useState();
-      const getData = async () => { 
-        
-      }
       switch (routeName) {
         case 'title1':
           icon = 'ios-home';
@@ -53,11 +66,21 @@ import WorkoutScreen from '../../screens/WorkoutScreen';
         case 'title4':
           icon = 'ios-person';
         return (
-            <Ionicons
-              name={icon}
-              size={28}
-              color={routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT}
-            />
+          <View style={{
+            borderWidth: 2.5,
+            borderColor: routeName === selectedTab ? colors.MAIN : colors.GRAYLIGHT,
+            borderRadius: 30,
+            padding:2
+          }}>
+            <Image
+              source={{ uri: person?.Avatar }}
+              resizeMode='cover'
+              style={{
+                padding: 18,
+                borderRadius: 15,
+              }}
+            />  
+          </View>
           );
       }
 
