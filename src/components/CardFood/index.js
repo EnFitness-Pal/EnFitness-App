@@ -45,7 +45,7 @@ const CardFood = ({
 
                 </View>
                 <View style = {{
-                      backgroundColor: "#32407B",
+                      backgroundColor: "#e80043",
                       width: widthScreen * 0.2,
                       height: heightScreen * 0.035,
                       marginHorizontal:heightScreen * 0.005,
@@ -56,11 +56,11 @@ const CardFood = ({
                       justifyContent:'center',
                   }}>
                       <Text
-                      style = {{color:colors.WHITE, fontSize:13, fontWeight:'bold', alignSelf:'center'}}
-                      >{item?.Carbs} Carb</Text>
+                        style={{ color: colors.WHITE, fontSize: 13, fontWeight: 'bold', alignSelf: 'center' }}
+                      >{item?.Carbs} Carbs</Text>
                 </View>
                 <View style = {{
-                      backgroundColor: "#515585",
+                      backgroundColor: "#3b84e5", 
                       width: widthScreen * 0.2,
                       height: heightScreen * 0.035,
                       borderRadius: 15,
@@ -69,11 +69,11 @@ const CardFood = ({
                       flexDirection: 'row',
                   }}>
                     <Text
-                      style = {{color:colors.WHITE, fontSize:13, fontWeight:'bold'}}
-                      >{item?.Protein} Pro</Text>
+                      style = {{color:colors.WHITE, fontSize:11, fontWeight:'bold'}}
+                      >{item?.Protein} Protein</Text>
                 </View>
                 <View style = {{
-                      backgroundColor: "#187498",
+                      backgroundColor: "#31b556",
                       width: widthScreen * 0.2,
                       height: heightScreen * 0.035,
                       marginHorizontal:heightScreen * 0.005,

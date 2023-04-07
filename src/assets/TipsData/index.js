@@ -2,13 +2,14 @@ export default [
     {   
         id: 1,
         title: 'Exercise daily',
-        content: 'Make sure to exercise regularly to maintain good health. Exercise improves respiratory function, increases strength and flexibility, improves mood, reduces the risk of cardiovascular disease, diabetes, cancer, obesity, and other diseases.'
+        content: 'Make sure to exercise regularly to maintain good health. Exercise improves respiratory function, increases strength and flexibility, improves mood, reduces the risk of cardiovascular disease, diabetes, cancer, obesity, and other diseases.',
+        image:'https://s12857.pcdn.co/en-US/blog/wp-content/uploads/2020/10/dailyworkout_header-1.jpg'
     },
     {
         id: 2,
         title: 'Reduce sugar and calorie intake',
-        content: 'Limit the consumption of fast food and carbonated beverages to reduce sugar and calorie intake. This helps reduce the risk of diabetes, obesity, cardiovascular disease, high blood pressure, and high lipid levels.'
-        
+        content: 'Limit the consumption of fast food and carbonated beverages to reduce sugar and calorie intake. This helps reduce the risk of diabetes, obesity, cardiovascular disease, high blood pressure, and high lipid levels.',
+        image:"https://www.healthyfood.com/wp-content/uploads/2019/10/healthy-food-ideas-1.jpg"
     },
     {
         id: 3,

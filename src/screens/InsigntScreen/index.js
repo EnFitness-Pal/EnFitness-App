@@ -27,7 +27,6 @@ const InsigntScreen = () => {
   const [trackingEx, setTrackingEx] = useState(); 
 
 
-
   const onHeaderSelected = (date) => {
     setShowCalendar(true);
   };
@@ -92,7 +91,7 @@ const InsigntScreen = () => {
     _renderHeader = (section) => {
       return (
         <CardInfo
-          title={section.title == 'First'? "Daily Tracking Meal": "Daily Tracking Exercise"}
+          title={section.title == 'First' ? "Daily Tracking Meal" : "Daily Tracking Exercise"}
           styleContainer={{
             flex: 1,
             borderLeftColor: section.title == 'First' ? "#FF6000" : "#009FBD", 
@@ -278,11 +277,16 @@ const InsigntScreen = () => {
             }
             progressFormatter={(value) => {
               'worklet';
-              return (value * data?.DailyCarbs / value)?.toFixed(0);
+              if (value === 0) {
+               return (value * data?.DailyCarbs / 1)?.toFixed(0);               
+              }
+              else {
+                return (value * data?.DailyCarbs / value)?.toFixed(0);
+              }
+
             }}
             radius={50}
             activeStrokeColor={'#rgba(150,15,15,1)'}
-            activeStrokeWidth={6}
             inActiveStrokeColor={colors.GRAYDARK}
             activeStrokeSecondaryColor={'#rgba(247,0,0,1)'}
             title='Cabs'
@@ -306,14 +310,20 @@ const InsigntScreen = () => {
             }
             progressFormatter={(value) => {
               'worklet';
-              return ((value * data?.DailyProtein)/ value)?.toFixed(0);
+              if (value === 0) {
+               return (value * data?.DailyProtein / 1)?.toFixed(0);               
+              }
+              else {
+                return (value * data?.DailyProtein / value)?.toFixed(0);
+              }
+
             }}
             maxValue={100}
             radius={50}
-            activeStrokeColor={'#rgba(74,105,187,1)'}
+            activeStrokeColor={'# rgba(39,103,187,1)'}
             activeStrokeWidth={6}
             inActiveStrokeColor={colors.GRAYDARK}
-            activeStrokeSecondaryColor={'#rgba(89,0,114,1) '}
+            activeStrokeSecondaryColor={'#8c0bb0'}
             title='Protein'
             titleColor={colors.GRAYLIGHT}
             titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
@@ -334,14 +344,20 @@ const InsigntScreen = () => {
               (((data?.DailyFat / data?.TDEEFat) * 100) > 100 )? 100 : ((data?.DailyFat / data?.TDEEFat) * 100)
             }
             progressFormatter={(value) => {
-              "worklet"
-              return ((value * data?.DailyFat) / value).toFixed(0);
+              'worklet';
+              if (value === 0) {
+               return (value * data?.DailyFat / 1)?.toFixed(0);               
+              }
+              else {
+                return (value * data?.DailyFat / value)?.toFixed(0);
+              }
+
             }}
             radius={50}
-            activeStrokeColor={'#rgba(252,195,12,1)'}
+            activeStrokeColor={'#rgba(123,216,96,1)'}
             activeStrokeWidth={6}
             inActiveStrokeColor={colors.GRAYDARK}
-            activeStrokeSecondaryColor={'#rgba(202,50,50,1)'}
+            activeStrokeSecondaryColor={'#rgba(99,162,17,1) '}
             title='Fats'
             titleColor={colors.GRAYLIGHT}
             titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
@@ -358,7 +374,7 @@ const InsigntScreen = () => {
         activeSections={activeSections}
         renderHeader={_renderHeader}
         renderContent={_renderContent}
-        onChange={(sections) => setActiveSections(sections)}
+        onChange={(sections) => {setActiveSections(sections)}}
         containerStyle={{ marginTop:heightScreen * 0.05, }}
         underlayColor='transparent'
         touchableComponent={TouchableOpacity}

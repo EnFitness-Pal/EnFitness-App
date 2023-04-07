@@ -8,12 +8,13 @@ const CardInfo = ({
   styleTitle,
   styleIcon,
   styleContainer,
+  onActive,
 }) => {
   return (
     <View style = {[styles.container, styleContainer]}>
       <Text style={[styles.title, styleTitle]}>{title}</Text>
       <Ionicons
-        name="ios-caret-down"
+        name={!onActive ? "ios-caret-down" : "ios-caret-up"}
         size={30}
         color={colors.GRAYLIGHT}
         style={[styles.icon, styleIcon]}

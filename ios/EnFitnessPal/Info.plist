@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>UIAppFonts</key>
-		<array>
+	<array>
 		<string>AntDesign.ttf</string>
 		<string>Entypo.ttf</string>
 		<string>EvilIcons.ttf</string>
@@ -20,7 +20,37 @@
 		<string>Octicons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
-		</array>
+		<string>fonts/Roboto-Black.ttf</string>
+		<string>fonts/Roboto-BlackItalic.ttf</string>
+		<string>fonts/Roboto-Bold.ttf</string>
+		<string>fonts/Roboto-BoldItalic.ttf</string>
+		<string>fonts/Roboto-Italic.ttf</string>
+		<string>fonts/Roboto-Light.ttf</string>
+		<string>fonts/Roboto-LightItalic.ttf</string>
+		<string>fonts/Roboto-Medium.ttf</string>
+		<string>fonts/Roboto-MediumItalic.ttf</string>
+		<string>fonts/Roboto-Regular.ttf</string>
+		<string>fonts/Roboto-Thin.ttf</string>
+		<string>fonts/Roboto-ThinItalic.ttf</string>
+		<string>fonts/Poppins-Black.ttf</string>
+		<string>fonts/Poppins-BlackItalic.ttf</string>
+		<string>fonts/Poppins-Bold.ttf</string>
+		<string>fonts/Poppins-BoldItalic.ttf</string>
+		<string>fonts/Poppins-ExtraBold.ttf</string>
+		<string>fonts/Poppins-ExtraBoldItalic.ttf</string>
+		<string>fonts/Poppins-ExtraLight.ttf</string>
+		<string>fonts/Poppins-ExtraLightItalic.ttf</string>
+		<string>fonts/Poppins-Italic.ttf</string>
+		<string>fonts/Poppins-Light.ttf</string>
+		<string>fonts/Poppins-LightItalic.ttf</string>
+		<string>fonts/Poppins-Medium.ttf</string>
+		<string>fonts/Poppins-MediumItalic.ttf</string>
+		<string>fonts/Poppins-Regular.ttf</string>
+		<string>fonts/Poppins-SemiBold.ttf</string>
+		<string>fonts/Poppins-SemiBoldItalic.ttf</string>
+		<string>fonts/Poppins-Thin.ttf</string>
+		<string>fonts/Poppins-ThinItalic.ttf</string>
+	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
