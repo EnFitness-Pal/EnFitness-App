@@ -1,4 +1,4 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import HeaderGetting from '../../components/HeaderGetting'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -7,16 +7,19 @@ import TipsData from '../../assets/TipsData';
 import FoodRecipe from '../../components/FoodRecipe';
 import Carousel from 'react-native-snap-carousel';
 import { getRandomRecipes } from '../../api/Recipes';
+import { useNavigation } from '@react-navigation/native';
 
 const HomeScreen = () => {
     const date = new Date();
     const data = TipsData;
+    const navigation = useNavigation();
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const tip = data[Math.floor(Math.random() * data.length)];
     const renderItem = ({ item, index }) => {
         return (
-            <FoodRecipe item = {item} index ={index}/>
+            <FoodRecipe
+                item={item} index={index} />
         )
     }
     const getTenRandomRecipes = async () => {
@@ -65,7 +68,15 @@ const HomeScreen = () => {
                   <Text
                       style={styles.text}
                   >{tip.content}</Text>
-            </ScrollView>              
+                  </ScrollView>
+            <View style ={styles.containerImg}>
+            <Image
+                source={{uri: tip.image}}
+                style = {styles.img}
+                resizeMode='cover'
+                  
+            />  
+            </View>          
         </View>
         <View style = {styles.containerRecipes}>
         <View style = {styles.containerTitleRecipe}>
@@ -108,11 +119,28 @@ const styles = StyleSheet.create({
     containerBody: {
         backgroundColor: colors.SILVER,
         marginTop:heightScreen * 0.03,
-        width: widthScreen * 0.9,
-        height: heightScreen * 0.25,
+        width: widthScreen,
+        height: heightScreen * 0.2,
+        borderTopRightRadius: 90,
+        borderBottomRightRadius: 90,
         padding: 15,
-        borderRadius: 20,
-        alignSelf: 'center',
+        paddingRight:120
+    },
+    img: {
+        width: widthScreen * 0.26,
+        height: widthScreen * 0.31,
+        borderRadius: 100,
+    },
+    containerImg: {
+        position: 'absolute',
+        width: widthScreen * 0.28,
+        height: widthScreen * 0.33,
+        marginTop: heightScreen * 0.025,
+        left: widthScreen * 0.68,
+        alignSelf: 'flex-end',
+        borderRadius: 100,
+        borderColor: colors.MAIN,
+        borderWidth: 4,
     },
     scrolltext: {
         flex: 1,
@@ -123,7 +151,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     texttitle: {
-        fontSize: 17,
+        fontSize: 14,
         fontWeight: 'bold',
         color: colors.MAIN,
     },
@@ -135,12 +163,12 @@ const styles = StyleSheet.create({
         fontSize: 13,
         color: colors.MAIN,
         fontWeight: 'bold',
+        right: widthScreen * 0.16,
     },
     texttip: {
-        fontSize: 15,
+        fontSize: 13,
         fontWeight: 'bold',
         color: colors.WHITE,
-        alignSelf: 'center',
         marginBottom: heightScreen * 0.01,
         marginTop:heightScreen * 0.01,
     },
@@ -148,8 +176,9 @@ const styles = StyleSheet.create({
         fontSize: 15,
         color: colors.WHITE,
         fontWeight: '600',
-        lineHeight: 20,
-        alignContent: 'center',
+        lineHeight: 25,
+        alignContent: 'flex-start',
+        overflow: 'hidden',
     },
     containerRecipes: {
         flex: 1,

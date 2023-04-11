@@ -76,12 +76,16 @@ const SignUpScreen = ({ data }) => {
                 inputs.password,
             ).then(res => {
                 console.log('res:', res);
-                Alert.alert('Success', 'Please login to continue');
+                Alert.alert('Success', 'Please login to continue!');
                 navigation.replace('Loging')
                 setLoading(false);
             })
             .catch(err => {
-                Alert.alert('Register Error','Try register again.');
+                if (err.response.data.status === 500) {
+                    Alert.alert('Register Error', err.response.data.detail);
+                } else {
+                    Alert.alert('Register Error', 'Try register again.');
+                }
                 console.log('err:', err);
                 setLoading(false);
             })            

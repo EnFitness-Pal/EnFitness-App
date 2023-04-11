@@ -28,6 +28,7 @@ const AppNavigation = () => {
     return (
         <NavigationContainer>
             {token?.RefreshToken ? <AppStack /> : <InfoNavigation />}
+            {/* <AppStack /> */}
         </NavigationContainer>
     )
 }

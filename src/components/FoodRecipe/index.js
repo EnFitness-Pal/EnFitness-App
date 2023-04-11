@@ -2,15 +2,22 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { useNavigation } from '@react-navigation/native'
 const FoodRecipe = ({
   item,
   index,
-  onPress,
   colorBackground,
-
+  onPress
 }) => {
+
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style = {[styles.container, {backgroundColor: index % 2 !== 0 ? "#B3E8FF": "#FFDD80"}]}>
+    <TouchableOpacity
+      onPress = {() => navigation.navigate('RecipeDetails' , {
+        item: item
+      })}
+      style={[styles.container, { backgroundColor: index % 2 !== 0 ? "#B3E8FF" : "#FFDD80" }]}>
       <View style = {styles.containerIMG}>
         <Image
             source = {{uri: item?.image}}

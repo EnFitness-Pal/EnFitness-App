@@ -39,7 +39,11 @@ const ForgotScreen = ({ navigation }) => {
             }
         ).catch(err => { 
                 console.log('err:', err);
-                Alert.alert('Error', 'Please check your email again.');
+          if (err.response.status === 404) {
+            Alert.alert('Error', 'Email not found. Please enter your email again.');
+          } else {
+            Alert.alert('Error', 'Please enter your email again.');
+          }
                 setLoading(false);
                 
             })

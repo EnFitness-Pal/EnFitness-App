@@ -64,11 +64,12 @@ const InsigntScreen = () => {
     setLoading(true)
     await getDailyTrackingExercise(authContext.userID, new Date(date)?.toISOString().split("T").shift())
       .then(res => { 
+        console.log('res:', res.data);
         setTrackingEx(res.data);
         setLoading(false);
       })
-      .catch(err => { 
-        console.log('err:', err);
+      .catch(error => { 
+        console.log('err:', error);
         setTrackingEx(null);
         setLoading(false)
       })
@@ -222,7 +223,7 @@ const InsigntScreen = () => {
             loop
             style={{ width: 80, height: 80 }}
           /> :
-            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.SumCalories}</Text>}
+            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.SumCalories ||  0}</Text>}
           <Ionicons name={'ios-fast-food-outline'} size = {20} color={colors.MAIN} />
           </View>
           <View style = {{   width: widthScreen * 0.4,alignSelf: "center", alignItems: 'center', marginHorizontal:10}}>
@@ -233,7 +234,7 @@ const InsigntScreen = () => {
               style={{width: 150, height: 150}}
               /> :
               <CircularProgress
-                value={(data?.DailyCalories / data?.TDEECalories) * 100}
+                value={(data?.DailyCalories / data?.TDEECalories) * 100 || 0}
                 progressFormatter={(value) => {
                   'worklet';
                   return `${((value * data?.TDEECalories) / 100)?.toFixed(0)}`;
@@ -260,7 +261,7 @@ const InsigntScreen = () => {
             loop
             style={{ width: 80, height: 80 }}
           /> :
-            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.ExerciseCalories}</Text>}
+            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.ExerciseCalories ||  0}</Text>}
           <Fontisto name={'fire'} size = {20} color={'#FE1B17'} />
           </View>
       </View>
@@ -273,7 +274,7 @@ const InsigntScreen = () => {
         /> :
           <CircularProgress
             value={
-              ((data?.DailyCarbs / data?.TDEECarbs) * 100) > 100 ? 100 : (data?.DailyCarbs / data?.TDEECarbs) * 100
+              ((data?.DailyCarbs / data?.TDEECarbs) * 100) > 100 ? 100 : (data?.DailyCarbs / data?.TDEECarbs) * 100 ? (data?.DailyCarbs / data?.TDEECarbs) * 100 : 0
             }
             progressFormatter={(value) => {
               'worklet';
@@ -306,7 +307,7 @@ const InsigntScreen = () => {
         /> :
           <CircularProgress
             value={
-              ((data?.DailyProtein / data?.TDEEProtein) * 100) > 100 ? 100 : (data?.DailyProtein / data?.TDEEProtein) * 100
+              ((data?.DailyProtein / data?.TDEEProtein) * 100) > 100 ? 100 : (data?.DailyProtein / data?.TDEEProtein) * 100 ? (data?.DailyProtein / data?.TDEEProtein) * 100 : 0
             }
             progressFormatter={(value) => {
               'worklet';
@@ -341,7 +342,7 @@ const InsigntScreen = () => {
         /> :
           <CircularProgress
             value={
-              (((data?.DailyFat / data?.TDEEFat) * 100) > 100 )? 100 : ((data?.DailyFat / data?.TDEEFat) * 100)
+              (((data?.DailyFat / data?.TDEEFat) * 100) > 100 )? 100 : ((data?.DailyFat / data?.TDEEFat) * 100) ? ((data?.DailyFat / data?.TDEEFat) * 100) : 0
             }
             progressFormatter={(value) => {
               'worklet';
@@ -378,7 +379,7 @@ const InsigntScreen = () => {
         containerStyle={{ marginTop:heightScreen * 0.05, }}
         underlayColor='transparent'
         touchableComponent={TouchableOpacity}
-        expandMultiple={true}
+        // expandMultiple={true}
         sectionContainerStyle={{paddingBottom:20}}
       />
       </View>

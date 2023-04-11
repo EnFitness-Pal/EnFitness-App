@@ -10,7 +10,6 @@ import { PersistGate } from 'redux-persist/integration/react'
 StatusBar.setBarStyle('dark-content');
 const Stack = createNativeStackNavigator();
 const App = () => {
-
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
