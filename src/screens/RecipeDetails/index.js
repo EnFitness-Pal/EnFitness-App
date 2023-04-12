@@ -64,7 +64,7 @@ const RecipeDetails = ({ route }) => {
             color={colors.MAIN}
             style = {{marginHorizontal:5}}
           />
-          <Text style={{ color: colors.WHITE, fontSize: 16, fontFamily: "Poppins-Bold", fontWeight: "400", marginRight:10 }}>{route.params.item?.servings} Persons</Text>
+          <Text style={{ color: colors.WHITE, fontSize: 16, fontFamily: "Poppins-Bold", fontWeight: "400", marginRight:10 }}>{route.params.item?.servings} Person</Text>
         </View>
         </View>
       <Image

@@ -56,7 +56,7 @@ const Nutritions = ({ route }) => {
           height: widthScreen * 0.25,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#6E5FBC',
+          backgroundColor: '#A681BE',
           borderRadius: 15,
         }}>
           <Text style={{
@@ -102,7 +102,7 @@ const Nutritions = ({ route }) => {
           height: widthScreen * 0.25,
           justifyContent: 'center',
           alignItems: 'center',
-          backgroundColor: '#797E77',
+          backgroundColor: '#96AED0',
           borderRadius: 15,
         }}>
           <Text style={{

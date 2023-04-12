@@ -17,7 +17,7 @@ const FoodRecipe = ({
       onPress = {() => navigation.navigate('RecipeDetails' , {
         item: item
       })}
-      style={[styles.container, { backgroundColor: index % 2 !== 0 ? "#B3E8FF" : "#FFDD80" }]}>
+      style={[styles.container, { backgroundColor: '#E7DCCD' }]}>
       <View style = {styles.containerIMG}>
         <Image
             source = {{uri: item?.image}}
