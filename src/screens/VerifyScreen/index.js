@@ -9,7 +9,7 @@ import { forgot, verify } from '../../api/Auth/Forgot'
 import Loading from '../../components/Loading'
 
 const VerifyScreen = ({ navigation, route }) => {
-    const [code, setCode] = useState(null);
+    const [code, setCode] = useState();
     const [timer, setTimer] = useState(60);
     const [tryAgain, setTryAgain] = useState(false);
     const [loading, setLoading] = useState(false);

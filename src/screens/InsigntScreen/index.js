@@ -15,6 +15,10 @@ import CardFood from '../../components/CardFood';
 import { getDailyTrackingExercise, getDailyTrackingFood } from '../../api/Tracking';
 import { FlatList } from 'react-native';
 import CardEx from '../../components/CardEx';
+import {
+  LineChart
+} from "react-native-chart-kit";
+
 
 const InsigntScreen = () => {
   const [date, setDate] = useState(new Date())
@@ -223,7 +227,7 @@ const InsigntScreen = () => {
             loop
             style={{ width: 80, height: 80 }}
           /> :
-            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.SumCalories ||  0}</Text>}
+            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.DailyCalories ||  0}</Text>}
           <Ionicons name={'ios-fast-food-outline'} size = {20} color={colors.MAIN} />
           </View>
           <View style = {{   width: widthScreen * 0.4,alignSelf: "center", alignItems: 'center', marginHorizontal:10}}>
@@ -234,7 +238,7 @@ const InsigntScreen = () => {
               style={{width: 150, height: 150}}
               /> :
               <CircularProgress
-                value={(data?.DailyCalories / data?.TDEECalories) * 100 || 0}
+                value={(data?.SumCalories / data?.TDEECalories) * 100 || 0}
                 progressFormatter={(value) => {
                   'worklet';
                   return `${((value * data?.TDEECalories) / 100)?.toFixed(0)}`;
@@ -249,7 +253,7 @@ const InsigntScreen = () => {
                 titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
                 progressValueColor={colors.WHITE}
                 progressValueStyle={{ fontSize: 36, fontWeight: '300' }}
-                subtitle={'/' + data?.TDEECalories}
+                subtitle={'/' + (data?.TDEECalories? data?.TDEECalories : "0")}
                 subtitleStyle={{ fontSize: 15, fontWeight: 'bold' }}
               />}       
           </View>
@@ -295,7 +299,7 @@ const InsigntScreen = () => {
             titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
             progressValueColor={colors.WHITE}
             progressValueStyle={{ fontSize: 25, fontWeight: '300' }}
-            subtitle={'/' + data?.TDEECarbs}
+            subtitle={'/' + (data?.TDEECarbs ? data?.TDEECarbs : "0")}
             subtitleColor={'#rgba(247,0,0,1)'}
             subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
           />}
@@ -330,7 +334,7 @@ const InsigntScreen = () => {
             titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
             progressValueColor={colors.WHITE}
             progressValueStyle={{ fontSize: 25, fontWeight: '300' }}
-            subtitle={'/' + data?.TDEEProtein}
+            subtitle={'/' + (data?.TDEEProtein ? data?.TDEEProtein : "0")}
             subtitleColor={'#rgba(74,105,187,1)'}
             subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
           />}
@@ -364,12 +368,64 @@ const InsigntScreen = () => {
             titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
             progressValueColor={colors.WHITE}
             progressValueStyle={{ fontSize: 25, fontWeight: '300' }}
-            subtitle={'/' + data?.TDEEFat}
+            subtitle={'/' + (data?.TDEEFat ? data?.TDEEFat : "0")}
             subtitleColor={'#rgba(252,195,12,1)'}
             subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
           />}
-      </View>
-      <View>
+        </View>
+<View>
+  <LineChart
+    data={{
+      labels: ["22/4", "23/4", "24/4", "25/4", "26/4", "27/4", "28/4", "29/4", "30/4","1/5"],
+      datasets: [
+        {
+          data: [
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100,
+            Math.random() * 100
+          ]
+        }
+      ]
+    }}
+    width={widthScreen * 0.9} // from react-native
+    height={220}
+    yAxisLabel="$"
+    yAxisSuffix="k"
+    yAxisInterval={2} // optional, defaults to 1
+    chartConfig={{
+      backgroundColor: "#FFBB00",
+      backgroundGradientFrom: "#FFBB00",
+      backgroundGradientTo: "#ffa726",
+      decimalPlaces: 2, // optional, defaults to 2dp
+      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+      labelColor: (opacity = 2) => `rgba(255, 255, 255, ${opacity})`,
+      style: {
+        borderRadius: 16
+      },
+      propsForDots: {
+        r: "4",
+        strokeWidth: "2",
+        stroke: "#FFBB00"
+      }
+    }}
+    bezier
+    transparent
+    style={{
+      marginVertical: 8,
+      borderRadius: 20,
+      alignSelf: 'center',
+    }}
+  />
+</View>        
+
+      <View style ={{flex:1}}>
       <Accordion
         sections={SECTIONS}
         activeSections={activeSections}
@@ -394,6 +450,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.BG,
+    paddingBottom:70
   },
   modalContainer: {
     position: 'absolute',

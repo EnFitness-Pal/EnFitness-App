@@ -3,8 +3,8 @@ import {
   Text,
   View,
   Animated,
-  Image,
 } from 'react-native';
+import FastImage from 'react-native-fast-image'
 import React from 'react';
 
 import { colors, heightScreen, widthScreen } from '../../utility';
@@ -12,7 +12,7 @@ const SlideItem = ({item}) => {
 
   return (
     <View style={styles.container}>
-      <Image
+      <FastImage
         source={item?.img}
         style={[
           styles.image,

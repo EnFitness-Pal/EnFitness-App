@@ -7,12 +7,12 @@ import { signUp} from '../api/Auth/SignUp';
 
 export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
-    const [userID, setUserID] = useState(null);
+    const [userID, setUserID] = useState();
     const [token, setToken] = useState({
-        AccessToken: null,
-        RefreshToken: null,
+        AccessToken: '',
+        RefreshToken: '',
     });
-    const [TokenExpired, setTokenExpired] = useState(null);
+    const [TokenExpired, setTokenExpired] = useState();
 
     const forgotpassword = (email) => { 
         setLoading(true);
@@ -34,22 +34,22 @@ export const AuthProvider = ({ children }) => {
         signIn(email, password)
             .then(res => {
                 setToken({
-                    AccessToken: res.data.Token,
-                    RefreshToken: res.data.RefreshToken
+                    AccessToken: res.data?.Token,
+                    RefreshToken: res.data?.RefreshToken
                 });
-                setTokenExpired(res.data.TokenExpired);
-                setUserID(res.data.UserId);
-                AsyncStorage.setItem('AccessToken', res.data.Token);
-                AsyncStorage.setItem('RefreshToken', res.data.RefreshToken);
-                AsyncStorage.setItem('TokenExpired', res.data.TokenExpired);
-                AsyncStorage.setItem('UserID', String(res.data.UserId));
+                setTokenExpired(res.data?.TokenExpired);
+                setUserID(res.data?.UserId);
+                AsyncStorage.setItem('AccessToken', res.data?.Token);
+                AsyncStorage.setItem('RefreshToken', res.data?.RefreshToken);
+                AsyncStorage.setItem('TokenExpired', res.data?.TokenExpired);
+                AsyncStorage.setItem('UserID', String(res.data?.UserId));
                 setLoading(false);  
             })
             .catch(err => {
-                console.log('err:', err.response.data);
+                console.log('err:', err.response?.data);
                 setLoading(false);
-                if (err.response.data.status === 500) {
-                    Alert.alert("Login Again", err.response.data.detail);
+                if (err.response.data?.status === 500) {
+                    Alert.alert("Login Again", err.response.data?.detail);
                 } else { 
                     Alert.alert("Login Error", "Email or password is incorrect");
                 }

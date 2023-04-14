@@ -50,6 +50,7 @@
 		<string>fonts/Poppins-SemiBoldItalic.ttf</string>
 		<string>fonts/Poppins-Thin.ttf</string>
 		<string>fonts/Poppins-ThinItalic.ttf</string>
+		<string>fonts/icomoon.ttf</string>
 	</array>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>

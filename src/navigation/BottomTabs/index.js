@@ -17,12 +17,12 @@ import HomeScreen from '../../screens/HomeScreen';
 import WorkoutScreen from '../../screens/WorkoutScreen';
 import { AuthContext } from '../../context/AuthContext';
 import { getPerson } from '../../api/Person/GetPerson';
-import { Image } from '@rneui/base';
 import RecipeDetails from '../../screens/RecipeDetails';
+import FastImage from 'react-native-fast-image'
 
 const BottomTabs = () => {
     const authContext = useContext(AuthContext);
-    const [person, setPerson] = useState(null);
+    const [person, setPerson] = useState();
     const getPersonStack = async () => {
         await getPerson(authContext.userID)
             .then(res => {
@@ -74,9 +74,9 @@ const BottomTabs = () => {
             borderRadius: 30,
             padding:2
           }}>
-            <Image
+            <FastImage
               source={{ uri: person?.Avatar }}
-              resizeMode='cover'
+              resizeMode={FastImage.resizeMode.cover}
               style={{
                 padding: 18,
                 borderRadius: 15,

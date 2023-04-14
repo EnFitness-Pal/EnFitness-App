@@ -1,6 +1,5 @@
-import { Alert, Image, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { Alert, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from 'react-native'
 import React, { useContext, useState } from 'react'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors, heightScreen, regexEmail, regexPassword, widthScreen } from '../../utility'
 import Input from '../../components/Input'
 import ButtonBack from '../../components/ButtonBack'

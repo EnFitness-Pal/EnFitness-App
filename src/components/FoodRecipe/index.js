@@ -1,5 +1,6 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import {StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
+import FastImage from 'react-native-fast-image'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { useNavigation } from '@react-navigation/native'
@@ -14,15 +15,15 @@ const FoodRecipe = ({
 
   return (
     <TouchableOpacity
-      onPress = {() => navigation.navigate('RecipeDetails' , {
+      onPress = {() => navigation.push('RecipeDetails' , {
         item: item
       })}
       style={[styles.container, { backgroundColor: '#E7DCCD' }]}>
       <View style = {styles.containerIMG}>
-        <Image
+        <FastImage
             source = {{uri: item?.image}}
             style = {{width: widthScreen * 0.42, height: widthScreen * 0.42, borderRadius: 100, left:widthScreen * 0.08}}
-            resizeMode = 'cover' 
+            resizeMode = {FastImage.resizeMode.cover}
         />
       </View> 
       <View

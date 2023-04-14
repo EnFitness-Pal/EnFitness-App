@@ -6,10 +6,10 @@ import {
   Dimensions,
   TouchableOpacity,
   SafeAreaView,
-  Image,
   ScrollView
 } from 'react-native';
 import React, { useEffect } from 'react'
+import FastImage from 'react-native-fast-image'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import { NavigationContainer, useNavigation } from '@react-navigation/native'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -64,12 +64,12 @@ const RecipeDetails = ({ route }) => {
             color={colors.MAIN}
             style = {{marginHorizontal:5}}
           />
-          <Text style={{ color: colors.WHITE, fontSize: 16, fontFamily: "Poppins-Bold", fontWeight: "400", marginRight:10 }}>{route.params.item?.servings} Person</Text>
+          <Text style={{ color: colors.WHITE, fontSize: 16, fontFamily: "Poppins-Bold", fontWeight: "400", marginRight:10 }}>{route.params.item?.servings == 1 ? route.params.item?.servings + ' Person': route.params.item?.servings + " People"}</Text>
         </View>
         </View>
-      <Image
+      <FastImage
         source={{ uri: route.params.item?.image }}
-        resizeMode= 'cover'
+        resizeMode= {FastImage.resizeMode.cover}
           style={{
           width: widthScreen * 0.9,
           height: heightScreen * 0.28,
@@ -78,7 +78,7 @@ const RecipeDetails = ({ route }) => {
           borderRadius: 30
         }}
         />
-        <View style={{ flex: 1, marginTop: 10 }}>
+        <View style={{ flex: 1, marginTop: 10, backgroundColor:colors.BG }}>
         <Tab.Navigator
           screenOptions={{
             tabBarLabelStyle: { fontSize: 15, fontFamily: "Poppins-Bold", fontWeight: "500", color: colors.WHITE, textTransform: 'none', },

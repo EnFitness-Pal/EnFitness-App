@@ -1,13 +1,23 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import {StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
+import FastImage from 'react-native-fast-image'
 import { colors, heightScreen, widthScreen } from '../../utility'
-
+import { useNavigation } from '@react-navigation/native';
 const WorkoutItem = ({ item }) => {
+  const navigation = useNavigation();
+
   return (
-    <TouchableOpacity style={styles.container}>
-        <Image
-          source={{ uri: 'https://post.healthline.com/wp-content/uploads/2020/02/man-exercising-plank-push-up-1200x628-facebook.jpg' }}
-          resizeMode='stretch'
+    <TouchableOpacity
+      onPress = {() => navigation.push('WorkoutDetail' , {
+        item: item
+      })}
+      style={styles.container}>
+        <FastImage
+        source={{
+          uri: item?.Thumbnail,
+          crop: {height: 100}
+        }}
+          resizeMode={FastImage.resizeMode.stretch}
           style={styles.image}
         />
         <View style = {styles.containerTitle}>

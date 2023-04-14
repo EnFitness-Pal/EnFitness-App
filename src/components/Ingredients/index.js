@@ -1,5 +1,6 @@
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { FlatList, StyleSheet, Text, View } from 'react-native'
 import React from 'react'
+import FastImage from 'react-native-fast-image'
 import { colors, heightScreen, widthScreen } from '../../utility'
 
 const Ingredients = ({ route }) => {
@@ -21,9 +22,9 @@ const Ingredients = ({ route }) => {
 
                         }}>
                             <View style = {{width:widthScreen * 0.12, height:widthScreen * 0.12}}>
-                                <Image
+                                <FastImage
                                     source={{ uri: `https://spoonacular.com/cdn/ingredients_100x100/${item?.image}` }}
-                                    resizeMode='stretch'
+                                    resizeMode={FastImage.resizeMode.stretch}
                                     style={{
                                         width: widthScreen * 0.12,
                                         height: widthScreen * 0.12,

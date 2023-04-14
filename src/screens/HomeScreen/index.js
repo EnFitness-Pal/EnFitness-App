@@ -1,5 +1,6 @@
-import { Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useEffect, useMemo, useState } from 'react'
+import FastImage from 'react-native-fast-image'
 import HeaderGetting from '../../components/HeaderGetting'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors, heightScreen, widthScreen } from '../../utility'
@@ -39,9 +40,9 @@ const HomeScreen = () => {
     }
 
     const getWorkout = async () => { 
-        await getRandomWorkout(20, buttonPress)
+        await getRandomWorkout(1, buttonPress)
         .then((response) => { 
-            setWorkouts(response.data); 
+            setWorkouts(response?.data.Data); 
         })
         .catch((error) => {
             console.log(error);
@@ -67,10 +68,10 @@ const HomeScreen = () => {
     useEffect(() => {
         getTenRandomRecipes();
     }, []);
-    useEffect(() => {
+    useMemo(() => {
         const randomTip = getRandomTip(data);
         setTip(randomTip);
-    }, []);
+    }, [(date.toUTCString()).slice(0,12)]);
   return (
     <SafeAreaView style={styles.container}>
         <ScrollView >
@@ -103,10 +104,10 @@ const HomeScreen = () => {
                   >{tip?.content}</Text>
                   </ScrollView>
             <View style ={styles.containerImg}>
-            <Image
+            <FastImage
                 source={{uri: tip?.image}}
                 style = {styles.img}
-                resizeMode='cover'
+                resizeMode={FastImage.resizeMode.cover}
                   
             />  
             </View>          
@@ -134,7 +135,7 @@ const HomeScreen = () => {
             <Text style = {styles.textTitle}>Workout Categories</Text>
             <Text 
                 style = {styles.textmore}
-                onPress={() => {}}    
+                onPress={() => {navigation.navigate('WorkoutCategories')}}    
             >See all</Text>
           </View>
           <View style = {styles.containerSliderW}>

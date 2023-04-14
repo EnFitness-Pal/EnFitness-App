@@ -8,3 +8,4 @@ export const DEL = '#FF2D55';
 export const TEXTGRAY = '#ABABAC';
 export const BACK = '#3A3A3C';
 export const SILVER = '#7F8693'
+export const GRAYICON = '#505050'

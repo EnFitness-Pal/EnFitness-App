@@ -1,5 +1,6 @@
-import { Image, ImageBackground, Keyboard, StyleSheet, Text, View, Animated, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { ImageBackground, Keyboard, StyleSheet, Text, View, Animated, ActivityIndicator, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
+import FastImage from 'react-native-fast-image'
 import SignInScreen from '../../screens/SignInScreen';
 import SignUpScreen from '../../screens/SignUpScreen';
 import { colors, heightScreen, widthScreen } from '../../utility';
@@ -15,8 +16,8 @@ const LoginNav = ({ route }) => {
   console.log(route?.params);
   const authContext = useContext(AuthContext);
   const navigation = useNavigation();
-  const pagerViewRef = useRef(null);
-  const [index, setIndex] = useState(null);
+  const pagerViewRef = useRef('');
+  const [index, setIndex] = useState();
   const headerMotion = useRef(new Animated.Value(0)).current;
   const animatedKeyBoard = (motion, value, duration) => {
     Animated.timing(
@@ -50,7 +51,7 @@ const LoginNav = ({ route }) => {
   return (
     <Animated.View
           style={[styles.container, { marginTop: headerMotion }]}>
-    <Image
+    <FastImage
         source={index == 0 ? require('../../assets/images/imageauthop.png'):require('../../assets/images/imageauthop1.png')}
         transform={[{ scaleX: -1 }]}
         style = {[styles.image, {height: 425, width: 425}]}
