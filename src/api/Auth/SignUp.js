@@ -7,7 +7,7 @@ export function signUp(fullname, age, sex, height, weight, bodyfat, activelevel,
     return axios.post(`${baseURL}/api/auth/register`,
                 {
                     "FullName": fullname,
-                    "DateOfBirth": age,      
+                    "Age": age,      
                     "Sex": sex,      
                     "Description": 'abc',      
                     "Height": height,      

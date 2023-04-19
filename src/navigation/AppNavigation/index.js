@@ -1,12 +1,10 @@
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { StyleSheet, View } from 'react-native'
+import React, { useContext } from 'react'
 import InfoNavigation from '../infomation'
 import AppStack from '../AppStack'
-import { AuthContext, AuthProvider } from '../../context/AuthContext'
+import { AuthContext } from '../../context/AuthContext'
 import { NavigationContainer } from '@react-navigation/native'
 import { colors } from '../../utility'
-import AuthNavigation from '../AuthNavigation'
-import LoginNav from '../LoginNav'
 import Lottie from 'lottie-react-native';
 
 const AppNavigation = () => {

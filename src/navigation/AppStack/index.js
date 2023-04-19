@@ -1,11 +1,11 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
-import BottomTabs from '../BottomTabs';
 import RecipeDetails from '../../screens/RecipeDetails';
 import WorkoutDetail from '../../screens/WorkoutDetail';
 import BottomTabsNav from '../BottomTabsNav';
 import WorkoutCategories from '../../screens/WorkoutCategories';
+import FoodCategories from '../../screens/FoodCategories';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -23,7 +23,10 @@ const AppStack = () => {
         }}/>
       <Stack.Screen name="WorkoutCategories" component={WorkoutCategories} options={{
             headerShown: false,
-      }}/>
+      }} />
+      <Stack.Screen name="FoodCategories" component={FoodCategories} options={{
+            headerShown: false,
+      }} />
       </Stack.Navigator>
   )
 }

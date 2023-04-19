@@ -21,7 +21,7 @@ export default [
         id: 4,
         title: 'Drink more water',
         content: 'Drink more water to reduce the risk of dehydration, which can cause fatigue, dizziness, and headaches. It also helps reduce the risk of kidney stones, urinary tract infections, and constipation.',
-        imaage:"https://media-cldnry.s-nbcnews.com/image/upload/t_fit-760w,f_auto,q_auto:best/newscms/2017_20/2003046/170515-nbc-water-illo-brecher-08-mainart.jpg"
+        image:"https://media-cldnry.s-nbcnews.com/image/upload/t_fit-760w,f_auto,q_auto:best/newscms/2017_20/2003046/170515-nbc-water-illo-brecher-08-mainart.jpg"
     },
     {
         id: 7,

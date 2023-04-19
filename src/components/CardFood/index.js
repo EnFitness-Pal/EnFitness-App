@@ -25,7 +25,7 @@ const CardFood = ({
     <View style = {[styles.container, styleContainer]}>
         <View style = {{flexDirection: 'column'}}>
               <View style={{ flexDirection: 'row', justifyContent:'space-between'}}>
-                  <Text style={[styles.title, styleTitle]}>{item?.ProductName}</Text>
+                  <Text numberOfLines={1} style={[styles.title, styleTitle]}>{item?.ProductName}</Text>
                   <Text style={[styles.titledate]}>{formattedDate}</Text>
             </View>
             <View style = {{flexDirection: 'row', paddingTop:10, alignSelf:'center'}}>
@@ -114,7 +114,8 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     title: {
-        fontSize: 20,
+        width: widthScreen * 0.45,
+        fontSize: 18,
         color: colors.GRAYLIGHT,
         fontWeight: 'bold',
         marginTop: heightScreen * 0.015,

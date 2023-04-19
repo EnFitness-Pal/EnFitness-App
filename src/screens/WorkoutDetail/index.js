@@ -127,8 +127,8 @@ const WorkoutDetail = ({ route, navigation }) => {
         </SafeAreaView>
         <ScrollView style = {styles.container}>
         <View style={styles.containerBody}>
-            <Text style = {styles.title}>Day 01 - Warm Up</Text>
-            <Text style = {styles.subtitle}>04 Workouts for Beginner</Text>
+          <Text numberOfLines={1} style={styles.title}>{route.params.item?.ExerciseName}</Text>
+          <Text style={styles.subtitle}>Difficulty: {route.params.item?.Difficulty}</Text>
             <Text 
                 numberOfLines={readmore ? null : 5}
                 style={styles.content}>
@@ -172,7 +172,7 @@ const WorkoutDetail = ({ route, navigation }) => {
                         marginLeft: 10,
                         fontFamily: "Poppins-Bold",
                         color: colors.MAIN,
-                          }}>Force: {route.params.item?.Force}</Text>
+                          }}>Force: {route.params.item?.Force ? route.params.item?.Force : 'None'}</Text>
                 </View>
                 <View style={{
                     flexDirection: 'row',
@@ -190,7 +190,7 @@ const WorkoutDetail = ({ route, navigation }) => {
                         marginLeft: 10,
                         fontFamily: "Poppins-Bold",
                         color: colors.MAIN,
-                          }}>Force: {route.params.item?.Force}</Text>
+                          }}>Grips: {route.params.item?.Grips ? route.params.item?.Grips: 'None'}</Text>
                 </View>
             </View>
               </View>

@@ -7,7 +7,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import Fontisto from 'react-native-vector-icons/Fontisto';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { AuthContext } from '../../context/AuthContext';
-import { getTotalTracking } from '../../api/Calories';
+import { getStatisticCalories, getTotalTracking } from '../../api/Calories';
 import Accordion from 'react-native-collapsible/Accordion';
 import Lottie from 'lottie-react-native';
 import CardInfo from '../../components/CardInfo';
@@ -15,9 +15,7 @@ import CardFood from '../../components/CardFood';
 import { getDailyTrackingExercise, getDailyTrackingFood } from '../../api/Tracking';
 import { FlatList } from 'react-native';
 import CardEx from '../../components/CardEx';
-import {
-  LineChart
-} from "react-native-chart-kit";
+import Circular from '../../components/Circular';
 
 
 const InsigntScreen = () => {
@@ -29,8 +27,26 @@ const InsigntScreen = () => {
   const [activeSections, setActiveSections] = useState([]);
   const [trackingFood, setTrackingFood] = useState();
   const [trackingEx, setTrackingEx] = useState(); 
+  const [chartDataProcess, setChartDataProcess] = useState();
 
-
+  const getDataStatisticCalories = async () => {
+    setLoading(true);
+    await getStatisticCalories(authContext?.userID, new Date(date)?.toISOString().split("T").shift())
+      .then(res => {
+        const dataTranform = Object.entries(res?.data.CaloriesByDay).map(([date, calories]) => ({ date, calories }));
+        setChartDataProcess(dataTranform);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log('err:', err);
+        setLoading(false);
+      })
+  }
+  useEffect(() => {
+    getDataStatisticCalories();
+  }, [date])
+  
+  console.log('getDataStatisticCalories:', chartDataProcess);
   const onHeaderSelected = (date) => {
     setShowCalendar(true);
   };
@@ -102,7 +118,8 @@ const InsigntScreen = () => {
             borderLeftColor: section.title == 'First' ? "#FF6000" : "#009FBD", 
             borderLeftWidth: 5,
             alignSelf: 'center',
-            marginTop: heightScreen * 0.02
+            marginTop: heightScreen * 0.02,
+            width: widthScreen * 0.9,
           }}
         />
       );
@@ -150,7 +167,6 @@ const InsigntScreen = () => {
 
 
     };
-
   return (
     <View style={styles.container}>
       <CalendarStrip
@@ -238,10 +254,18 @@ const InsigntScreen = () => {
               style={{width: 150, height: 150}}
               /> :
               <CircularProgress
-                value={(data?.SumCalories / data?.TDEECalories) * 100 || 0}
+                value={((data?.SumCalories / data?.TDEECalories) * 100) > 100 ?
+                  100 : (data?.SumCalories / data?.TDEECalories) * 100 ?
+                        (data?.SumCalories / data?.TDEECalories) * 100 : 0}
                 progressFormatter={(value) => {
                   'worklet';
-                  return `${((value * data?.TDEECalories) / 100)?.toFixed(0)}`;
+                  if (value === 0) {
+                  return (value * data?.SumCalories / 1)?.toFixed(0);               
+                  }
+                  else {
+                    return (value * data?.SumCalories / value)?.toFixed(0);
+                  }
+
                 }}
                 radius={80}
                 activeStrokeColor={"#A77C06"}
@@ -373,56 +397,49 @@ const InsigntScreen = () => {
             subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
           />}
         </View>
-<View>
-  <LineChart
-    data={{
-      labels: ["22/4", "23/4", "24/4", "25/4", "26/4", "27/4", "28/4", "29/4", "30/4","1/5"],
-      datasets: [
-        {
-          data: [
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100,
-            Math.random() * 100
-          ]
-        }
-      ]
-    }}
-    width={widthScreen * 0.9} // from react-native
-    height={220}
-    yAxisLabel="$"
-    yAxisSuffix="k"
-    yAxisInterval={2} // optional, defaults to 1
-    chartConfig={{
-      backgroundColor: "#FFBB00",
-      backgroundGradientFrom: "#FFBB00",
-      backgroundGradientTo: "#ffa726",
-      decimalPlaces: 2, // optional, defaults to 2dp
-      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-      labelColor: (opacity = 2) => `rgba(255, 255, 255, ${opacity})`,
-      style: {
-        borderRadius: 16
-      },
-      propsForDots: {
-        r: "4",
-        strokeWidth: "2",
-        stroke: "#FFBB00"
-      }
-    }}
-    bezier
-    transparent
-    style={{
-      marginVertical: 8,
-      borderRadius: 20,
-      alignSelf: 'center',
-    }}
-  />
+<View style = {styles.containerChart}>
+  <Text style = {styles.textChart}>Your daily calories</Text>
+  <Text style = {styles.textsubChart}>Last 7 days</Text>
+  <View style = {styles.containerProgressChart}>
+      <FlatList
+        data={chartDataProcess || null}
+        renderItem={({ item, index }) => {
+          return (
+            <Circular
+              value={
+                (((item?.calories / data?.TDEECalories) * 100) > 100) ? 100 : ((item?.calories / data?.TDEECalories) * 100) ? ((item.calories / data?.TDEECalories) * 100) : 0
+              }
+              // date={item?.date}
+              progressFormatter={(value) => {
+                'worklet';
+                if (value === 0) {
+                  return (value * item?.calories / 1)?.toFixed(0);               
+                }
+                else {
+                  return (value * item?.calories / value)?.toFixed(0);
+                }
+
+              }}
+              date = {new Date(item?.date).getDate() }
+            />
+          )
+         }}
+        keyExtractor={(item, index) => index.toString()}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        scrollEnabled={false}
+            />
+  </View>
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:widthScreen * 0.04, marginVertical:10}}>
+      <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.GRAYLIGHT }} />
+      <View style={{ flex: 1, height: 1, backgroundColor: colors.GRAYLIGHT }} />
+      <View style={{ flex: 1, height: 1, backgroundColor: colors.GRAYLIGHT }} />
+      <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.GRAYLIGHT}} />
+    </View>
+    <View style = {styles.dateline}>
+        <Text style = {styles.textDate}>{new Date(chartDataProcess?.[0]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
+            <Text style={[styles.textDate, { marginLeft: widthScreen * 0.65 }]}>{new Date(chartDataProcess?.[6]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
+    </View>
 </View>        
 
       <View style ={{flex:1}}>
@@ -450,7 +467,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.BG,
-    paddingBottom:70
   },
   modalContainer: {
     position: 'absolute',
@@ -481,5 +497,41 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: widthScreen * 0.05,
+  },
+  containerChart: {
+    flex:1,
+    marginTop: heightScreen * 0.04,
+    backgroundColor: colors.SILVER,
+    marginHorizontal: heightScreen * 0.02,
+    borderRadius: 20,
+    padding:10,
+  },
+  textChart: {
+    marginLeft: widthScreen * 0.03,
+    color: colors.WHITE,
+    fontSize: 20,
+    fontWeight: 'bold',
+    fontFamily:'Poppins-Light',
+  },
+  textsubChart: {
+    marginLeft: widthScreen * 0.03,
+    color: colors.WHITE,
+    fontSize: 14,
+    fontFamily: 'Poppins-Light',
+    fontWeight: '500',
+  },
+  containerProgressChart: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginTop: heightScreen * 0.01,
+  },
+  dateline: {
+    flexDirection: 'row',
+  },
+  textDate: {
+    color: colors.WHITE,
+    fontSize: 14,
+    fontFamily: 'Poppins-Light',
+    fontWeight: '500',
   }
 })

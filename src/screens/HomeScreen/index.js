@@ -1,5 +1,5 @@
 import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import HeaderGetting from '../../components/HeaderGetting'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -13,10 +13,42 @@ import WorkoutItem from '../../components/WorkoutItem';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Button from '../../components/Button';
 import { getRandomWorkout } from '../../api/Workout';
+import { AuthContext } from '../../context/AuthContext';
+import { getPerson } from '../../api/Person/GetPerson';
 const HomeScreen = () => {
+    const [time, setTime] = useState(new Date().getHours());
+
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+        setTime(new Date().getHours());
+        }, 1000);
+
+        return () => clearInterval(intervalId);
+    }, []);
+
+    const getGreeting = () => {
+        if (time >= 0 && time < 12) {
+        return 'Good morning';
+        } else if (time >= 12 && time < 18) {
+        return 'Good afternoon';
+        } else {
+        return 'Good night';
+        }
+    };
     const date = new Date();
     const data = TipsData;
     const navigation = useNavigation();
+    const [person, setPerson] = useState(null);
+    const authContext = useContext(AuthContext);
+    const getPersonStack = async () => {
+        await getPerson(authContext?.userID)
+            .then(res => {
+                setPerson(res.data);
+            })
+            .catch(err => {
+                console.log('err:', err);
+            })
+    }
     const [recipes, setRecipes] = useState([]);
     const [workouts, setWorkouts] = useState([]);
     const [buttonPress, setButtonPress] = useState('Beginner');
@@ -38,7 +70,6 @@ const HomeScreen = () => {
                 item={item} index={index} />
         )
     }
-
     const getWorkout = async () => { 
         await getRandomWorkout(1, buttonPress)
         .then((response) => { 
@@ -66,6 +97,7 @@ const HomeScreen = () => {
         getWorkout();
      }, [buttonPress]);
     useEffect(() => {
+        getPersonStack();
         getTenRandomRecipes();
     }, []);
     useMemo(() => {
@@ -77,8 +109,8 @@ const HomeScreen = () => {
         <ScrollView >
         <View style={styles.containerHeader}>
             <HeaderGetting
-                  title1={'Hello' + ', ' + 'Gerard!'}
-                title2={'Good morning!'}
+                title1={'Hello' + ', ' + `${person?.FullName}!`}
+                title2={getGreeting()}
                 stylesText={{textAlign: 'left', fontWeight: 'bold', fontSize:16, marginRight: widthScreen * 0.48}}
                 stylesText1={{ marginRight: widthScreen * 0.3, fontSize: 36, marginHorizontal: widthScreen * 0.04}}
             />
@@ -114,10 +146,10 @@ const HomeScreen = () => {
         </View>
         <View style = {styles.containerRecipes}>
         <View style = {styles.containerTitleRecipe}>
-            <Text style = {styles.textTitle}>Recipes</Text>
+            <Text style = {styles.textTitle}>Food Categories</Text>
             <Text 
                 style = {styles.textmore}
-                onPress={() => {}}    
+                onPress={() => {navigation.navigate('FoodCategories')}}      
             >See all</Text>
           </View>
           <View style = {styles.containerSlider}>
@@ -185,10 +217,11 @@ const styles = StyleSheet.create({
         flex:1,
         flexDirection: 'row',
         backgroundColor: colors.BG,
+        justifyContent: 'space-between',
     },
     iconNoti: {
+        marginRight: widthScreen * 0.05,
         marginTop: heightScreen * 0.03,
-        marginRight: widthScreen * 0.1,
     },
     containerBody: {
         flex:1,

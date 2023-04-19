@@ -15,20 +15,20 @@ import IconBottom from '../../assets/fonts';
 import FastImage from 'react-native-fast-image';
 const Tab = createBottomTabNavigator();
 const BottomTabsNav = () => {
-    const [person, setPerson] = useState();
+    const [person, setPerson] = useState(null);
     const authContext = useContext(AuthContext);
-        const getPersonStack = async () => {
-            await getPerson(authContext.userID)
-                .then(res => {
-                    setPerson(res.data);
-                })
-                .catch(err => {
-                    console.log('err:', err);
-                })
-        }
-        useEffect(() => { 
-        getPersonStack();
-        }, []);
+    const getPersonStack = async () => {
+        await getPerson(authContext?.userID)
+            .then(res => {
+                setPerson(res.data);
+            })
+            .catch(err => {
+                console.log('err:', err);
+            })
+    }
+    useEffect(() => { 
+    getPersonStack();
+    }, []);
     
   return (
     <Tab.Navigator 
@@ -44,11 +44,6 @@ const BottomTabsNav = () => {
             }
             
         }}    
-        sceneContainerStyle ={{
-            backgroundColor: colors.BG,
-        }}
-        lazy={true}
-        shifting={true}
     >
         <Tab.Screen 
             name="Home"
