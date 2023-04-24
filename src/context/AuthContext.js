@@ -93,10 +93,11 @@ export const AuthProvider = ({ children }) => {
             });
             setUserID(Number(userID));
             setTokenExpired(tokenExpired);
-            if (TokenExpired < date.toISOString()) {
+            if (new Date(TokenExpired).toISOString() < date.toISOString()) {
                 console.log('Token Expired');
-                Alert.alert('Too Long!', 'Please login again.')
-                logout();
+                Alert.alert('Too Long!', 'Please login again.', [
+                    { text: 'OK', onPress: () => logout() }
+                ])
             }
             
             setLoading(false);

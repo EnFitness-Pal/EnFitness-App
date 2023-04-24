@@ -1,5 +1,5 @@
 import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import CalendarStrip from 'react-native-calendar-strip';
 import { Calendar } from 'react-native-calendars';
@@ -16,6 +16,7 @@ import { getDailyTrackingExercise, getDailyTrackingFood } from '../../api/Tracki
 import { FlatList } from 'react-native';
 import CardEx from '../../components/CardEx';
 import Circular from '../../components/Circular';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const InsigntScreen = () => {
@@ -46,7 +47,6 @@ const InsigntScreen = () => {
     getDataStatisticCalories();
   }, [date])
   
-  console.log('getDataStatisticCalories:', chartDataProcess);
   const onHeaderSelected = (date) => {
     setShowCalendar(true);
   };
@@ -84,7 +84,7 @@ const InsigntScreen = () => {
     setLoading(true)
     await getDailyTrackingExercise(authContext.userID, new Date(date)?.toISOString().split("T").shift())
       .then(res => { 
-        console.log('res:', res.data);
+
         setTrackingEx(res.data);
         setLoading(false);
       })
@@ -93,12 +93,14 @@ const InsigntScreen = () => {
         setTrackingEx(null);
         setLoading(false)
       })
-  }
-  useEffect(() => {
+    }
+
+  useFocusEffect(useCallback(()=> {
     getTotalTrackingStack();
     getTrackingFood();
     getTrackingEx();
-  }, [date]);
+    setTimeout(() => setLoading(false),1000)
+  },[date]))
   const SECTIONS = [
     {
       title: 'First',
@@ -182,7 +184,6 @@ const InsigntScreen = () => {
         dayContainerStyle={{ backgroundColor: colors.BACK, borderRadius: 20, height: 65, width: 40}}
         onDateSelected={(date) => setDate(date)}
         selectedDate={date}
-        // onWeekChanged={(date) => console.log(date)}
         minDate={'2023-01-01'}
         maxDate={'2023-12-31'}
         daySelectionAnimation={{ type: 'background', duration: 30, highlightColor: colors.MAIN }}
@@ -233,37 +234,31 @@ const InsigntScreen = () => {
           </TouchableOpacity>
         </View>
       </Modal>
-      <ScrollView style={{ flex: 1}}>
+    {loading ? <Lottie
+          source={require('../../assets/lottie/97930-loading.json')}
+          autoPlay
+          loop
+          style={{ width: 150, height: 150, alignSelf: 'center', marginTop: heightScreen * 0.07 }}
+        /> :
+      <ScrollView style={{ flex: 1 }}>
       <View style={styles.containerBody}>
           <View style = {{alignItems: 'center', width:widthScreen * 0.25}}>
           <Text style={{ color: colors.GRAYLIGHT, fontSize: 13, fontWeight: 'bold', marginBottom: 10 }}>Eaten</Text>
-          {loading ? <Lottie
-            source={require('../../assets/lottie/97930-loading.json')}
-            autoPlay
-            loop
-            style={{ width: 80, height: 80 }}
-          /> :
-            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.DailyCalories ||  0}</Text>}
+            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.DailyCalories ||  0}</Text>
           <Ionicons name={'ios-fast-food-outline'} size = {20} color={colors.MAIN} />
           </View>
           <View style = {{   width: widthScreen * 0.4,alignSelf: "center", alignItems: 'center', marginHorizontal:10}}>
-            {loading ? <Lottie
-              source={require('../../assets/lottie/8707-loading.json')}
-              autoPlay
-              loop
-              style={{width: 150, height: 150}}
-              /> :
               <CircularProgress
-                value={((data?.SumCalories / data?.TDEECalories) * 100) > 100 ?
-                  100 : (data?.SumCalories / data?.TDEECalories) * 100 ?
-                        (data?.SumCalories / data?.TDEECalories) * 100 : 0}
+                value={((data?.DailyCalories / (data?.SumCalories + data?.DailyCalories)) * 100) > 100 ?
+                  100 : (data?.DailyCalories / (data?.SumCalories + data?.DailyCalories)) * 100 ?
+                        (data?.DailyCalories / (data?.SumCalories + data?.DailyCalories)) * 100 : 0}
                 progressFormatter={(value) => {
                   'worklet';
                   if (value === 0) {
-                  return (value * data?.SumCalories / 1)?.toFixed(0);               
+                  return (value * data?.DailyCalories / 1)?.toFixed(0);               
                   }
                   else {
-                    return (value * data?.SumCalories / value)?.toFixed(0);
+                    return (value * data?.DailyCalories / value)?.toFixed(0);
                   }
 
                 }}
@@ -277,29 +272,17 @@ const InsigntScreen = () => {
                 titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
                 progressValueColor={colors.WHITE}
                 progressValueStyle={{ fontSize: 36, fontWeight: '300' }}
-                subtitle={'/' + (data?.TDEECalories? data?.TDEECalories : "0")}
+                subtitle={'/' + ((data?.SumCalories + data?.DailyCalories)? (data?.SumCalories + data?.DailyCalories) : "0")}
                 subtitleStyle={{ fontSize: 15, fontWeight: 'bold' }}
-              />}       
+              />    
           </View>
         <View style = {{alignItems: 'center',  width:widthScreen * 0.25}}>
           <Text style={{ color: colors.GRAYLIGHT, fontSize: 13, fontWeight: 'bold' }}>Burned</Text>
-          {loading ? <Lottie
-            source={require('../../assets/lottie/97930-loading.json')}
-            autoPlay
-            loop
-            style={{ width: 80, height: 80 }}
-          /> :
-            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.ExerciseCalories ||  0}</Text>}
+            <Text style={{ color: colors.WHITE, fontSize: 36, fontWeight: '300' }}>{data?.ExerciseCalories ||  0}</Text>
           <Fontisto name={'fire'} size = {20} color={'#FE1B17'} />
           </View>
       </View>
-      <View style={[styles.containerTracking, {right: loading?18:0}]}>
-        {loading ? <Lottie
-          source={require('../../assets/lottie/8707-loading.json')}
-          autoPlay
-          loop
-          style={{ width: 100, height: 100}}
-        /> :
+      <View style={[styles.containerTracking, {right: loading ? 18:0}]}>
           <CircularProgress
             value={
               ((data?.DailyCarbs / data?.TDEECarbs) * 100) > 100 ? 100 : (data?.DailyCarbs / data?.TDEECarbs) * 100 ? (data?.DailyCarbs / data?.TDEECarbs) * 100 : 0
@@ -326,13 +309,7 @@ const InsigntScreen = () => {
             subtitle={'/' + (data?.TDEECarbs ? data?.TDEECarbs : "0")}
             subtitleColor={'#rgba(247,0,0,1)'}
             subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
-          />}
-        {loading ? <Lottie
-          source={require('../../assets/lottie/8707-loading.json')}
-          autoPlay
-          loop
-          style={{ width: 100, height: 100}}
-        /> :
+          />
           <CircularProgress
             value={
               ((data?.DailyProtein / data?.TDEEProtein) * 100) > 100 ? 100 : (data?.DailyProtein / data?.TDEEProtein) * 100 ? (data?.DailyProtein / data?.TDEEProtein) * 100 : 0
@@ -361,13 +338,7 @@ const InsigntScreen = () => {
             subtitle={'/' + (data?.TDEEProtein ? data?.TDEEProtein : "0")}
             subtitleColor={'#rgba(74,105,187,1)'}
             subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
-          />}
-        {loading ? <Lottie
-          source={require('../../assets/lottie/8707-loading.json')}
-          autoPlay
-          loop
-          style={{ width: 100, height: 100,  marginRight: 30 }}
-        /> :
+          />
           <CircularProgress
             value={
               (((data?.DailyFat / data?.TDEEFat) * 100) > 100 )? 100 : ((data?.DailyFat / data?.TDEEFat) * 100) ? ((data?.DailyFat / data?.TDEEFat) * 100) : 0
@@ -395,52 +366,52 @@ const InsigntScreen = () => {
             subtitle={'/' + (data?.TDEEFat ? data?.TDEEFat : "0")}
             subtitleColor={'#rgba(252,195,12,1)'}
             subtitleStyle={{ fontSize: 13, fontWeight: 'bold' }}
-          />}
+          />
         </View>
-<View style = {styles.containerChart}>
-  <Text style = {styles.textChart}>Your daily calories</Text>
-  <Text style = {styles.textsubChart}>Last 7 days</Text>
-  <View style = {styles.containerProgressChart}>
-      <FlatList
-        data={chartDataProcess || null}
-        renderItem={({ item, index }) => {
-          return (
-            <Circular
-              value={
-                (((item?.calories / data?.TDEECalories) * 100) > 100) ? 100 : ((item?.calories / data?.TDEECalories) * 100) ? ((item.calories / data?.TDEECalories) * 100) : 0
-              }
-              // date={item?.date}
-              progressFormatter={(value) => {
-                'worklet';
-                if (value === 0) {
-                  return (value * item?.calories / 1)?.toFixed(0);               
-                }
-                else {
-                  return (value * item?.calories / value)?.toFixed(0);
-                }
+          <View style={styles.containerChart}>
+            <Text style={styles.textChart}>Your daily calories</Text>
+            <Text style={styles.textsubChart}>Last 7 days</Text>
+            <View style={styles.containerProgressChart}>
+              <FlatList
+                data={chartDataProcess || null}
+                renderItem={({ item, index }) => {
+                  return (
+                    <Circular
+                      value={
+                        (((item?.calories / (data?.SumCalories + data?.DailyCalories)) * 100) > 100) ? 100 : ((item?.calories / (data?.SumCalories + data?.DailyCalories)) * 100) ? ((item.calories / (data?.SumCalories + data?.DailyCalories)) * 100) : 0
+                      }
+                      // date={item?.date}
+                      progressFormatter={(value) => {
+                        'worklet';
+                        if (value === 0) {
+                          return (value * item?.calories / 1)?.toFixed(0);
+                        }
+                        else {
+                          return (value * item?.calories / value)?.toFixed(0);
+                        }
 
-              }}
-              date = {new Date(item?.date).getDate() }
-            />
-          )
-         }}
-        keyExtractor={(item, index) => index.toString()}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        scrollEnabled={false}
-            />
-  </View>
-    <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:widthScreen * 0.04, marginVertical:10}}>
-      <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.GRAYLIGHT }} />
-      <View style={{ flex: 1, height: 1, backgroundColor: colors.GRAYLIGHT }} />
-      <View style={{ flex: 1, height: 1, backgroundColor: colors.GRAYLIGHT }} />
-      <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.GRAYLIGHT}} />
-    </View>
-    <View style = {styles.dateline}>
-        <Text style = {styles.textDate}>{new Date(chartDataProcess?.[0]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
-            <Text style={[styles.textDate, { marginLeft: widthScreen * 0.65 }]}>{new Date(chartDataProcess?.[6]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
-    </View>
-</View>        
+                      }}
+                      date={new Date(item?.date).getDate()}
+                    />
+                  )
+                }}
+                keyExtractor={(item, index) => index.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                scrollEnabled={false}
+              />
+            </View>
+            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: widthScreen * 0.04, marginVertical: 10 }}>
+              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.GRAYLIGHT }} />
+              <View style={{ flex: 1, height: 1, backgroundColor: colors.GRAYLIGHT }} />
+              <View style={{ flex: 1, height: 1, backgroundColor: colors.GRAYLIGHT }} />
+              <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: colors.GRAYLIGHT }} />
+            </View>
+            <View style={styles.dateline}>
+              <Text style={styles.textDate}>{new Date(chartDataProcess?.[0]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
+              <Text style={[styles.textDate, { marginLeft: widthScreen * 0.65 }]}>{new Date(chartDataProcess?.[6]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
+            </View>
+          </View>    
 
       <View style ={{flex:1}}>
       <Accordion
@@ -456,7 +427,7 @@ const InsigntScreen = () => {
         sectionContainerStyle={{paddingBottom:20}}
       />
       </View>
-      </ScrollView>
+      </ScrollView>}
     </View>
   )
 }

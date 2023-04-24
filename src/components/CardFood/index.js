@@ -3,6 +3,7 @@ import React from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment-timezone';
 
 const CardFood = ({
     styleTitle,
@@ -11,22 +12,15 @@ const CardFood = ({
     styleContainer,
     item
 }) => {
-    const date = new Date(item?.TrackingDate);
-    const options = { 
-        hour: 'numeric', 
-        minute: 'numeric',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        timeZone: 'UTC' 
-    };
-    const formattedDate = date.toLocaleString('en-US', options);
+const dateTimeString = item?.TrackingDate;
+const dateTime = moment.utc(dateTimeString).tz('Asia/Ho_Chi_Minh');
+const convertedDateTimeString = dateTime.format('h:mm A D MMM');
   return (
     <View style = {[styles.container, styleContainer]}>
         <View style = {{flexDirection: 'column'}}>
               <View style={{ flexDirection: 'row', justifyContent:'space-between'}}>
                   <Text numberOfLines={1} style={[styles.title, styleTitle]}>{item?.ProductName}</Text>
-                  <Text style={[styles.titledate]}>{formattedDate}</Text>
+                  <Text style={[styles.titledate]}>{convertedDateTimeString}</Text>
             </View>
             <View style = {{flexDirection: 'row', paddingTop:10, alignSelf:'center'}}>
                 <View style = {{

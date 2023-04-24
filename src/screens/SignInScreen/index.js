@@ -60,9 +60,9 @@ const SignInScreen = () => {
         />
         <Text style = {styles.textforgot} onPress={() =>{navigation.navigate('Forgot')}}>Forgot password?</Text>
         <View style = {styles.button}>
-            <ButtonBack name={'logo-apple'} styleButton={{marginVertical:heightScreen *0.03}}/>
-            <ButtonBack name={'logo-google'} styleButton={{ marginHorizontal: widthScreen * 0.05}}/>
-            <Button title={'Sign in'} onPress={handleLogin} stylesContainer={{width:widthScreen*0.3, marginLeft:widthScreen * 0.2}}/>
+            {/* <ButtonBack name={'logo-apple'} styleButton={{marginVertical:heightScreen *0.03}}/>
+            <ButtonBack name={'logo-google'} styleButton={{ marginHorizontal: widthScreen * 0.05}}/> */}
+            <Button title={'Sign in'} onPress={handleLogin} stylesContainer={{width:widthScreen*0.3, marginLeft:widthScreen * 0.5}}/>
         </View>              
         </ScrollView>
 

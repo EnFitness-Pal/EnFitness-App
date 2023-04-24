@@ -1,9 +1,9 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Keyboard, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useMemo, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import HeaderGetting from '../../components/HeaderGetting'
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { colors, heightScreen, widthScreen } from '../../utility'
+import { colors, heightScreen, regexMin, widthScreen } from '../../utility'
 import TipsData from '../../assets/TipsData';
 import FoodRecipe from '../../components/FoodRecipe';
 import Carousel from 'react-native-snap-carousel';
@@ -15,9 +15,20 @@ import Button from '../../components/Button';
 import { getRandomWorkout } from '../../api/Workout';
 import { AuthContext } from '../../context/AuthContext';
 import { getPerson } from '../../api/Person/GetPerson';
+import Exercise from '../../components/Exercise';
+import Lottie from 'lottie-react-native';
+import Modal from "react-native-modal";
+import Input from '../../components/Input';
+import { getExerciseAdmin, trackingExercise } from '../../api/Tracking';
 const HomeScreen = () => {
     const [time, setTime] = useState(new Date().getHours());
-
+    const [loading, setLoading] = useState(true);
+    const [loadingModal, setLoadingModal] = useState(false);
+    const [isModalVisible, setModalVisible] = useState(false);
+    const [onSuccess, setOnSuccess] = useState(false);
+    const [error, setError] = useState(null);
+    const [minutes, setMinutes] = useState(null);
+    const [dataex, setDataEx] = useState([]);
     useEffect(() => {
         const intervalId = setInterval(() => {
         setTime(new Date().getHours());
@@ -41,18 +52,22 @@ const HomeScreen = () => {
     const [person, setPerson] = useState(null);
     const authContext = useContext(AuthContext);
     const getPersonStack = async () => {
+        setLoading(true);
         await getPerson(authContext?.userID)
             .then(res => {
                 setPerson(res.data);
+                setLoading(false);
             })
             .catch(err => {
                 console.log('err:', err);
+                setLoading(false);
             })
     }
     const [recipes, setRecipes] = useState([]);
     const [workouts, setWorkouts] = useState([]);
     const [buttonPress, setButtonPress] = useState('Beginner');
-    const [loading, setLoading] = useState(true);
+    const [itemEx, setItemEx] = useState(null);
+
     const [tip, setTip] = useState();
     const getRandomTip = (tips) => {
         const randomIndex = Math.floor(Math.random() * tips.length);
@@ -70,13 +85,27 @@ const HomeScreen = () => {
                 item={item} index={index} />
         )
     }
+    const renderExercise = ({ item, index }) => {
+        return (
+            <Exercise
+                loading={loading}
+                onPress={() => {
+                    setItemEx(item);
+                    setModalVisible(!isModalVisible)
+                }} 
+                item={item} index={index} />
+        )
+    }
     const getWorkout = async () => { 
+        setLoading(true);
         await getRandomWorkout(1, buttonPress)
         .then((response) => { 
             setWorkouts(response?.data.Data); 
+            setLoading(false);
         })
         .catch((error) => {
             console.log(error);
+            setLoading(false);
         })
     }
 
@@ -85,20 +114,64 @@ const HomeScreen = () => {
         setLoading(true);
         await getRandomRecipes(10)
             .then((response) => {
+                setRecipes(response.data?.recipes);
                 setLoading(false);
-                setRecipes(response.data.recipes);
             })
             .catch((error) => {
                 setLoading(false);
                 console.log(error);
             });
     }
+
+    const getExercise = async () => { 
+        setLoading(true);
+        await getExerciseAdmin()
+        .then((response) => {
+            setDataEx(response?.data?.Data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            setLoading(false);
+            console.log(error);
+        })
+    }
+
+    const TrackingExercise = async (name,calo, min) => { 
+        setLoadingModal(true);
+        Keyboard.dismiss();
+        if (!regexMin.test(min)) {
+            setError('Please enter a valid minutes');
+            setLoadingModal(false);
+            return;
+        } else if(min === null){
+            setError('Please enter minutes');
+            setLoadingModal(false);
+            return;
+
+        } else {
+        await trackingExercise(authContext?.userID, name, calo, min)
+            .then((response) => {
+                console.log(response);
+                setOnSuccess(true);
+                setLoadingModal(false);
+            }).catch((error) => { 
+                console.log(error);
+                console.log(error.response.data);
+                setLoadingModal(false);
+            });
+    }
+    };
     useEffect(() => {
+        setLoading(true);
         getWorkout();
+        setLoading(false);
      }, [buttonPress]);
     useEffect(() => {
+        setLoading(true);
         getPersonStack();
         getTenRandomRecipes();
+        getExercise();
+        setLoading(false);
     }, []);
     useMemo(() => {
         const randomTip = getRandomTip(data);
@@ -106,18 +179,34 @@ const HomeScreen = () => {
     }, [(date.toUTCString()).slice(0,12)]);
   return (
     <SafeAreaView style={styles.container}>
-        <ScrollView >
+    {loading ? <Lottie
+          source={require('../../assets/lottie/97930-loading.json')}
+          autoPlay
+          loop
+          style={{ width: 150, height: 150, alignSelf: 'center', marginTop: heightScreen * 0.07 }}
+        /> :
+        <ScrollView>
         <View style={styles.containerHeader}>
-            <HeaderGetting
-                title1={'Hello' + ', ' + `${person?.FullName}!`}
-                title2={getGreeting()}
-                stylesText={{textAlign: 'left', fontWeight: 'bold', fontSize:16, marginRight: widthScreen * 0.48}}
-                stylesText1={{ marginRight: widthScreen * 0.3, fontSize: 36, marginHorizontal: widthScreen * 0.04}}
-            />
-            <TouchableOpacity>
-                  <Ionicons name={'ios-notifications'} size={25} color={colors.GRAYLIGHT} style={ styles.iconNoti} />
-            </TouchableOpacity>
+            <View style = {{flexDirection:'row', justifyContent:'space-between', marginHorizontal:widthScreen * 0.03}}>
+                <Text style={{
+                    fontSize: 36,
+                    marginLeft:10, 
+                    color:colors.WHITE,
+                    fontWeight: 'bold',
+                    width: widthScreen * 0.6,
+                }}>{'Hello' + ', ' + `${person?.FullName || ''}!`}
+                </Text>
+                <View style = {{flexDirection:'row', marginTop:heightScreen * 0.012, justifyContent:'space-between'}}>
+                <TouchableOpacity>
+                    <Ionicons name={'ios-notifications'} size={25} color={colors.GRAYLIGHT} style={{marginHorizontal:widthScreen * 0.02}} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=> navigation.navigate('Bookmarks')}>
+                    <Ionicons name={'ios-bookmark'} size={25} color={colors.GRAYLIGHT} />
+                </TouchableOpacity>
+                </View>
+            </View>
         </View>
+        <Text style={{flex:1, fontWeight: 'bold', fontSize:16, color:colors.GRAYLIGHT,  marginLeft: widthScreen * 0.07, marginTop:heightScreen * 0.01}}>{getGreeting()}</Text>
         <View style={styles.containerBody}>
             <View style ={styles.containerTitle}>
                 <Text style={styles.texttitle}>TIPS OF THE DAY</Text>
@@ -201,7 +290,95 @@ const HomeScreen = () => {
             />
             </View>
           </View>
-        </ScrollView>
+          <View style = {styles.containerExercise}>
+            <View style = {styles.containerTitleRecipe}>
+                <Text style = {styles.textTitle}>Exercise Categories</Text>
+                <Text 
+                    style = {styles.textmore}
+                    onPress={() => {navigation.navigate('ExerciseCategories')}}      
+                >See all</Text>
+            </View>
+            <View style = {styles.containerExerciseSlider}>
+                <Carousel
+                data={dataex}
+                renderItem={renderExercise}
+                sliderWidth={widthScreen}
+                itemWidth={widthScreen * 0.88}
+                loop={true}
+                />
+            </View>
+          </View>
+        </ScrollView>}
+        <Modal 
+            animationIn="zoomIn"
+            animationOut="zoomOut"
+            animationInTiming={800}
+            isVisible={isModalVisible}>
+        <View style={styles.modal}>
+            {loadingModal ? <Lottie
+                source={require('../../assets/lottie/97930-loading.json')}
+                autoPlay
+                loop
+                style={{ width: 50, height: 50, alignSelf: 'center' }}
+                  /> :
+            <View>
+            {onSuccess? null:<Button
+                title="X"
+                stylesContainer={{width: widthScreen * 0.1, height: widthScreen * 0.1, backgroundColor: colors.BG, borderRadius: 20, alignSelf: 'flex-end'}}
+                      onPress={() => {
+                          setItemEx(null);
+                          setModalVisible(!isModalVisible);
+                      }}
+                />}
+              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successfull!":"Enter the number of minutes."}</Text>
+              {onSuccess?<Lottie 
+                source={require('../../assets/lottie/91001-success.json')} 
+                autoPlay 
+                loop ={false}
+                duration={900}
+                style={{height: 80, width: 80, marginVertical: heightScreen * 0.01, alignSelf: 'center'}}
+              />
+              :<Input
+                placeholder="Minutes"
+                placeholderTextColor={colors.GRAYLIGHT}
+                keyboardType="numeric"
+                onChangeText={(text) => setMinutes(text)}
+                value={minutes}
+                error={error}
+                onFocus={() => setError('')}
+                stylesContainer={{width: widthScreen * 0.4, alignSelf: 'center'}}
+                  />}
+              {onSuccess?
+              <Button
+                stylesContainer={styles.buttonModalSuccess}
+                title="Continue Tracking"
+                type="solid"
+                buttonStyle={{
+                  backgroundColor: colors.MAIN,
+                  borderRadius: 20
+                }}
+                titleStyle={{fontFamily: 'Poppins-Bold', fontSize: 15, fontWeight: 'bold'}}
+                      onPress={() => {
+                          setItemEx(null);
+                          setOnSuccess(false);
+                          setModalVisible(!isModalVisible);
+
+                      }} />
+              :<Button
+                stylesContainer={styles.buttonModal}
+                title="Tracking"
+                type="solid"
+                buttonStyle={{
+                  backgroundColor: colors.MAIN,
+                  borderRadius: 20
+                }}
+                titleStyle={{fontFamily: 'Poppins-Bold', fontSize: 15, fontWeight: 'bold'}}
+                      onPress={() => {
+                          TrackingExercise(itemEx?.Name, Math.ceil(itemEx?.Calories), minutes);
+                      }} />}
+                
+                </View>}</View>
+        </Modal>
     </SafeAreaView>
   )
 }
@@ -215,13 +392,8 @@ const styles = StyleSheet.create({
     },
     containerHeader: {
         flex:1,
-        flexDirection: 'row',
         backgroundColor: colors.BG,
-        justifyContent: 'space-between',
-    },
-    iconNoti: {
-        marginRight: widthScreen * 0.05,
-        marginTop: heightScreen * 0.03,
+        justifyContent: 'center',
     },
     containerBody: {
         flex:1,
@@ -333,7 +505,6 @@ const styles = StyleSheet.create({
         marginTop: heightScreen * 0.02,
         borderRadius: 20,
         right: widthScreen * 0.035,
-        paddingBottom: heightScreen * 0.1,
     },
     containerFilter: {
         height: heightScreen * 0.035,
@@ -344,5 +515,53 @@ const styles = StyleSheet.create({
         marginBottom: heightScreen * 0.02,
         marginLeft: heightScreen * 0.03,
         backgroundColor: colors.GRAYDARK,
-    }
+    },
+    containerExercise: {
+        flex: 1,
+        justifyContent: 'space-between',
+    },
+    containerExerciseSlider: {
+        flex: 1,
+        marginTop: heightScreen * 0.02,
+        paddingBottom: heightScreen * 0.02,
+    },
+      modal: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.BG,
+    width: widthScreen * 0.7,
+    height: heightScreen * 0.3,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  textTracking: {
+    marginTop:heightScreen * 0.02,
+    fontSize: 16,
+    fontFamily: 'Poppins-Bold',
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    color: colors.MAIN,
+  },
+  buttonModal: {
+    width: widthScreen * 0.3,
+    height: heightScreen * 0.05,
+    backgroundColor: colors.MAIN,
+    borderRadius: 20,
+    marginVertical: heightScreen * 0.03,
+  },
+  buttonModalSuccess: {
+    width: widthScreen * 0.5,
+    height: heightScreen * 0.05,
+    backgroundColor: colors.MAIN,
+    borderRadius: 20,
+    marginVertical: heightScreen * 0.03, 
+  }
 })

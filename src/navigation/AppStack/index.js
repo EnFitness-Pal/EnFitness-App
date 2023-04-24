@@ -6,6 +6,8 @@ import WorkoutDetail from '../../screens/WorkoutDetail';
 import BottomTabsNav from '../BottomTabsNav';
 import WorkoutCategories from '../../screens/WorkoutCategories';
 import FoodCategories from '../../screens/FoodCategories';
+import Bookmarks from '../../screens/Bookmarks';
+import ExerciseCategories from '../../screens/ExerciseCategories';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -25,6 +27,12 @@ const AppStack = () => {
             headerShown: false,
       }} />
       <Stack.Screen name="FoodCategories" component={FoodCategories} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="ExerciseCategories" component={ExerciseCategories} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="Bookmarks" component={Bookmarks} options={{
             headerShown: false,
       }} />
       </Stack.Navigator>

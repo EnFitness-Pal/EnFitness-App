@@ -69,7 +69,7 @@ const RecipeDetails = ({ route }) => {
     setLoading(true);
     await addTrackingRecipe(
       authContext?.userID,
-      meal || null,
+      Number(meal),
       route.params.item?.title,
       data?.find(nutrient => nutrient.name === "Calories")?.amount.toFixed(0),
       data?.find(nutrient => nutrient.name === "Carbohydrates")?.amount.toFixed(0),
@@ -82,7 +82,7 @@ const RecipeDetails = ({ route }) => {
     })
       .catch((err) => { 
         setLoading(false);
-        console.log(err)
+        console.log(err.response.data)
       })
 
   }
@@ -116,7 +116,6 @@ const RecipeDetails = ({ route }) => {
           style={{ width: widthScreen * 0.12 }}
           size={'sm'}
           onPress={() => TrackingFood()}
-          // onPress={() => setModalVisible(!isModalVisible)}
         />
         <ButtonBack
           name='heart-outline'

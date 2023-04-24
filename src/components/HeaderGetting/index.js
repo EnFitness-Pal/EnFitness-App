@@ -28,6 +28,5 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textAlign: 'center',
         color: colors.TEXTGRAY,
-        paddingHorizontal: widthScreen * 0.05
     },
 })

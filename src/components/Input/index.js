@@ -20,6 +20,8 @@ const Input = ({
     onChangeValue,
     onEndEditing,
     placeholderTextColor,
+    keyboardType,
+    placeholderStyle,
     value,
     editable,
     icon, 
@@ -87,6 +89,7 @@ const Input = ({
               : colors.GRAYLIGHT}]}
             placeholder={ placeholder }
             placeholderTextColor={placeholderTextColor}
+            keyboardType={keyboardType}
             onChangeText={ onChangeText }
             autoCorrect={false}
             onFocus={() => {

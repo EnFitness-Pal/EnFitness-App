@@ -17,6 +17,7 @@ const FoodCategories = () => {
     const [loadingitem, setLoadingItem] = useState(false);
     let [search, setSearch] = useState("");
     let [itemSearch, setItemSearch] = useState([]);
+    let [searchItem, setSearchItem] = useState([]);
     const getTenRandomRecipes = async () => {
         setRefreshControl(true);
         setLoading(true);
@@ -49,7 +50,7 @@ const FoodCategories = () => {
         setLoading(false);
         await getRecipeById(id)
             .then((response) => {
-                setData(response?.data);
+                setSearchItem(response?.data);
                 setLoading(false);
             })
             .catch((error) => { 
@@ -150,7 +151,7 @@ const FoodCategories = () => {
     <View style={styles.containerBody}>
         <FlatList
             numColumns={2}
-            data={data}
+            data={searchItem? searchItem.concat(data) : data}
             renderItem={renderItem}
             keyExtractor={(item, index) => index.toString()}
             columnWrapperStyle={{justifyContent: 'space-between'}}

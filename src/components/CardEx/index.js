@@ -3,7 +3,7 @@ import React from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-
+import moment from 'moment-timezone';
 const CardEx = ({
     styleTitle,
     styleIcon,
@@ -11,22 +11,15 @@ const CardEx = ({
     styleContainer,
     item
 }) => {
-    const date = new Date(item?.TrackingDate);
-    const options = { 
-        hour: 'numeric', 
-        minute: 'numeric',
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-        timeZone: 'UTC' 
-    };
-    const formattedDate = date.toLocaleString('en-US', options);
+const dateTimeString = item?.TrackingDate;
+const dateTime = moment.utc(dateTimeString).tz('Asia/Ho_Chi_Minh');
+const convertedDateTimeString = dateTime.format('h:mm A D MMM');
   return (
     <View style = {[styles.container, styleContainer]}>
         <View style = {{flexDirection: 'column'}}>
               <View style={{ flexDirection: 'row', justifyContent:'space-between', marginHorizontal:widthScreen * 0.05}}>
                   <Text style={[styles.title, styleTitle]}>{item?.ExerciseName}</Text>
-                  <Text style={[styles.titledate]}>{formattedDate}</Text>
+                  <Text style={[styles.titledate]}>{convertedDateTimeString}</Text>
                 </View>
             <View style = {{flexDirection: 'row', paddingTop:10, justifyContent:'space-between', marginHorizontal:widthScreen * 0.15}}>
                 <View style = {{
