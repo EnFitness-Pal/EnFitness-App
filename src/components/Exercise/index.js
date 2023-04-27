@@ -1,10 +1,68 @@
 import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import FastImage from 'react-native-fast-image'
 import { Button } from '@rneui/themed'
+import { AuthContext } from '../../context/AuthContext'
+import { addExerciseFav, deleteUserFav, getAllExerciseFav } from '../../api/Favorites'
 
-const Exercise = ({item, index, onPress, loading}) => {
+const Exercise = ({ item, index, onPress}) => {
+    
+    const [isCheck, setIsCheck] = useState(false);
+    const [favID, setFavID] = useState(null);
+    const authContext = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
+    const getExerciseFav = async () => { 
+        setLoading(true);
+        await getAllExerciseFav(authContext?.userID)
+        .then((res) => {
+            res.data?.Exercise.forEach(element => {
+                if(element?.Id === item?.Id) {
+                    setIsCheck(true);
+                    setFavID(element?.UserFavoritesId);
+                    setLoading(false);
+                }
+                setLoading(false);
+            });
+            setLoading(false);
+        })
+        .catch((err) => { 
+            console.log(err.response.data);
+            setLoading(false);
+        })
+    }
+
+    const handleAddFav = async () => { 
+        setLoading(true);
+        await addExerciseFav(authContext?.userID, item?.Id)
+        .then((res) => {
+            setIsCheck(true);
+            setLoading(false);
+        })
+        .catch((err) => { 
+            console.log(err.response.data);
+            setLoading(false);
+        });
+    }
+
+    const handleRemoveFav = async () => { 
+        setLoading(true);
+        await deleteUserFav(favID)
+        .then((res) => {
+            setIsCheck(false);
+            setLoading(false);
+        })
+        .catch((err) => { 
+            console.log(err.response.data);
+            setLoading(false);
+        });
+    }
+
+    useEffect(() => {
+        getExerciseFav();
+     }, [isCheck])
+
+
   return (
     <View style = {styles.container}>
         <View style = {styles.containerImage}>
@@ -26,9 +84,10 @@ const Exercise = ({item, index, onPress, loading}) => {
                 type = 'solid'
                 buttonStyle = {{
                     backgroundColor: colors.MAIN,
-                    borderRadius: 30,
-                    height: widthScreen * 0.15,
-                    width: widthScreen * 0.15,
+                    borderRadius: 10,
+                    height: widthScreen * 0.1,
+                    width: widthScreen * 0.1,
+                    marginVertical: heightScreen * 0.01,
                 }}
                 icon={{
                     name: 'add',
@@ -36,15 +95,51 @@ const Exercise = ({item, index, onPress, loading}) => {
                     color: colors.WHITE,
                     type: 'material',
                 }}
+                iconContainerStyle={{
+                    height: widthScreen * 0.1,
+                    width: widthScreen * 0.1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
                 onPress={onPress}
                 loadingProps={{ size: "small", color: colors.BG }}
+              />
+            <Button
+                type = 'solid'
+                buttonStyle = {{
+                    backgroundColor: colors.MAIN,
+                    borderRadius: 10,
+                    height: widthScreen * 0.1,
+                    width: widthScreen * 0.1,
+                    marginHorizontal: heightScreen * 0.01,
+                }}
+                icon={{
+                    name: isCheck? 'ios-heart': 'heart-outline',
+                    size: 30,
+                    color: colors.WHITE,
+                    type: 'ionicon',
+                }}
+                iconContainerStyle={{
+                    height: widthScreen * 0.1,
+                    width: widthScreen * 0.1,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                }}
+                loading={loading}
+                  onPress={() => {
+                    if (isCheck) {
+                        handleRemoveFav();
+                    } else {
+                        handleAddFav();
+                    }
+                }}
               />
         </View>
     </View>
   )
 }
 
-export default Exercise
+export default React.memo(Exercise)
 
 const styles = StyleSheet.create({
     container: {
@@ -105,6 +200,7 @@ const styles = StyleSheet.create({
         color: colors.WHITE,
     },
     containerButton: {
+        flexDirection: 'row',
         height: heightScreen * 0.05,
         width: widthScreen * 0.2,
         justifyContent: 'center',

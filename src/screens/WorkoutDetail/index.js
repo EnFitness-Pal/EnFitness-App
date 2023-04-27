@@ -1,5 +1,5 @@
 import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import ButtonBack from '../../components/ButtonBack'
 import { colors, heightScreen, widthScreen } from '../../utility'
@@ -10,8 +10,65 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Accordion from 'react-native-collapsible/Accordion';
 import CardInfo from '../../components/CardInfo';
+import { addWorkoutFav, deleteUserFav, getAllWorkoutFav } from '../../api/Favorites'
+import { AuthContext } from '../../context/AuthContext'
+import { useFocusEffect } from '@react-navigation/native'
+import { Button } from '@rneui/themed'
 const WorkoutDetail = ({ route, navigation }) => {
-    const [activeSections, setActiveSections] = useState([]);
+  const [activeSections, setActiveSections] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [favID, setFavID] = useState(null);
+  const authContext = useContext(AuthContext);
+  const [checkFav, setCheckFav] = useState(false);
+  const getWorkoutFav = async () => {
+    setLoading(true)
+    await getAllWorkoutFav(authContext?.userID,'')
+      .then((res) => {
+        res.data?.Workout.map((result) => {
+          if (result?.Id === route.params?.item?.Id) {
+            setCheckFav(true)
+            setFavID(result?.UserFavoritesId)
+            setLoading(false)
+          }
+        setLoading(false)
+        })
+      })
+      .catch((err) => { 
+        console.log(err);
+        setLoading(false)
+      })
+  };
+  const handleAddFav = async () => { 
+    setLoading(true)
+    await addWorkoutFav(authContext?.userID, route.params?.item?.Id)
+      .then((res) => {
+        setCheckFav(true)
+        setLoading(false)
+      })
+      .catch((err) => { 
+        console.log(err.response.data);
+        setLoading(false)
+      })
+  }
+
+  const handleRemoveFav = async () => { 
+    setLoading(true)
+    await deleteUserFav(favID)
+      .then((res) => {
+        setCheckFav(false);
+        setLoading(false)
+      })
+      .catch((err) => { 
+        console.log(err.response.data);
+        setLoading(false);
+      })
+  }
+
+  useFocusEffect(useCallback(()=> {
+    getWorkoutFav();
+    setTimeout(() => setLoading(false),1000)
+  },[checkFav]))
+  
     const renderVideo = ({ item, index }) => { 
         return (
             <Video
@@ -119,9 +176,34 @@ const WorkoutDetail = ({ route, navigation }) => {
           onPress={() => navigation.goBack()}
           name = 'chevron-back'
         />
-        <ButtonBack
-          name='heart-outline'
-        />
+        <Button
+          name = 'share-outline'
+          buttonStyle = {{
+            backgroundColor: colors.BACK, 
+            height: heightScreen * 0.0554,
+            width: widthScreen * 0.12,
+            borderRadius: 30,
+          }}
+          icon={{
+            name: checkFav? "ios-heart":'heart-outline',
+            type: 'ionicon',
+            color: colors.WHITE,
+          }}
+          iconContainerStyle={{
+            height: heightScreen * 0.0554,
+            width: widthScreen * 0.12,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+          onPress={() => {
+              if (checkFav) {
+                handleRemoveFav()
+              } else {
+                handleAddFav()
+              };
+          }}
+          loading={loading}
+          />
 
         </View>
         </SafeAreaView>

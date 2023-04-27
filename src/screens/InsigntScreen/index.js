@@ -147,7 +147,10 @@ const InsigntScreen = () => {
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               style = {{alignSelf: 'center', paddingBottom: heightScreen * 0.05}}
-            
+              maxToRenderPerBatch={5}
+              initialNumToRender={5}
+              updateCellsBatchingPeriod={5}
+              
             />
         )
       }
@@ -161,7 +164,9 @@ const InsigntScreen = () => {
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
               style = {{alignSelf: 'center', paddingBottom: heightScreen * 0.08}}
-            
+              maxToRenderPerBatch={5}
+              initialNumToRender={5}
+              updateCellsBatchingPeriod={5}
             />
         )    
       }    
@@ -380,7 +385,6 @@ const InsigntScreen = () => {
                       value={
                         (((item?.calories / (data?.SumCalories + data?.DailyCalories)) * 100) > 100) ? 100 : ((item?.calories / (data?.SumCalories + data?.DailyCalories)) * 100) ? ((item.calories / (data?.SumCalories + data?.DailyCalories)) * 100) : 0
                       }
-                      // date={item?.date}
                       progressFormatter={(value) => {
                         'worklet';
                         if (value === 0) {
@@ -399,6 +403,9 @@ const InsigntScreen = () => {
                 horizontal
                 showsHorizontalScrollIndicator={false}
                 scrollEnabled={false}
+                initialNumToRender={7}
+                maxToRenderPerBatch={7}
+                updateCellsBatchingPeriod={7}
               />
             </View>
             <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal: widthScreen * 0.04, marginVertical: 10 }}>

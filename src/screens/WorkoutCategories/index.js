@@ -187,6 +187,11 @@ return (
             ListFooterComponent={renderFooter}
             onEndReached={search === ''? handleLoadMore : handleLoadMoreSearch}
             onEndReachedThreshold={0.1}
+            maxToRenderPerBatch={10}
+            initialNumToRender={10}
+            removeClippedSubviews={true}
+            windowSize={10}
+            updateCellsBatchingPeriod={10}
             
         />
     </View>

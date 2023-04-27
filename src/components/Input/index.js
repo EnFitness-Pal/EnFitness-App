@@ -59,7 +59,7 @@ const Input = ({
                 style={ {alignItems:"center"} }
                 onPress= {() => setState(!state)}>
                     <Ionicons
-                    name = {state ? "eye" : "eye-off"}
+                    name = {state ? "eye-off" : "eye"}
                     size = {25}
                     color = {colors.GRAYLIGHT}
                     ></Ionicons>

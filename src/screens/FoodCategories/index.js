@@ -167,6 +167,9 @@ const FoodCategories = () => {
                     tintColor={colors.MAIN}
                 />
             }
+            maxToRenderPerBatch={10}
+            windowSize={10}
+            updateCellsBatchingPeriod={10}
             
         />
     </View>

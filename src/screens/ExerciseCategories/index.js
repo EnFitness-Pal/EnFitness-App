@@ -42,8 +42,6 @@ const ExerciseCategories = ({ navigation }) => {
              });
   }
   useEffect(() => { 
-    console.log('effect');
-    console.log('effect page number', pageNumber);
     getExercises();
     return () => { }
   }, [search]);
@@ -169,6 +167,8 @@ const ExerciseCategories = ({ navigation }) => {
             keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator={false}
             ListFooterComponent={renderFooter}
+            maxToRenderPerBatch={10}
+            updateCellsBatchingPeriod={10}
           />
         </View>
           <Modal 

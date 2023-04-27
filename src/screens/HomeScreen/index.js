@@ -1,5 +1,5 @@
-import { Keyboard, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import {Keyboard, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import HeaderGetting from '../../components/HeaderGetting'
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -8,7 +8,7 @@ import TipsData from '../../assets/TipsData';
 import FoodRecipe from '../../components/FoodRecipe';
 import Carousel from 'react-native-snap-carousel';
 import { getRandomRecipes } from '../../api/Recipes';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import WorkoutItem from '../../components/WorkoutItem';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import Button from '../../components/Button';
@@ -88,7 +88,6 @@ const HomeScreen = () => {
     const renderExercise = ({ item, index }) => {
         return (
             <Exercise
-                loading={loading}
                 onPress={() => {
                     setItemEx(item);
                     setModalVisible(!isModalVisible)
@@ -127,7 +126,7 @@ const HomeScreen = () => {
         setLoading(true);
         await getExerciseAdmin()
         .then((response) => {
-            setDataEx(response?.data?.Data);
+            setDataEx(response.data?.Data);
             setLoading(false);
         })
         .catch((error) => {
@@ -151,7 +150,6 @@ const HomeScreen = () => {
         } else {
         await trackingExercise(authContext?.userID, name, calo, min)
             .then((response) => {
-                console.log(response);
                 setOnSuccess(true);
                 setLoadingModal(false);
             }).catch((error) => { 
@@ -169,8 +167,8 @@ const HomeScreen = () => {
     useEffect(() => {
         setLoading(true);
         getPersonStack();
-        getTenRandomRecipes();
         getExercise();
+        getTenRandomRecipes();
         setLoading(false);
     }, []);
     useMemo(() => {
@@ -185,7 +183,9 @@ const HomeScreen = () => {
           loop
           style={{ width: 150, height: 150, alignSelf: 'center', marginTop: heightScreen * 0.07 }}
         /> :
-        <ScrollView>
+        <ScrollView
+        
+              >
         <View style={styles.containerHeader}>
             <View style = {{flexDirection:'row', justifyContent:'space-between', marginHorizontal:widthScreen * 0.03}}>
                 <Text style={{
@@ -235,7 +235,7 @@ const HomeScreen = () => {
         </View>
         <View style = {styles.containerRecipes}>
         <View style = {styles.containerTitleRecipe}>
-            <Text style = {styles.textTitle}>Food Categories</Text>
+            <Text style = {styles.textTitle}>Dishes</Text>
             <Text 
                 style = {styles.textmore}
                 onPress={() => {navigation.navigate('FoodCategories')}}      
@@ -253,7 +253,7 @@ const HomeScreen = () => {
           </View>
         <View style = {styles.containerWorkout}>
         <View style = {styles.containerTitleWorkout}>
-            <Text style = {styles.textTitle}>Workout Categories</Text>
+            <Text style = {styles.textTitle}>Workout</Text>
             <Text 
                 style = {styles.textmore}
                 onPress={() => {navigation.navigate('WorkoutCategories')}}    
@@ -292,14 +292,14 @@ const HomeScreen = () => {
           </View>
           <View style = {styles.containerExercise}>
             <View style = {styles.containerTitleRecipe}>
-                <Text style = {styles.textTitle}>Exercise Categories</Text>
+                <Text style = {styles.textTitle}>Exercise</Text>
                 <Text 
                     style = {styles.textmore}
                     onPress={() => {navigation.navigate('ExerciseCategories')}}      
                 >See all</Text>
             </View>
             <View style = {styles.containerExerciseSlider}>
-                <Carousel
+            <Carousel
                 data={dataex}
                 renderItem={renderExercise}
                 sliderWidth={widthScreen}
@@ -525,7 +525,7 @@ const styles = StyleSheet.create({
         marginTop: heightScreen * 0.02,
         paddingBottom: heightScreen * 0.02,
     },
-      modal: {
+    modal: {
     alignSelf: 'center',
     alignItems: 'center',
     justifyContent: 'center',

@@ -1,11 +1,12 @@
 import {StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import { useNavigation } from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext';
+import { getAllWorkoutFav } from '../../api/Favorites';
 const WorkoutItem = ({ item }) => {
   const navigation = useNavigation();
-
   return (
     <TouchableOpacity
       onPress = {() => navigation.push('WorkoutDetail' , {
