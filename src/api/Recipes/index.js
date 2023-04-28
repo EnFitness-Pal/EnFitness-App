@@ -14,6 +14,10 @@ export function getRecipesBySearch(search) {
     return axios.get(`${RecipeURL}/recipes/autocomplete?query=${search}&apiKey=${APIKeyRecipe}`);
 }
 
+export function getRecipesByIDs(ids) {
+    return axios.get(`${RecipeURL}/recipes/informationBulk?ids=${ids}&includeNutrition=true&apiKey=${APIKeyRecipe}`);
+}
+
 export function addTrackingRecipe(id, meal, name, calories, carbs, fat, protein) {
     return axios.post(`${baseURL}/api/tracking-calories/${id}`,
         {

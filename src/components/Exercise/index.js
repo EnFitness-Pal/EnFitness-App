@@ -5,63 +5,52 @@ import FastImage from 'react-native-fast-image'
 import { Button } from '@rneui/themed'
 import { AuthContext } from '../../context/AuthContext'
 import { addExerciseFav, deleteUserFav, getAllExerciseFav } from '../../api/Favorites'
+import { addFav, deleteFav } from '../../redux/action/favorites/favRequests'
+import { useDispatch, useSelector } from 'react-redux'
 
 const Exercise = ({ item, index, onPress}) => {
-    
     const [isCheck, setIsCheck] = useState(false);
     const [favID, setFavID] = useState(null);
     const authContext = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
-    const getExerciseFav = async () => { 
-        setLoading(true);
-        await getAllExerciseFav(authContext?.userID)
-        .then((res) => {
-            res.data?.Exercise.forEach(element => {
-                if(element?.Id === item?.Id) {
-                    setIsCheck(true);
-                    setFavID(element?.UserFavoritesId);
-                    setLoading(false);
-                }
-                setLoading(false);
-            });
-            setLoading(false);
-        })
-        .catch((err) => { 
-            console.log(err.response.data);
-            setLoading(false);
-        })
-    }
+    const dispatch = useDispatch();
+    const favorites = useSelector((state) => state.favorite.favorite);
+    const checkFav = () => { 
+        favorites.forEach(element => {
+            if(element?.Id === item?.Id) {
+                setIsCheck(true);
+                setFavID(element?.UserFavoritesId);
+            }
+        });
+    }    
 
     const handleAddFav = async () => { 
         setLoading(true);
-        await addExerciseFav(authContext?.userID, item?.Id)
+        await addFav(dispatch, authContext?.userID, item?.Id)
         .then((res) => {
             setIsCheck(true);
             setLoading(false);
         })
-        .catch((err) => { 
-            console.log(err.response.data);
+        .catch((err) => {
+            console.log(err);
             setLoading(false);
         });
     }
 
-    const handleRemoveFav = async () => { 
+    const handleRemoveFav = async () => {
         setLoading(true);
-        await deleteUserFav(favID)
-        .then((res) => {
+        await deleteFav(dispatch,favID)
+        .then(async (res) => {
             setIsCheck(false);
             setLoading(false);
         })
-        .catch((err) => { 
-            console.log(err.response.data);
+        .catch((err) => {
             setLoading(false);
         });
     }
-
     useEffect(() => {
-        getExerciseFav();
+        checkFav();
      }, [isCheck])
-
 
   return (
     <View style = {styles.container}>
@@ -128,9 +117,9 @@ const Exercise = ({ item, index, onPress}) => {
                 loading={loading}
                   onPress={() => {
                     if (isCheck) {
-                        handleRemoveFav();
+                        handleRemoveFav? handleRemoveFav(favID): null;
                     } else {
-                        handleAddFav();
+                        handleAddFav ? handleAddFav(item?.Id):null;
                     }
                 }}
               />

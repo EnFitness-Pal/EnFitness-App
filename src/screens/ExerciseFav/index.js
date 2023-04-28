@@ -1,39 +1,39 @@
 import { FlatList, Keyboard, StyleSheet, Text, View } from 'react-native'
-import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, regexMin, widthScreen } from '../../utility'
 import { AuthContext } from '../../context/AuthContext';
-import { useFocusEffect } from '@react-navigation/native';
-import { getAllExerciseFav } from '../../api/Favorites';
 import Exercise from '../../components/Exercise';
 import AnimatedLottieView from 'lottie-react-native';
 import Modal from 'react-native-modal';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
 import { trackingExercise } from '../../api/Tracking';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllFav } from '../../redux/action/favorites/favRequests';
 
 const ExerciseFav = ({navigation}) => {
     const authContext = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
-    const [data, setData] = useState([]);
     const [itemEx, setItemEx] = useState(null);
     const [loadingModal, setLoadingModal] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [onSuccess, setOnSuccess] = useState(false);
     const [error, setError] = useState(null);
-    const [minutes, setMinutes] = useState(null);    
-
+    const [minutes, setMinutes] = useState(null);  
+    const dispatch = useDispatch();
+    const data = useSelector((state) => state.favorite.favorite);
     const getExerciseFav = async () => {
         setLoading(true);
-        await getAllExerciseFav(authContext?.userID)
-          .then((res) => {
-            setData(res.data?.Exercise);
+        await getAllFav(dispatch, authContext?.userID)
+        .then((res) => {
             setLoading(false);
         })
-        .catch((err) => { 
-            console.log(err.response.data);
+        .catch((err) => {
+            console.log(err);
             setLoading(false);
         })
     }
+  
     const TrackingExercise = async (name,calo, min) => { 
         setLoadingModal(true);
         Keyboard.dismiss();
@@ -58,13 +58,9 @@ const ExerciseFav = ({navigation}) => {
             });
     }
     };  
-  
-    useFocusEffect(
-      useCallback(() => {
-          getExerciseFav();
-          setTimeout(() => setLoading(false),1000)
-      }, [navigation]));
-  
+    useEffect(() => {
+      getExerciseFav();
+    }, []);
   return (
     <View style={styles.container}>
       {loading?

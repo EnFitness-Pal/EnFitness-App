@@ -20,6 +20,7 @@ import Lottie from 'lottie-react-native';
 import Modal from "react-native-modal";
 import Input from '../../components/Input';
 import { getExerciseAdmin, trackingExercise } from '../../api/Tracking';
+import { useSelector } from 'react-redux';
 const HomeScreen = () => {
     const [time, setTime] = useState(new Date().getHours());
     const [loading, setLoading] = useState(true);
@@ -29,6 +30,7 @@ const HomeScreen = () => {
     const [error, setError] = useState(null);
     const [minutes, setMinutes] = useState(null);
     const [dataex, setDataEx] = useState([]);
+    const isFetching = useSelector((state) => state.favorite.isFetching);
     useEffect(() => {
         const intervalId = setInterval(() => {
         setTime(new Date().getHours());
@@ -51,6 +53,7 @@ const HomeScreen = () => {
     const navigation = useNavigation();
     const [person, setPerson] = useState(null);
     const authContext = useContext(AuthContext);
+    const [isCheck, setIsCheck] = useState(false); 
     const getPersonStack = async () => {
         setLoading(true);
         await getPerson(authContext?.userID)
@@ -67,7 +70,7 @@ const HomeScreen = () => {
     const [workouts, setWorkouts] = useState([]);
     const [buttonPress, setButtonPress] = useState('Beginner');
     const [itemEx, setItemEx] = useState(null);
-
+    const [loadingEx, setLoadingEx] = useState(false);
     const [tip, setTip] = useState();
     const getRandomTip = (tips) => {
         const randomIndex = Math.floor(Math.random() * tips.length);
@@ -92,7 +95,9 @@ const HomeScreen = () => {
                     setItemEx(item);
                     setModalVisible(!isModalVisible)
                 }} 
-                item={item} index={index} />
+                item={item} index={index}
+        
+            />
         )
     }
     const getWorkout = async () => { 
@@ -123,15 +128,15 @@ const HomeScreen = () => {
     }
 
     const getExercise = async () => { 
-        setLoading(true);
+        setLoadingEx(true);
         await getExerciseAdmin()
         .then((response) => {
             setDataEx(response.data?.Data);
-            setLoading(false);
+            setLoadingEx(false);
         })
         .catch((error) => {
-            setLoading(false);
             console.log(error);
+            setLoadingEx(false);
         })
     }
 
@@ -167,10 +172,14 @@ const HomeScreen = () => {
     useEffect(() => {
         setLoading(true);
         getPersonStack();
-        getExercise();
         getTenRandomRecipes();
         setLoading(false);
     }, []);
+    useFocusEffect(
+      useCallback(() => {
+        getExercise();
+        setTimeout(() => setLoadingEx(false),1000)
+      }, [navigation]));
     useMemo(() => {
         const randomTip = getRandomTip(data);
         setTip(randomTip);
@@ -299,13 +308,18 @@ const HomeScreen = () => {
                 >See all</Text>
             </View>
             <View style = {styles.containerExerciseSlider}>
-            <Carousel
+            {loadingEx ? <Lottie
+                source={require('../../assets/lottie/97930-loading.json')}
+                autoPlay
+                loop
+                style={{ width: 50, height: 50, alignSelf: 'center' }}
+                  /> :<Carousel
                 data={dataex}
                 renderItem={renderExercise}
                 sliderWidth={widthScreen}
                 itemWidth={widthScreen * 0.88}
                 loop={true}
-                />
+                />}
             </View>
           </View>
         </ScrollView>}

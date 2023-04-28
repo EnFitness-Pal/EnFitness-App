@@ -23,15 +23,55 @@ import Nutritions from '../../components/Nutritions';
 import { Button } from '@rneui/themed';
 import { addTrackingRecipe, getRecipeById } from '../../api/Recipes';
 import { AuthContext } from '../../context/AuthContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { addFoodFav, deleteFoodFav, getAllFoodFav } from '../../redux/action/favorites/foodRequests';
 
 const Tab = createMaterialTopTabNavigator();
 const RecipeDetails = ({ route }) => {
+  const [isCheck, setIsCheck] = useState(false);
+  const [favID, setFavID] = useState(null);
   const authContext = useContext(AuthContext);
   const [loading, setLoading] = useState(false);
   const [meal, setMeal] = useState(null);
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [time, setTime] = useState(new Date().getHours());
+  const dispatch = useDispatch();
+  const isFetching = useSelector((state) => state.food.isFetching);
+  const getAllFood = async () => { 
+    await getAllFoodFav(dispatch, authContext?.userID)
+  }
+  const recipesFav = useSelector((state) => state.food.food);
+  const checkFav = () => { 
+    recipesFav.forEach(element => {
+        if(element?.RecipeId === route.params.item?.id) {
+            setIsCheck(true);
+            setFavID(element?.UserFavoritesId);
+        }
+    });
+  }
+
+
+  const handleAddFav = async () => { 
+        await addFoodFav(dispatch, authContext?.userID, route.params?.item?.id)
+        .then((res) => {
+            setIsCheck(true);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
+  const handleRemoveFav = async () => {
+        await deleteFoodFav(dispatch,favID, route.params?.item?.id)
+        .then(async (res) => {
+            setIsCheck(false);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+    }
+
 
   useEffect(() => {
     const intervalId = setInterval(() => {
@@ -51,6 +91,8 @@ const RecipeDetails = ({ route }) => {
   };
   useEffect(() => {
     getGreeting();
+    getAllFood();
+    checkFav();
    }, [])
   const [data, setData] = useState([])
   const getNutritions = async () => { 
@@ -86,6 +128,8 @@ const RecipeDetails = ({ route }) => {
       })
 
   }
+
+
   return (
     <SafeAreaView style={styles.container}>
       <View style= {styles.statusbar}>
@@ -117,9 +161,29 @@ const RecipeDetails = ({ route }) => {
           size={'sm'}
           onPress={() => TrackingFood()}
         />
-        <ButtonBack
-          name='heart-outline'
-          styleButton = {{marginLeft:heightScreen * 0.01}}
+        <Button
+          loading={isFetching}
+          icon={{
+              name: isCheck ? 'heart' : 'heart-outline',
+              size: 28,
+              color: 'white',
+              type: 'ionicon'
+          }}
+          radius={100}
+          iconContainerStyle={{alignSelf: 'center', justifyContent: 'center', alignItems: 'center', width: widthScreen * 0.12, height: heightScreen * 0.0554}}
+          loadingProps={{
+            size: 'small',
+            color: colors.MAIN,
+          }}
+          buttonStyle={{
+            backgroundColor: colors.BACK,
+            borderColor: 'transparent',
+            borderWidth: 0,
+            height: heightScreen * 0.0554,
+          }}
+          style={{ width: widthScreen * 0.12, marginLeft: widthScreen * 0.02 }}
+          size={'sm'}
+          onPress={() => isCheck ? handleRemoveFav() : handleAddFav()}
         />
         </View>
       </View>
