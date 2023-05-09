@@ -4,6 +4,7 @@ import { Alert } from 'react-native';
 import { forgot, verify } from '../api/Auth/Forgot';
 import { signIn } from '../api/Auth/SignIn';
 import { signUp} from '../api/Auth/SignUp';
+import { getPerson } from '../api/Person';
 
 export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
@@ -13,6 +14,7 @@ export const AuthProvider = ({ children }) => {
         RefreshToken: '',
     });
     const [TokenExpired, setTokenExpired] = useState();
+
 
     const forgotpassword = (email) => { 
         setLoading(true);
@@ -53,9 +55,6 @@ export const AuthProvider = ({ children }) => {
                 } else { 
                     Alert.alert("Login Error", "Email or password is incorrect");
                 }
-                // if(err.response.status === 400) {
-                //     Alert.alert('Login Error','Email or password is incorrect');
-                // }
             })
 
     }
@@ -76,27 +75,24 @@ export const AuthProvider = ({ children }) => {
     const getAccessToken = () => {
         return token.AccessToken;
     };
-    const getTokenExpired = () => { 
-        return TokenExpired;
-    }
     const isLoggedIn = async () => { 
         try {
             setLoading(true);
             let date = new Date();
-            let refreshToken = await AsyncStorage.getItem('RefreshToken');
-            let accessToken = await AsyncStorage.getItem('AccessToken');
-            let tokenExpired = await AsyncStorage.getItem('TokenExpired');
+            const refreshToken = await AsyncStorage.getItem('RefreshToken');
+            const accessToken = await AsyncStorage.getItem('AccessToken');
             let userID = await AsyncStorage.getItem('UserID');
             setToken({
                 AccessToken: accessToken,
                 RefreshToken: refreshToken,
             });
             setUserID(Number(userID));
-            setTokenExpired(tokenExpired);
-            if (new Date(TokenExpired).toISOString() < date.toISOString()) {
+            const tokenExpired = await AsyncStorage.getItem('TokenExpired');
+            console.log(tokenExpired > new Date("2023-05-08").toISOString())
+            if (tokenExpired < new Date().toISOString()) {
                 console.log('Token Expired');
                 Alert.alert('Too Long!', 'Please login again.', [
-                    { text: 'OK', onPress: () => logout() }
+                    { text: 'OK', onPress: logout }
                 ])
             }
             
@@ -120,7 +116,7 @@ export const AuthProvider = ({ children }) => {
                 setToken,
                 setLoading,
                 forgotpassword,
-                userID
+                userID,
             }}>
             {children}
         </AuthContext.Provider>

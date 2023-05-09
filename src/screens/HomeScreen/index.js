@@ -14,13 +14,14 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import Button from '../../components/Button';
 import { getRandomWorkout } from '../../api/Workout';
 import { AuthContext } from '../../context/AuthContext';
-import { getPerson } from '../../api/Person/GetPerson';
+import { getPerson } from '../../api/Person';
 import Exercise from '../../components/Exercise';
 import Lottie from 'lottie-react-native';
 import Modal from "react-native-modal";
 import Input from '../../components/Input';
 import { getExerciseAdmin, trackingExercise } from '../../api/Tracking';
 import { useSelector } from 'react-redux';
+import { AxiosContext } from '../../context/AxiosContext';
 const HomeScreen = () => {
     const [time, setTime] = useState(new Date().getHours());
     const [loading, setLoading] = useState(true);
@@ -31,6 +32,7 @@ const HomeScreen = () => {
     const [minutes, setMinutes] = useState(null);
     const [dataex, setDataEx] = useState([]);
     const isFetching = useSelector((state) => state.favorite.isFetching);
+    const theme = useSelector(state => state.state.theme);
     useEffect(() => {
         const intervalId = setInterval(() => {
         setTime(new Date().getHours());
@@ -51,21 +53,10 @@ const HomeScreen = () => {
     const date = new Date();
     const data = TipsData;
     const navigation = useNavigation();
-    const [person, setPerson] = useState(null);
     const authContext = useContext(AuthContext);
+    const axiosContext = useContext(AxiosContext);
+    const person = axiosContext?.person;
     const [isCheck, setIsCheck] = useState(false); 
-    const getPersonStack = async () => {
-        setLoading(true);
-        await getPerson(authContext?.userID)
-            .then(res => {
-                setPerson(res.data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.log('err:', err);
-                setLoading(false);
-            })
-    }
     const [recipes, setRecipes] = useState([]);
     const [workouts, setWorkouts] = useState([]);
     const [buttonPress, setButtonPress] = useState('Beginner');
@@ -108,7 +99,7 @@ const HomeScreen = () => {
             setLoading(false);
         })
         .catch((error) => {
-            console.log(error);
+            console.log("error1", error);
             setLoading(false);
         })
     }
@@ -123,7 +114,7 @@ const HomeScreen = () => {
             })
             .catch((error) => {
                 setLoading(false);
-                console.log(error);
+                console.log("error2", error);
             });
     }
 
@@ -135,7 +126,7 @@ const HomeScreen = () => {
             setLoadingEx(false);
         })
         .catch((error) => {
-            console.log(error);
+            console.log("error3", error);
             setLoadingEx(false);
         })
     }
@@ -171,7 +162,6 @@ const HomeScreen = () => {
      }, [buttonPress]);
     useEffect(() => {
         setLoading(true);
-        getPersonStack();
         getTenRandomRecipes();
         setLoading(false);
     }, []);
@@ -185,7 +175,7 @@ const HomeScreen = () => {
         setTip(randomTip);
     }, [(date.toUTCString()).slice(0,12)]);
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={theme == 'dark' ? styles.container: styles.containerlight}>
     {loading ? <Lottie
           source={require('../../assets/lottie/97930-loading.json')}
           autoPlay
@@ -404,9 +394,12 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: colors.BG,
     },
+    containerlight: {
+        flex: 1,
+        backgroundColor: colors.WHITE,
+    },
     containerHeader: {
         flex:1,
-        backgroundColor: colors.BG,
         justifyContent: 'center',
     },
     containerBody: {

@@ -1,6 +1,5 @@
 import {StatusBar, StyleSheet, View } from 'react-native'
 import React from 'react'
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthProvider } from './src/context/AuthContext'
 import AppNavigation from './src/navigation/AppNavigation'
 import { AxiosProvider } from './src/context/AxiosContext'
@@ -8,7 +7,6 @@ import { Provider } from 'react-redux'
 import { persistor, store } from './src/redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
 StatusBar.setBarStyle('dark-content');
-const Stack = createNativeStackNavigator();
 const App = () => {
   return (
     <Provider store={store}>

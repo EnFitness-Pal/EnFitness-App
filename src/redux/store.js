@@ -2,9 +2,9 @@ import {combineReducers, configureStore, applyMiddleware} from '@reduxjs/toolkit
 import stateReducer from './features/state/stateSlice'
 import favReducer from './features/favorites/favSlice'
 import foodReducer from './features/favorites/foodSlice'
+import premiumReducer from './features/premium/premiumSlice'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const createDebugger = require('redux-flipper').default;
 import {
   persistStore,
   persistReducer,
@@ -26,6 +26,7 @@ const rootReducer = combineReducers({
   state: stateReducer,
   favorite: favReducer,
   food: foodReducer,
+  premium: premiumReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -36,7 +37,7 @@ export const store = configureStore({
     getDefaultMiddleware({
         immutableCheck: false,
         serializableCheck: false,
-    }).concat(createDebugger()),
+    }),
 })
 
 export let persistor = persistStore(store)

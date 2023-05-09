@@ -8,6 +8,14 @@ import WorkoutCategories from '../../screens/WorkoutCategories';
 import FoodCategories from '../../screens/FoodCategories';
 import Bookmarks from '../../screens/Bookmarks';
 import ExerciseCategories from '../../screens/ExerciseCategories';
+import UpdateProfile from '../../screens/UpdateProfile';
+import UpdateBMI from '../../screens/UpdateBMI';
+import ChangeGoal from '../../screens/ChangeGoal';
+import Achievement from '../../screens/Achievement';
+import Settings from '../../screens/Settings';
+import ActivityLevel from '../../screens/ActivityLevel';
+import WeightGoal from '../../screens/WeightGoal';
+import MacroNutrients from '../../screens/MacroNutrients';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -35,7 +43,32 @@ const AppStack = () => {
       <Stack.Screen name="Bookmarks" component={Bookmarks} options={{
             headerShown: false,
       }} />
+      <Stack.Screen name="UpdateProfile" component={UpdateProfile} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="UpdateBMI" component={UpdateBMI} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="Settings" component={Settings} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="ChangeGoal" component={ChangeGoal} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="Achievement" component={Achievement} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="ActivityLevel" component={ActivityLevel} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="WeightGoal" component={WeightGoal} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="MacroNutrients" component={MacroNutrients} options={{
+            headerShown: false,
+      }} />
       </Stack.Navigator>
+  
   )
 }
 

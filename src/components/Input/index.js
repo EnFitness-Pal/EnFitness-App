@@ -26,6 +26,9 @@ const Input = ({
     editable,
     icon, 
     styleIcon,
+    unit,
+    stylesErrorPointer,
+    stylesErrorContainer,
     ...props
 }) => {
 
@@ -46,8 +49,8 @@ const Input = ({
                     backgroundColor={"#333"}         
                     height={heightScreen*0.04}
                     width={widthScreen*0.8}
-                    pointerStyle={{marginTop:-heightScreen*0.05, marginLeft:widthScreen*0.36}}
-                    containerStyle={{marginLeft:-widthScreen*0.06, marginTop:-heightScreen*0.05}}
+                    pointerStyle={[{marginTop:-heightScreen*0.05, marginLeft:widthScreen*0.36}, stylesErrorPointer]}
+                    containerStyle={[{marginLeft:-widthScreen*0.06, marginTop:-heightScreen*0.05}, stylesErrorContainer]}
                     >
                     <MaterialIcons name="error" color={colors.DEL} size={25} style={styles.iconError} />
                 </Tooltip>)

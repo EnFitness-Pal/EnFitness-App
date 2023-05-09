@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
@@ -8,35 +8,33 @@ import ProfileScreen from '../../screens/ProfileScreen';
 import InsigntScreen from '../../screens/InsigntScreen';
 import TrackingScreen from '../../screens/TrackingScreen';
 import HomeScreen from '../../screens/HomeScreen';
-import { AuthContext } from '../../context/AuthContext';
 import { getPerson } from '../../api/Person/GetPerson';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import IconBottom from '../../assets/fonts';
 import FastImage from 'react-native-fast-image';
+import { useSelector } from 'react-redux';
+import { useFocusEffect } from '@react-navigation/native';
+import { AxiosContext } from '../../context/AxiosContext';
+import { AuthContext } from '../../context/AuthContext';
 const Tab = createBottomTabNavigator();
 const BottomTabsNav = () => {
-    const [person, setPerson] = useState(null);
+    const [loading, setLoading] = useState(false);
     const authContext = useContext(AuthContext);
-    const getPersonStack = async () => {
-        await getPerson(authContext?.userID)
-            .then(res => {
-                setPerson(res.data);
-            })
-            .catch(err => {
-                console.log('err:', err);
-            })
-    }
-    useEffect(() => { 
-    getPersonStack();
-    }, []);
-    
+    const theme = useSelector(state => state.state.theme);
+    const axiosContext = useContext(AxiosContext);
+    const person = axiosContext?.person;
+    useFocusEffect(useCallback(() => {
+        setLoading(true)
+        axiosContext?.getPersonStack(authContext?.userID);
+        setLoading(false)
+    }, []))
   return (
     <Tab.Navigator 
         initialRouteName="Home"
         screenOptions={{
             tabBarShowLabel: false,
             tabBarStyle: {
-                backgroundColor: colors.BG,
+                backgroundColor: theme == 'dark' ? colors.BG : colors.WHITE,
                 borderTopWidth: 0.17,
                 elevation: 0,
                 height: heightScreen * 0.1,
@@ -112,6 +110,7 @@ const BottomTabsNav = () => {
                     </View>
                 )   
             }}
+            initialParams={{person: person}}
         />
     </Tab.Navigator>
   )
