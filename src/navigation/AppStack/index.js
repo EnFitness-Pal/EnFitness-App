@@ -16,6 +16,7 @@ import Settings from '../../screens/Settings';
 import ActivityLevel from '../../screens/ActivityLevel';
 import WeightGoal from '../../screens/WeightGoal';
 import MacroNutrients from '../../screens/MacroNutrients';
+import PremiumScreen from '../../screens/PremiumScreen';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -65,6 +66,9 @@ const AppStack = () => {
             headerShown: false,
       }} />
       <Stack.Screen name="MacroNutrients" component={MacroNutrients} options={{
+            headerShown: false,
+      }} />
+      <Stack.Screen name="PremiumScreen" component={PremiumScreen} options={{
             headerShown: false,
       }} />
       </Stack.Navigator>

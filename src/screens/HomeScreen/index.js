@@ -6,6 +6,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { colors, heightScreen, regexMin, widthScreen } from '../../utility'
 import TipsData from '../../assets/TipsData';
 import FoodRecipe from '../../components/FoodRecipe';
+import IconBottom from '../../assets/fonts'
 import Carousel from 'react-native-snap-carousel';
 import { getRandomRecipes } from '../../api/Recipes';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -196,8 +197,11 @@ const HomeScreen = () => {
                 }}>{'Hello' + ', ' + `${person?.FullName || ''}!`}
                 </Text>
                 <View style = {{flexDirection:'row', marginTop:heightScreen * 0.012, justifyContent:'space-between'}}>
-                <TouchableOpacity>
-                    <Ionicons name={'ios-notifications'} size={25} color={colors.GRAYLIGHT} style={{marginHorizontal:widthScreen * 0.02}} />
+                <TouchableOpacity onPress={()=> navigation.navigate('PremiumScreen')}>
+                    <IconBottom name={'crown-svgrepo-com'} size={28} color={'orange'} style={{marginTop:-1}} />
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=> navigation.navigate('Bookmarks')}>
+                    <Ionicons name={'ios-notifications'} size={25} color={colors.GRAYLIGHT} style={{marginHorizontal:widthScreen * 0.02}}/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={()=> navigation.navigate('Bookmarks')}>
                     <Ionicons name={'ios-bookmark'} size={25} color={colors.GRAYLIGHT} />
