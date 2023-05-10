@@ -29,7 +29,7 @@ export default Circular
 const styles = StyleSheet.create({
     container: {
         width: widthScreen * 0.11,
-        height: widthScreen * 0.15,
+        height: widthScreen * 0.17,
         alignItems: 'center',
         justifyContent: 'center',
         marginHorizontal: widthScreen * 0.005

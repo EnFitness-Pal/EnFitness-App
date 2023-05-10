@@ -114,6 +114,19 @@ export const AxiosProvider = ({ children }) => {
             });
         }
 
+    function putPaypal(id, PaypalToken, ExpirationDate, Money) {
+        return axiosInstance.put(`/api/account/paypal/${id}`,
+        {
+            "PaypalToken": PaypalToken,
+            "ExpirationDate": ExpirationDate,
+            "Money": Money
+        });
+    }
+
+    useEffect(() => { 
+        authContext?.isLoggedIn();
+    },[])
+    
     return (
         <Provider
             value={{
@@ -122,7 +135,8 @@ export const AxiosProvider = ({ children }) => {
                 axiosInstance,
                 person,
                 getPersonStack,
-                updatePerson
+                updatePerson,
+                putPaypal
             }}>
             {children}
         </Provider>

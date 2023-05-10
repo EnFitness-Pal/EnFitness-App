@@ -102,9 +102,6 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         }
     }
-    useEffect(() => { 
-        isLoggedIn();
-    },[])
     return (
         <AuthContext.Provider
             value={{
@@ -117,6 +114,7 @@ export const AuthProvider = ({ children }) => {
                 setLoading,
                 forgotpassword,
                 userID,
+                isLoggedIn,
             }}>
             {children}
         </AuthContext.Provider>

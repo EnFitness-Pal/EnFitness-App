@@ -225,7 +225,7 @@ const UpdateProfile = ({ navigation }) => {
       compressImageQuality: 0.7,
     }).then((image) => {
       console.log(image);
-      const imageUri = image.sourceURL;
+      const imageUri = image.path;
       setImage(imageUri);
       setInputs({...inputs, image: imageUri});
       setVisible(false)

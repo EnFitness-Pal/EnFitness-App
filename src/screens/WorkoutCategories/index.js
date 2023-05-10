@@ -1,5 +1,5 @@
 import { ActivityIndicator, FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import { SearchBar } from '@rneui/base';
 import IconBottom from '../../assets/fonts';
@@ -8,10 +8,18 @@ import Button from '../../components/Button';
 import Lottie from 'lottie-react-native';
 import WorkoutItem from '../../components/WorkoutItem';
 import { getRandomWorkout, getWorkoutCategories } from '../../api/Workout';
+import { AxiosContext } from '../../context/AxiosContext';
+import ModalPre from '../../components/Modal';
+import { useFocusEffect } from '@react-navigation/native';
+import { AuthContext } from '../../context/AuthContext';
 
 const WorkoutCategories = ({navigation}) => {
     const [data, setData] = useState([]);
+    const axiosContext = useContext(AxiosContext);
+    const authContext = useContext(AuthContext);
+    const person  = axiosContext?.person;
     const [buttonPress, setButtonPress] = useState('Beginner');
+    const [modalPre, setModalPre] = useState(false);
     const [search, setSearch] = useState("");
     const [itemSearch, setItemSearch] = useState(0);
     const [pageNumber, setPageNumber] = useState(1)
@@ -32,6 +40,11 @@ const WorkoutCategories = ({navigation}) => {
                 setLoading(false);
              });
     }
+
+    useFocusEffect(
+      useCallback(() => {
+            axiosContext?.getPersonStack(authContext?.userID)
+      }, [navigation]));
 
     const getWorkout = async () => { 
         await getRandomWorkout(pageNumber, buttonPress)
@@ -65,6 +78,23 @@ const WorkoutCategories = ({navigation}) => {
         return (
             <View style={styles.containerItem}>
                 <WorkoutItem
+                    onPress={() => {
+                        if (item?.IsPremium) {
+                            if (person?.IsPremium === false || (person?.ExpirationDate < new Date().toISOString())) {
+                                setModalPre(true);
+                                return;
+                            } else if (person?.IsPremium === true && (person?.ExpirationDate > new Date().toISOString())) {
+                                navigation.push('WorkoutDetail', {
+                                    item: item
+                                })
+                            }
+                        }
+                        else { 
+                            navigation.push('WorkoutDetail', {
+                                item: item
+                            })
+                        }
+                }}
                         item={item} index={index} />
             </View>
         )
@@ -195,6 +225,14 @@ return (
             
         />
     </View>
+    <ModalPre
+        onPressButton={() => {
+                setModalPre(false);
+                navigation.navigate('PremiumScreen');
+            }
+        }
+        onPressIgnore={() => setModalPre(false)}
+            isVisible={modalPre} />
     </SafeAreaView>
 )
 }

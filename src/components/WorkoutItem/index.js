@@ -5,13 +5,13 @@ import { colors, heightScreen, widthScreen } from '../../utility'
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
 import { getAllWorkoutFav } from '../../api/Favorites';
-const WorkoutItem = ({ item }) => {
+import { AxiosContext } from '../../context/AxiosContext';
+const WorkoutItem = ({ item, onPress }) => {
   const navigation = useNavigation();
+  const axiosContext = useContext(AxiosContext);
   return (
     <TouchableOpacity
-      onPress = {() => navigation.push('WorkoutDetail' , {
-        item: item
-      })}
+      onPress = {onPress}
       style={styles.container}>
         <FastImage
         source={{
@@ -28,7 +28,7 @@ const WorkoutItem = ({ item }) => {
                 <Text style={styles.subtitle}>Category: { item?.Category}</Text>
             </View>
             {
-              item?.IsPremium === true ? <View style = {styles.premium}>
+              (item?.IsPremium === true && axiosContext.person?.IsPremium === false) ? <View style = {styles.premium}>
             <Text style={styles.titlepremium}>PRO</Text>
             </View> : null
             }

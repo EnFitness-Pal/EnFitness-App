@@ -23,16 +23,17 @@ import Input from '../../components/Input';
 import { getExerciseAdmin, trackingExercise } from '../../api/Tracking';
 import { useSelector } from 'react-redux';
 import { AxiosContext } from '../../context/AxiosContext';
+import ModalPre from '../../components/Modal';
 const HomeScreen = () => {
     const [time, setTime] = useState(new Date().getHours());
     const [loading, setLoading] = useState(true);
     const [loadingModal, setLoadingModal] = useState(false);
     const [isModalVisible, setModalVisible] = useState(false);
     const [onSuccess, setOnSuccess] = useState(false);
+    const [modalPre, setModalPre] = useState(false);
     const [error, setError] = useState(null);
     const [minutes, setMinutes] = useState(null);
     const [dataex, setDataEx] = useState([]);
-    const isFetching = useSelector((state) => state.favorite.isFetching);
     const theme = useSelector(state => state.state.theme);
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -42,6 +43,7 @@ const HomeScreen = () => {
         return () => clearInterval(intervalId);
     }, []);
 
+    
     const getGreeting = () => {
         if (time >= 0 && time < 12) {
         return 'Good morning';
@@ -77,7 +79,16 @@ const HomeScreen = () => {
     const renderWorkout = ({ item, index }) => {
         return (
             <WorkoutItem
-                item={item} index={index} />
+                item={item} index={index} onPress={() => {
+                    if (person?.IsPremium === false && item?.IsPremium === true) { 
+                        setModalPre(true);
+                        return;
+                    } else if (person?.IsPremium === true || (item?.IsPremium === false && person?.IsPremium === false)) {
+                        navigation.push('WorkoutDetail', {
+                            item: item
+                        })
+                    } 
+                }} />
         )
     }
     const renderExercise = ({ item, index }) => {
@@ -131,7 +142,6 @@ const HomeScreen = () => {
             setLoadingEx(false);
         })
     }
-
     const TrackingExercise = async (name,calo, min) => { 
         setLoadingModal(true);
         Keyboard.dismiss();
@@ -174,7 +184,7 @@ const HomeScreen = () => {
     useMemo(() => {
         const randomTip = getRandomTip(data);
         setTip(randomTip);
-    }, [(date.toUTCString()).slice(0,12)]);
+    }, [(date.toUTCString()).slice(0, 12)]);
   return (
     <SafeAreaView style={theme == 'dark' ? styles.container: styles.containerlight}>
     {loading ? <Lottie
@@ -197,9 +207,9 @@ const HomeScreen = () => {
                 }}>{'Hello' + ', ' + `${person?.FullName || ''}!`}
                 </Text>
                 <View style = {{flexDirection:'row', marginTop:heightScreen * 0.012, justifyContent:'space-between'}}>
-                <TouchableOpacity onPress={()=> navigation.navigate('PremiumScreen')}>
+                {person?.IsPremium === false?<TouchableOpacity onPress={()=> navigation.navigate('PremiumScreen')}>
                     <IconBottom name={'crown-svgrepo-com'} size={28} color={'orange'} style={{marginTop:-1}} />
-                </TouchableOpacity>
+                </TouchableOpacity>:null}
                 <TouchableOpacity onPress={()=> navigation.navigate('Bookmarks')}>
                     <Ionicons name={'ios-notifications'} size={25} color={colors.GRAYLIGHT} style={{marginHorizontal:widthScreen * 0.02}}/>
                 </TouchableOpacity>
@@ -387,6 +397,7 @@ const HomeScreen = () => {
                 
                 </View>}</View>
         </Modal>
+          <ModalPre isVisible={modalPre} />
     </SafeAreaView>
   )
 }

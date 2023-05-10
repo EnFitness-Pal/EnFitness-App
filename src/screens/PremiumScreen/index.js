@@ -1,6 +1,6 @@
-import { ActivityIndicator, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
+import { ActivityIndicator, Alert, ImageBackground, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import { ScrollView } from 'react-native'
 import ButtonBack from '../../components/ButtonBack'
@@ -10,37 +10,47 @@ import Carousel from 'react-native-snap-carousel';
 import Modal from 'react-native-modal';
 import WebView from 'react-native-webview';
 import Feather from 'react-native-vector-icons/Feather'
+import { setPremium } from '../../redux/features/premium/premiumSlice'
+import { AxiosContext } from '../../context/AxiosContext'
+import { AuthContext } from '../../context/AuthContext'
 const PremiumScreen = ({navigation}) => {
     const theme = useSelector(state => state.state.theme);
+    const axiosContext = useContext(AxiosContext);
+    const authContext = useContext(AuthContext);
     const [itemPre, setItemPre] = useState([]);
     const [showGateway, setShowGateway] = useState(false);
     const [prog, setProg] = useState(false);
     const [progClr, setProgClr] = useState('#000');
-    // const [data, setData] = useState();
+    const [data, setData] = useState();
+    const dispatch = useDispatch();
     const datapre = [
         {
             id: 1,
             title: '3 months',
             price: '8.99',
             permonths: '2.99',
+            link: 'http://localhost:3000/threemonths'
         },
         {
             id: 2,
             title: '6 months',
             price: '15.99',
             permonths: '2.66',
+            link: 'http://localhost:3000/sixmonths'
         },
         {
             id: 3,
             title: '12 months',
             price: '29.99',
             permonths: '2.49',
+            link: 'http://localhost:3000/oneyears'
         },
         {
             id: 4,
             title: 'Lifetime',
             price: '49.99',
             permonths: null,
+            link: 'http://localhost:3000/lifetime'
         }
     ]
 
@@ -56,10 +66,41 @@ const PremiumScreen = ({navigation}) => {
     }
 
 
-    function onMessage(e) {
+    async function onMessage(e) {
         let data = e.nativeEvent.data;
         setShowGateway(false);
         console.log(data);
+        let payment = JSON.parse(data);
+            if (payment.status === 'COMPLETED') {
+              console.log("payment");
+              dispatch(setPremium(true));
+              navigation.goBack();
+              await axiosContext.putPaypal(
+                authContext?.userID,
+                payment?.id,
+                itemPre?.id === 1 ? new Date(new Date().getFullYear(), new Date().getMonth() + 3, new Date().getDate()).toISOString() :
+                itemPre?.id === 2 ? new Date(new Date().getFullYear(), new Date().getMonth() + 6, new Date().getDate()).toISOString() :
+                itemPre?.id === 3 ? new Date(new Date().getFullYear(), new Date().getMonth() + 12, new Date().getDate()).toISOString() :
+                new Date("9999-12-31").toISOString(),
+                itemPre?.price
+              )
+                .then((res) => { 
+                  console.log(res.data);
+                })
+                .catch((err) => { 
+                  console.log(err.response);
+                })
+              Alert.alert('Payment Successful', 'Your payment was successful. Thank you for your purchase!', [
+                {
+                  text: 'OK',
+                  onPress: () => axiosContext.getPersonStack(authContext?.userID),
+                }
+              ]);
+              
+            } else {
+              console.log("payment failed");
+              Alert.alert('Payment Failed', 'Your payment was unsuccessful. Please try again.');
+            }
         
     }    
 
@@ -81,7 +122,7 @@ const PremiumScreen = ({navigation}) => {
                 <Text style = {styles.textIntro}>Activation of this premium account will grant access to all locked features on our app!</Text>
                 <AnimatedLottieView
                     source={require('../../assets/lottie/premium.json')}
-                    style={{width: widthScreen * 1, height: heightScreen * 0.35, alignSelf: 'center'}}
+                    style={{width: widthScreen * 1, height: heightScreen * 0.30, alignSelf: 'center'}}
                     autoPlay
                     loop={false}
                   />
@@ -125,7 +166,9 @@ const PremiumScreen = ({navigation}) => {
             </View>
             <WebView
             //   source={{uri: 'https://capstoneproject-8ab42.firebaseapp.com/lifetime'}}
-                source={{uri: 'http://localhost:3000/lifetime'}}
+                source={{
+                  uri:  itemPre?.link
+                }}
               style={{
                     flex: 1,
                     borderBottomLeftRadius: 20,

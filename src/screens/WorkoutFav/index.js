@@ -7,9 +7,14 @@ import WorkoutItem from '../../components/WorkoutItem';
 import { useFocusEffect } from '@react-navigation/native';
 import AnimatedLottieView from 'lottie-react-native';
 import Button from '../../components/Button';
+import ModalPre from '../../components/Modal';
+import { AxiosContext } from '../../context/AxiosContext';
 const WorkoutFav = ({navigation}) => {
     const authContext = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
+    const axiosContext = useContext(AxiosContext);
+    const person  = axiosContext?.person;
+    const [isVisible, setIsVisible] = useState(false);
     const [data, setData] = useState([]);
     const [buttonPress, setButtonPress] = useState('Beginner');
     const getWorkoutFav = async () => { 
@@ -64,12 +69,38 @@ const WorkoutFav = ({navigation}) => {
                 data={data}
                 renderItem={({ item, index }) => (
                     <View style={styles.containerItem}>
-                        <WorkoutItem item={item}/>
+                        <WorkoutItem item={item} index={index}
+                            onPress={() => {
+                                if (item?.IsPremium) {
+                                    if (person?.IsPremium === false || (person?.ExpirationDate < new Date().toISOString())) {
+                                        setIsVisible(true);
+                                        return;
+                                    } else if (person?.IsPremium === true && (person?.ExpirationDate > new Date().toISOString())) {
+                                        navigation.push('WorkoutDetail', {
+                                            item: item
+                                        })
+                                    }
+                                }
+                                else { 
+                                    navigation.push('WorkoutDetail', {
+                                        item: item
+                                    })
+                                }
+                        }}
+                        />
                     </View>
                 )}
             />
 
             }
+        <ModalPre
+        onPressButton={() => {
+                setIsVisible(false);
+                navigation.navigate('PremiumScreen');
+            }
+        }
+        onPressIgnore={() => setIsVisible(false)}
+            isVisible={isVisible} />
         </View>
     )
 }

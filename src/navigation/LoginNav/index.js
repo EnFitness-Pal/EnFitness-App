@@ -1,4 +1,4 @@
-import { ImageBackground, Keyboard, StyleSheet, Text, View, Animated, ActivityIndicator, TouchableOpacity } from 'react-native'
+import { ImageBackground, Keyboard, StyleSheet, Text, View, Animated, ActivityIndicator, TouchableOpacity, Platform } from 'react-native'
 import React, { useContext, useEffect, useRef, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import SignInScreen from '../../screens/SignInScreen';
@@ -72,7 +72,7 @@ const LoginNav = ({ route }) => {
           } />
             
     </View>
-    <View style={[styles.triangle, { bottom: heightScreen * 0.4 }]} />      
+    <View style={[styles.triangle, { bottom: heightScreen * 0.38 }]} />      
     <View style ={styles.containerbody}>
         <PagerView 
             style={styles.pagerView} 
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginHorizontal: widthScreen * 0.04
   },
   buttonsignup: {
-    width: widthScreen * 0.15,
+    width: widthScreen * 0.16,
     backgroundColor: 'transparent',
     borderRadius: 0,
     borderBottomWidth:4,
