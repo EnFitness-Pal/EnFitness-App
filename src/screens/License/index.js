@@ -1,14 +1,14 @@
 import { StyleSheet, Text, View } from 'react-native'
 import React from 'react'
 
-const MacroNutrients = () => {
+const License = () => {
   return (
     <View>
-      <Text>MacroNutrients</Text>
+      <Text>License</Text>
     </View>
   )
 }
 
-export default MacroNutrients
+export default License
 
 const styles = StyleSheet.create({})

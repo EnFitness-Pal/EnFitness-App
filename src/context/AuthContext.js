@@ -88,7 +88,7 @@ export const AuthProvider = ({ children }) => {
             });
             setUserID(Number(userID));
             const tokenExpired = await AsyncStorage.getItem('TokenExpired');
-            console.log(tokenExpired > new Date("2023-05-08").toISOString())
+            console.log(tokenExpired > new Date().toISOString())
             if (tokenExpired < new Date().toISOString()) {
                 console.log('Token Expired');
                 Alert.alert('Too Long!', 'Please login again.', [
@@ -102,6 +102,11 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         }
     }
+
+    useEffect(() => { 
+        isLoggedIn();
+    },[])
+
     return (
         <AuthContext.Provider
             value={{

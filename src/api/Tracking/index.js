@@ -21,3 +21,16 @@ export function trackingExercise(personId, name, calo, min) {
 export function getExerciseAdmin() {
     return axios.get(`${baseURL}/api/exercise-admin?PageNumber=1&PageSize=5`);
 }
+
+export function getMets(ExerciseName,minutes,ActivityLevel,Height, Weight,BodyFat, Age, Gender) {
+    return axios.post(`${baseURL}/api/gpt/generate-mets`, {
+        "ExerciseName": ExerciseName,
+        "minutes": minutes,
+        "ActivityLevel": ActivityLevel,
+        "Height": Height,
+        "Weight": Weight,
+        "BodyFat": BodyFat,
+        "Age": Age,
+        'Gender': Gender
+    });
+}

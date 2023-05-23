@@ -51,8 +51,12 @@ const UpdateBMI = ({navigation}) => {
     axiosContext.person?.MacroNutrients == 2 ? 'lower' : 'higher');
   const [edit, setEdit] = useState(false);
   const handleEdit = () => {
+    setOpen(false);
+    setOpenM(false);
+    setOpenGW(false);
     setEdit(!edit);
   };
+  console.log(axiosContext.person?.Height)
   const [inputs, setInputs] = useState({
     height: (axiosContext.person?.Height).toString(),
     weight: (axiosContext.person?.Weight).toString(),
@@ -69,6 +73,9 @@ const UpdateBMI = ({navigation}) => {
 
   const handleUpdate = async () => { 
     Keyboard.dismiss();
+    setOpen(false);
+    setOpenM(false);
+    setOpenGW(false);
     let isValid = true;
     if (!inputs.height) {
       handleError('Height is a required field.', 'height');
@@ -139,7 +146,7 @@ const UpdateBMI = ({navigation}) => {
     }
   }
   return (
-    <SafeAreaView style = {theme == 'dark' ? styles.container: styles.containerlight}>
+    <SafeAreaView style={theme == 'dark' ? styles.container : styles.containerlight} onTouchStart={() => {Keyboard.dismiss()}}>
       <KeyboardAvoidingView behavior='padding'>
       <View style = {[styles.containerHeader]}>
         <ButtonBack

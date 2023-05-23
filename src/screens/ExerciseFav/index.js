@@ -57,7 +57,8 @@ const ExerciseFav = ({navigation}) => {
                 setLoadingModal(false);
             });
     }
-    };  
+  };  
+  console.log(data);
     useEffect(() => {
       getExerciseFav();
     }, []);
@@ -108,7 +109,7 @@ const ExerciseFav = ({navigation}) => {
                           setModalVisible(!isModalVisible);
                       }}
                 />}
-              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successfull!":"Enter the number of minutes."}</Text>
+              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successful!":"Enter the number of minutes."}</Text>
               {onSuccess?<AnimatedLottieView 
                 source={require('../../assets/lottie/91001-success.json')} 
                 autoPlay 

@@ -234,7 +234,7 @@ const UpdateProfile = ({ navigation }) => {
   };
 
   return (
-    <SafeAreaView style = {theme == 'dark' ? styles.container: styles.containerlight}>
+    <SafeAreaView style = {theme == 'dark' ? styles.container: styles.containerlight} onTouchStart={()=>setOpen(false)}>
     <ScrollView>
       <Animated.View style = {[styles.containerHeader, {marginTop: headerMotion}]}>
         <ButtonBack

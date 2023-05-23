@@ -13,6 +13,7 @@ import Button from '../../components/Button'
 import Input from '../../components/Input'
 import { getPerson } from '../../api/Person/GetPerson'
 import { AuthContext } from '../../context/AuthContext'
+import { AxiosContext } from '../../context/AxiosContext'
 
 
 const ExerciseCategories = ({ navigation }) => {
@@ -27,11 +28,12 @@ const ExerciseCategories = ({ navigation }) => {
   const [minutes, setMinutes] = useState(null);
   const [itemEx, setItemEx] = useState(null);
   const [search, setSearch] = useState("");
+  const axiosContext = useContext(AxiosContext);
 
   const searchFilterFunction = async (text) => {
         setSearch(text);
         setLoading(true);
-        await getAllExercise(text)
+        await axiosContext.getAllExercise(text)
             .then((response) => {
                 setDataEx(response?.data?.Data);
                 setLoading(false);
@@ -48,7 +50,7 @@ const ExerciseCategories = ({ navigation }) => {
 
   const getExercises = async () => {
       setLoading(true);
-       await getAllExercise(search)
+       await axiosContext.getAllExercise(search)
           .then((response) => {
               setData(response.data?.Data);
               setLoading(false);
@@ -192,7 +194,7 @@ const ExerciseCategories = ({ navigation }) => {
                           setModalVisible(!isModalVisible);
                       }}
                 />}
-              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successfull!":"Enter the number of minutes."}</Text>
+              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successful!":"Enter the number of minutes."}</Text>
               {onSuccess?<Lottie 
                 source={require('../../assets/lottie/91001-success.json')} 
                 autoPlay 

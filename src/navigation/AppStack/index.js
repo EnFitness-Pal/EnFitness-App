@@ -10,13 +10,12 @@ import Bookmarks from '../../screens/Bookmarks';
 import ExerciseCategories from '../../screens/ExerciseCategories';
 import UpdateProfile from '../../screens/UpdateProfile';
 import UpdateBMI from '../../screens/UpdateBMI';
-import ChangeGoal from '../../screens/ChangeGoal';
 import Achievement from '../../screens/Achievement';
 import Settings from '../../screens/Settings';
-import ActivityLevel from '../../screens/ActivityLevel';
-import WeightGoal from '../../screens/WeightGoal';
-import MacroNutrients from '../../screens/MacroNutrients';
 import PremiumScreen from '../../screens/PremiumScreen';
+import WorkoutPlanner from '../../screens/WorkoutPlanner';
+import License from '../../screens/License';
+import WorkoutPlanDetail from '../../screens/WorkoutPlanDetail';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -53,24 +52,21 @@ const AppStack = () => {
       <Stack.Screen name="Settings" component={Settings} options={{
             headerShown: false,
       }} />
-      <Stack.Screen name="ChangeGoal" component={ChangeGoal} options={{
-            headerShown: false,
-      }} />
       <Stack.Screen name="Achievement" component={Achievement} options={{
-            headerShown: false,
-      }} />
-      <Stack.Screen name="ActivityLevel" component={ActivityLevel} options={{
-            headerShown: false,
-      }} />
-      <Stack.Screen name="WeightGoal" component={WeightGoal} options={{
-            headerShown: false,
-      }} />
-      <Stack.Screen name="MacroNutrients" component={MacroNutrients} options={{
             headerShown: false,
       }} />
       <Stack.Screen name="PremiumScreen" component={PremiumScreen} options={{
             headerShown: false,
       }} />
+      <Stack.Screen name="WorkoutPlanner" component={WorkoutPlanner} options={{
+            headerShown: false,
+      }} />  
+      <Stack.Screen name="License" component={License} options={{
+            headerShown: false,
+      }} />  
+      <Stack.Screen name="WorkoutPlanDetail" component={WorkoutPlanDetail} options={{
+            headerShown: false,
+      }} /> 
       </Stack.Navigator>
   
   )

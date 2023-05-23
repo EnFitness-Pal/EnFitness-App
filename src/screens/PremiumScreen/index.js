@@ -13,6 +13,7 @@ import Feather from 'react-native-vector-icons/Feather'
 import { setPremium } from '../../redux/features/premium/premiumSlice'
 import { AxiosContext } from '../../context/AxiosContext'
 import { AuthContext } from '../../context/AuthContext'
+import { updatePremium } from '../../redux/action/premium/preRequests'
 const PremiumScreen = ({navigation}) => {
     const theme = useSelector(state => state.state.theme);
     const axiosContext = useContext(AxiosContext);
@@ -29,28 +30,28 @@ const PremiumScreen = ({navigation}) => {
             title: '3 months',
             price: '8.99',
             permonths: '2.99',
-            link: 'http://localhost:3000/threemonths'
+            link: 'https://payment-6e70b.web.app/threemonths'
         },
         {
             id: 2,
             title: '6 months',
             price: '15.99',
             permonths: '2.66',
-            link: 'http://localhost:3000/sixmonths'
+            link: 'https://payment-6e70b.web.app/sixmonths'
         },
         {
             id: 3,
             title: '12 months',
             price: '29.99',
             permonths: '2.49',
-            link: 'http://localhost:3000/oneyears'
+            link: 'https://payment-6e70b.web.app/oneyears'
         },
         {
             id: 4,
             title: 'Lifetime',
             price: '49.99',
             permonths: null,
-            link: 'http://localhost:3000/lifetime'
+            link: 'https://payment-6e70b.web.app/lifetime'
         }
     ]
 
@@ -73,23 +74,16 @@ const PremiumScreen = ({navigation}) => {
         let payment = JSON.parse(data);
             if (payment.status === 'COMPLETED') {
               console.log("payment");
-              dispatch(setPremium(true));
               navigation.goBack();
-              await axiosContext.putPaypal(
+              updatePremium(dispatch,
                 authContext?.userID,
                 payment?.id,
                 itemPre?.id === 1 ? new Date(new Date().getFullYear(), new Date().getMonth() + 3, new Date().getDate()).toISOString() :
                 itemPre?.id === 2 ? new Date(new Date().getFullYear(), new Date().getMonth() + 6, new Date().getDate()).toISOString() :
                 itemPre?.id === 3 ? new Date(new Date().getFullYear(), new Date().getMonth() + 12, new Date().getDate()).toISOString() :
                 new Date("9999-12-31").toISOString(),
-                itemPre?.price
-              )
-                .then((res) => { 
-                  console.log(res.data);
-                })
-                .catch((err) => { 
-                  console.log(err.response);
-                })
+                itemPre?.price       
+              );
               Alert.alert('Payment Successful', 'Your payment was successful. Thank you for your purchase!', [
                 {
                   text: 'OK',
@@ -121,7 +115,7 @@ const PremiumScreen = ({navigation}) => {
                 <Text style = {styles.textPremium}>Premium Membership</Text>
                 <Text style = {styles.textIntro}>Activation of this premium account will grant access to all locked features on our app!</Text>
                 <AnimatedLottieView
-                    source={require('../../assets/lottie/premium.json')}
+                    source={require('../../assets/lottie/premium-activated.json')}
                     style={{width: widthScreen * 1, height: heightScreen * 0.30, alignSelf: 'center'}}
                     autoPlay
                     loop={false}
@@ -213,12 +207,12 @@ const styles = StyleSheet.create({
     },
     textHeader: {
         color: colors.MAIN,
-        marginLeft: widthScreen * 0.05,
         marginTop: heightScreen * 0.03,
         marginBottom: heightScreen * 0.03,
         fontSize: 28,
         fontFamily: 'Poppins',
         fontWeight: 'bold',
+        alignSelf: 'center',
 
     },
     containerHeader: {

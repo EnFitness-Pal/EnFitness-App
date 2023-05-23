@@ -1619,6 +1619,11 @@
   resolved "https://registry.yarnpkg.com/@jsamr/react-native-li/-/react-native-li-2.3.1.tgz#12a5b5f6e3971cec77b96bee58104eed0ae9314a"
   integrity sha512-Qbo4NEj48SQ4k8FZJHFE2fgZDKTWaUGmVxcIQh3msg5JezLdTMMHuRRDYctfdHI6L0FZGObmEv3haWbIvmol8w==
 
+"@miblanchard/react-native-slider@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@miblanchard/react-native-slider/-/react-native-slider-2.3.1.tgz#79e0f1f9b1ce43ef25ee51ee9256c012e5dfa412"
+  integrity sha512-J/hZDBWmXq8fJeOnTVHqIUVDHshqMSpJVxJ4WqwuCBKl5Rke9OBYXIdkSlgi75OgtScAr8FKK5KNkDKHUf6JIg==
+
 "@microsoft/applicationinsights-web-snippet@^1.0.1":
   version "1.0.1"
   resolved "https://registry.npmjs.org/@microsoft/applicationinsights-web-snippet/-/applicationinsights-web-snippet-1.0.1.tgz"
@@ -7414,10 +7419,9 @@ react-native-keychain@^8.1.1:
   resolved "https://registry.npmjs.org/react-native-keychain/-/react-native-keychain-8.1.1.tgz"
   integrity sha512-8fxgeHKwGcL657eAYpdBTkDIxNhbIHI+kyyO0Yac2dgVAN184JoIwQcW2z6snahwDaCObQOu0biLFHnsH+4KSg==
 
-react-native-keycode@^1.1.2:
+"react-native-keycode@https://github.com/taurusfbi10/react-native-keycode":
   version "1.1.2"
-  resolved "https://registry.npmjs.org/react-native-keycode/-/react-native-keycode-1.1.2.tgz"
-  integrity sha512-31yWKMP/gsp6hOKeW17fqHJcmmD4nwx/glq+//KqbNm2EP3ZRotn8KYdcxEf+9lqfWBXYMZJxeWQv03Y7UKs8g==
+  resolved "https://github.com/taurusfbi10/react-native-keycode#10e5d264727c6fdb00dd03ba2a73d5057637633e"
   dependencies:
     prop-types "^15.7.2"
 

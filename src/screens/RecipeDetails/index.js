@@ -252,7 +252,7 @@ const RecipeDetails = ({ route }) => {
             animationInTiming={800}
             isVisible={isModalVisible}>
             <View style={styles.modal}>
-              <Text style = {styles.textTracking}>Tracking Successfull!</Text>
+              <Text style = {styles.textTracking}>Tracking Successful!</Text>
               <Lottie 
                 source={require('../../assets/lottie/91001-success.json')} 
                 autoPlay 

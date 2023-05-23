@@ -10,6 +10,7 @@ const { Provider } = AxiosContext;
 
 export const AxiosProvider = ({ children }) => {
     const [person, setPerson] = useState([]);
+    const [loading, setLoading] = useState(false);
     const authContext = useContext(AuthContext);
     const authAxios = axios.create({
         baseURL: baseURL,
@@ -24,15 +25,16 @@ export const AxiosProvider = ({ children }) => {
         headers: {Authorization: `Bearer ${authContext.getAccessToken()}`},
     });
 
-    useEffect(() => { 
-        axiosInstance.interceptors.request.use(async (request) => {
+    axiosInstance.interceptors.request.use(async (request) => {
         if (!authContext.getAccessToken()) {
             const authToken = await AsyncStorage.getItem('AccessToken');
             console.log(authToken);
             request.headers.Authorization = `Bearer ${authToken}`;
         }
         const authToken1 = await AsyncStorage.getItem('AccessToken');
-
+        const refreshToken1 = await AsyncStorage.getItem('RefreshToken');
+        // console.log("authTokenavc", authToken1);
+        // console.log("refreshTokenavc", refreshToken1);
         let date = new Date();
         const decodedAccessToken = jwt_decode(authToken1);
         const expireInToken = decodedAccessToken.exp;
@@ -40,14 +42,13 @@ export const AxiosProvider = ({ children }) => {
         // console.log(expireInToken);
         // console.log(date.getTime() / 1000);
         if (expireInToken > date.getTime() / 1000) {
+            // console.log("token chua het han",request);
             return request;
         }
         else {
-            const refreshToken = await AsyncStorage.getItem('RefreshToken');
-            const accessToken = await AsyncStorage.getItem('AccessToken');
             const data = {
-                "AccessToken": accessToken,
-                "RefreshToken": refreshToken,
+                "AccessToken": authToken1,
+                "RefreshToken": refreshToken1
             };
 
             let config = {
@@ -55,16 +56,16 @@ export const AxiosProvider = ({ children }) => {
                 maxBodyLength: Infinity,
                 url: `${baseURL}/api/token/refresh`,
                 headers: {
-                Authorization: `Bearer ${refreshToken}`,
+                Authorization: `Bearer ${authToken1}`,
                 },
-                data: data,
+                data
             };
             await axios
                 .request(config)
-                .then(async response => {
-                console.log("responseAxios",response?.data);
-                await AsyncStorage.setItem('AccessToken', response?.data?.Value?.Token);
-                await AsyncStorage.setItem(
+                .then(response => {
+                // console.log("responseAxios",response?.data);
+                AsyncStorage.setItem('AccessToken', response?.data?.Value?.Token);
+                AsyncStorage.setItem(
                     'RefreshToken',
                     response?.data?.Value?.RefreshToken,
                 );
@@ -72,28 +73,32 @@ export const AxiosProvider = ({ children }) => {
                         AccessToken: response?.data?.Value?.Token,
                         RefreshToken: response?.data?.Value?.RefreshToken,
                 })
+                console.log('authContext1',authContext.token.AccessToken);
+                console.log('authContext1',authContext.token.RefreshToken);
                 request.headers.Authorization = `Bearer ${response?.data?.Value?.Token}`;
                 return request;
                 })
                 .catch(error => {
-                console.log("errorAxios",error.response.data);
+                // console.log("errorAxios",error.response);
                 return request;
                 });
             return request;            
         }
 
     });
-    });
 
     
     
     const getPersonStack = async (id) => {
+        setLoading(true);
         await axiosInstance.get(`/api/account/${id}`)
             .then(res => {
                 setPerson(res?.data);
+                setLoading(false);
             })
             .catch(err => {
                 console.log('err:', err);
+                setLoading(false);
             })
     }
 
@@ -122,11 +127,23 @@ export const AxiosProvider = ({ children }) => {
             "Money": Money
         });
     }
+    
+    function getAllExercise(text) {
+        return axiosInstance.get(`/api/exercise-admin?PageNumber=1&PageSize=20&exerciseName=${text}`);
+    }
+
+    function getExerciseAdmin() {
+        return axiosInstance.get(`/api/exercise-admin?PageNumber=1&PageSize=5`);
+    }
+
+    function createPlan(id, data) {
+        return axiosInstance.post(`/api/plan/${id}`, data)
+    }
 
     useEffect(() => { 
-        authContext?.isLoggedIn();
+        getPersonStack(authContext.userID);
     },[])
-    
+
     return (
         <Provider
             value={{
@@ -136,7 +153,11 @@ export const AxiosProvider = ({ children }) => {
                 person,
                 getPersonStack,
                 updatePerson,
-                putPaypal
+                putPaypal,
+                loading,
+                getAllExercise,
+                getExerciseAdmin,
+                createPlan
             }}>
             {children}
         </Provider>

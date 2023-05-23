@@ -12,6 +12,7 @@ import { AxiosContext } from '../../context/AxiosContext';
 import ModalPre from '../../components/Modal';
 import { useFocusEffect } from '@react-navigation/native';
 import { AuthContext } from '../../context/AuthContext';
+import { useSelector } from 'react-redux';
 
 const WorkoutCategories = ({navigation}) => {
     const [data, setData] = useState([]);
@@ -74,16 +75,17 @@ const WorkoutCategories = ({navigation}) => {
              });    
         }
     }, [buttonPress, pageNumber]);
+    const premium = useSelector((state) => state.premium.premium);
     const renderItem = ({ item, index }) => {
         return (
             <View style={styles.containerItem}>
                 <WorkoutItem
                     onPress={() => {
                         if (item?.IsPremium) {
-                            if (person?.IsPremium === false || (person?.ExpirationDate < new Date().toISOString())) {
+                            if (person?.IsPremium === false || (premium?.ExpirationDate < new Date().toISOString())) {
                                 setModalPre(true);
                                 return;
-                            } else if (person?.IsPremium === true && (person?.ExpirationDate > new Date().toISOString())) {
+                            } else if (person?.IsPremium === true && (premium?.ExpirationDate > new Date().toISOString())) {
                                 navigation.push('WorkoutDetail', {
                                     item: item
                                 })

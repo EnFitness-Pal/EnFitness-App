@@ -16,6 +16,7 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { AxiosContext } from '../../context/AxiosContext';
 import { AuthContext } from '../../context/AuthContext';
+import PlanScreen from '../../screens/PlanScreen';
 const Tab = createBottomTabNavigator();
 const BottomTabsNav = () => {
     const [loading, setLoading] = useState(false);
@@ -73,13 +74,13 @@ const BottomTabsNav = () => {
               }}
         />
         <Tab.Screen 
-            name="TrackingScreen" 
-            component={TrackingScreen} 
+            name="PlanScreen" 
+            component={PlanScreen} 
               options={{
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
                     <IconBottom
-                        name='news-svgrepo-com'
+                        name='task'
                         size={28}
                         color={focused ? colors.MAIN : colors.GRAYICON}
                     />

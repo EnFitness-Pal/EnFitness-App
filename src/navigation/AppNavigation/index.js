@@ -6,6 +6,7 @@ import { AuthContext } from '../../context/AuthContext'
 import { NavigationContainer } from '@react-navigation/native'
 import { colors } from '../../utility'
 import Lottie from 'lottie-react-native';
+import VerifyScreen from '../../screens/VerifyScreen'
 
 const AppNavigation = () => {
     const { loading, token } = useContext(AuthContext);

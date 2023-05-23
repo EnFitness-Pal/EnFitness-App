@@ -18,7 +18,7 @@ const convertedDateTimeString = dateTime.format('h:mm A D MMM');
     <View style = {[styles.container, styleContainer]}>
         <View style = {{flexDirection: 'column'}}>
               <View style={{ flexDirection: 'row', justifyContent:'space-between', marginHorizontal:widthScreen * 0.05}}>
-                  <Text style={[styles.title, styleTitle]}>{item?.ExerciseName}</Text>
+                  <Text numberOfLines={1} style={[styles.title, styleTitle]}>{item?.ExerciseName}</Text>
                   <Text style={[styles.titledate]}>{convertedDateTimeString}</Text>
                 </View>
             <View style = {{flexDirection: 'row', paddingTop:10, justifyContent:'space-between', marginHorizontal:widthScreen * 0.15}}>
@@ -92,6 +92,7 @@ const styles = StyleSheet.create({
         color: colors.GRAYLIGHT,
         fontWeight: 'bold',
         marginTop: heightScreen * 0.015,
+        width: widthScreen * 0.6,
     },
     icon: {
         // alignSelf: 'center',]

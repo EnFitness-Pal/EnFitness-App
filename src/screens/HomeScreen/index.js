@@ -21,9 +21,11 @@ import Lottie from 'lottie-react-native';
 import Modal from "react-native-modal";
 import Input from '../../components/Input';
 import { getExerciseAdmin, trackingExercise } from '../../api/Tracking';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { AxiosContext } from '../../context/AxiosContext';
 import ModalPre from '../../components/Modal';
+import { getPremium, restorePremium, restoreTest } from '../../redux/action/premium/preRequests';
+import { getAllFav } from '../../redux/action/favorites/favRequests';
 const HomeScreen = () => {
     const [time, setTime] = useState(new Date().getHours());
     const [loading, setLoading] = useState(true);
@@ -43,7 +45,6 @@ const HomeScreen = () => {
         return () => clearInterval(intervalId);
     }, []);
 
-    
     const getGreeting = () => {
         if (time >= 0 && time < 12) {
         return 'Good morning';
@@ -66,6 +67,8 @@ const HomeScreen = () => {
     const [itemEx, setItemEx] = useState(null);
     const [loadingEx, setLoadingEx] = useState(false);
     const [tip, setTip] = useState();
+    const premium = useSelector(state => state.premium.premium);
+    const dispatch = useDispatch();
     const getRandomTip = (tips) => {
         const randomIndex = Math.floor(Math.random() * tips.length);
         return tips[randomIndex];
@@ -79,16 +82,24 @@ const HomeScreen = () => {
     const renderWorkout = ({ item, index }) => {
         return (
             <WorkoutItem
-                item={item} index={index} onPress={() => {
-                    if (person?.IsPremium === false && item?.IsPremium === true) { 
-                        setModalPre(true);
-                        return;
-                    } else if (person?.IsPremium === true || (item?.IsPremium === false && person?.IsPremium === false)) {
-                        navigation.push('WorkoutDetail', {
-                            item: item
-                        })
-                    } 
-                }} />
+                item={item} index={index}
+                onPress={() => {
+                        if (item?.IsPremium) {
+                            if (person?.IsPremium === false || (premium?.ExpirationDate < new Date().toISOString())) {
+                                setModalPre(true);
+                                return;
+                            } else if (person?.IsPremium === true && (premium?.ExpirationDate > new Date().toISOString())) {
+                                navigation.push('WorkoutDetail', {
+                                    item: item
+                                })
+                            }
+                        }
+                        else { 
+                            navigation.push('WorkoutDetail', {
+                                item: item
+                            })
+                        }
+                }}/>
         )
     }
     const renderExercise = ({ item, index }) => {
@@ -103,10 +114,11 @@ const HomeScreen = () => {
             />
         )
     }
+
     const getWorkout = async () => { 
         setLoading(true);
         await getRandomWorkout(1, buttonPress)
-        .then((response) => { 
+        .then((response) => {
             setWorkouts(response?.data.Data); 
             setLoading(false);
         })
@@ -132,7 +144,7 @@ const HomeScreen = () => {
 
     const getExercise = async () => { 
         setLoadingEx(true);
-        await getExerciseAdmin()
+        await axiosContext?.getExerciseAdmin()
         .then((response) => {
             setDataEx(response.data?.Data);
             setLoadingEx(false);
@@ -142,6 +154,19 @@ const HomeScreen = () => {
             setLoadingEx(false);
         })
     }
+
+    const getExerciseFav = async () => {
+        setLoadingEx(true);
+        await getAllFav(dispatch, authContext?.userID)
+        .then((res) => {
+            setLoadingEx(false);
+        })
+        .catch((err) => {
+            console.log(err);
+            setLoadingEx(false);
+        })
+    }
+
     const TrackingExercise = async (name,calo, min) => { 
         setLoadingModal(true);
         Keyboard.dismiss();
@@ -178,13 +203,15 @@ const HomeScreen = () => {
     }, []);
     useFocusEffect(
       useCallback(() => {
-        getExercise();
+          getExercise();
+          getExerciseFav();
         setTimeout(() => setLoadingEx(false),1000)
       }, [navigation]));
     useMemo(() => {
         const randomTip = getRandomTip(data);
         setTip(randomTip);
     }, [(date.toUTCString()).slice(0, 12)]);
+
   return (
     <SafeAreaView style={theme == 'dark' ? styles.container: styles.containerlight}>
     {loading ? <Lottie
@@ -348,7 +375,7 @@ const HomeScreen = () => {
                           setModalVisible(!isModalVisible);
                       }}
                 />}
-              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successfull!":"Enter the number of minutes."}</Text>
+              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successful!":"Enter the number of minutes."}</Text>
               {onSuccess?<Lottie 
                 source={require('../../assets/lottie/91001-success.json')} 
                 autoPlay 

@@ -156,6 +156,17 @@ const ProfileScreen = ({route}) => {
           />
           <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>Settings</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.containerOption}
+          onPress={() => navigation.navigate('License')}
+        >
+          <Ionicons
+            name='ios-card'
+            size={30}
+            color={theme == 'dark'? colors.WHITE: colors.BG }
+          />
+          <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>License</Text>
+        </TouchableOpacity>
         <View style={styles.containerOption}>
           <Ionicons
             name='ios-eye'

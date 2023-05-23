@@ -1,8 +1,8 @@
-import { FlatList, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, Keyboard, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useContext, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import ButtonBack from '../../components/ButtonBack'
-import { colors, heightScreen, widthScreen } from '../../utility'
+import { colors, heightScreen, regexMin, widthScreen } from '../../utility'
 import Carousel from 'react-native-snap-carousel';
 import Video from 'react-native-video';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -14,12 +14,27 @@ import { addWorkoutFav, deleteUserFav, getAllWorkoutFav } from '../../api/Favori
 import { AuthContext } from '../../context/AuthContext'
 import { useFocusEffect } from '@react-navigation/native'
 import { Button } from '@rneui/themed'
+import Input from '../../components/Input'
+import ReactNativeModal from 'react-native-modal'
+import ButtonAdd from '../../components/Button'
+import AnimatedLottieView from 'lottie-react-native'
+import { getMets, trackingExercise } from '../../api/Tracking'
+import { AxiosContext } from '../../context/AxiosContext'
 const WorkoutDetail = ({ route, navigation }) => {
   const [activeSections, setActiveSections] = useState([]);
   const [loading, setLoading] = useState(false);
   const [favID, setFavID] = useState(null);
   const authContext = useContext(AuthContext);
+  const [loadingModal, setLoadingModal] = useState(false);
+  const [error, setError] = useState(false);
   const [checkFav, setCheckFav] = useState(false);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [onSuccess, setOnSuccess] = useState(false);
+  const [minutes, setMinutes] = useState(null);
+  const axiosContext = useContext(AxiosContext);
+  const person = axiosContext?.person;
+
+
   const getWorkoutFav = async () => {
     setLoading(true)
     await getAllWorkoutFav(authContext?.userID,'')
@@ -50,6 +65,7 @@ const WorkoutDetail = ({ route, navigation }) => {
         setLoading(false)
       })
   }
+  console.log(person);
 
   const handleRemoveFav = async () => { 
     setLoading(true)
@@ -63,6 +79,62 @@ const WorkoutDetail = ({ route, navigation }) => {
         setLoading(false);
       })
   }
+
+    const TrackingWorkout = async (min) => { 
+        setLoadingModal(true);
+        Keyboard.dismiss();
+        if (!regexMin.test(min)) {
+            setError('Please enter a valid minutes');
+            setLoadingModal(false);
+            return;
+        } else if(min === null){
+            setError('Please enter minutes');
+            setLoadingModal(false);
+            return;
+
+        } else {
+        // await trackingExercise(authContext?.userID, name, calo, min)
+        //     .then((response) => {
+        //         setOnSuccess(true);
+        //         setLoadingModal(false);
+        //     }).catch((error) => {
+        //         console.log(error);
+        //         console.log(error.response.data);
+        //         setLoadingModal(false);
+        //     });
+        await getMets(
+          route.params.item?.ExerciseName,
+          min,
+          person?.ActivityLevel === 0 ? 'Sedentary' :
+          person?.ActivityLevel === 1 ? 'Lightly Active' :
+          person?.ActivityLevel === 2 ? 'Moderately Active' :
+          person?.ActivityLevel === 3 ? 'Very Active' :
+          'Extremely Active',
+          person?.Height,
+          person?.Weight,
+          person?.BodyFat,
+          person?.Age,
+          person?.Sex === true ? 'Male' : 'Female'
+        )
+        .then(async (response) => {
+          const METs = response.data?.METs;
+          console.log(METs);
+          const calories = (person?.Weight * METs * min) / (60 * min);
+          console.log(calories);
+          await trackingExercise(authContext?.userID, route.params.item?.ExerciseName, Math.ceil(calories), min)
+          .then(() => {
+            setOnSuccess(true);
+            setLoadingModal(false);
+          })
+          .catch((error) => {
+            console.log(error);
+            console.log(error.response.data);
+            setLoadingModal(false);
+          })
+        })
+    }
+    };
+
 
   useFocusEffect(useCallback(()=> {
     getWorkoutFav();
@@ -176,6 +248,32 @@ const WorkoutDetail = ({ route, navigation }) => {
           onPress={() => navigation.goBack()}
           name = 'chevron-back'
         />
+        <View style = {{flexDirection:'row'}}>
+        <Button
+          // loading={loading}
+          icon={{
+              name: 'add',
+              size: 28,
+              color: 'white',
+          }}
+          radius={100}
+          iconContainerStyle={{alignSelf: 'center', justifyContent: 'center', alignItems: 'center', width: widthScreen * 0.12, height: heightScreen * 0.0554}}
+          loadingProps={{
+            size: 'small',
+            color: colors.MAIN,
+          }}
+          buttonStyle={{
+            backgroundColor: colors.BACK,
+            borderColor: 'transparent',
+            borderWidth: 0,
+            height: heightScreen * 0.0554,
+          }}
+          style={{ width: widthScreen * 0.12 }}
+          size={'sm'}
+          onPress={() => {
+            setModalVisible(!isModalVisible)
+          }}
+        />
         <Button
           name = 'share-outline'
           buttonStyle = {{
@@ -195,6 +293,7 @@ const WorkoutDetail = ({ route, navigation }) => {
             alignItems: 'center',
             justifyContent: 'center',
           }}
+          style={{ width: widthScreen * 0.12, marginLeft: widthScreen * 0.02 }}
           onPress={() => {
               if (checkFav) {
                 handleRemoveFav()
@@ -204,7 +303,7 @@ const WorkoutDetail = ({ route, navigation }) => {
           }}
           loading={loading}
           />
-
+        </View>
         </View>
         </SafeAreaView>
         <ScrollView style = {styles.container}>
@@ -293,6 +392,72 @@ const WorkoutDetail = ({ route, navigation }) => {
             />
             </View>
         </ScrollView>
+        <ReactNativeModal 
+            animationIn="zoomIn"
+            animationOut="zoomOut"
+            animationInTiming={800}
+            isVisible={isModalVisible}>
+        <View style={styles.modal}>
+            {loadingModal ? <AnimatedLottieView
+                source={require('../../assets/lottie/97930-loading.json')}
+                autoPlay
+                loop
+                style={{ width: 50, height: 50, alignSelf: 'center' }}
+                  /> :
+            <View>
+            {onSuccess? null:<ButtonAdd
+                title="X"
+                stylesContainer={{width: widthScreen * 0.1, height: widthScreen * 0.1, backgroundColor: colors.BG, borderRadius: 20, alignSelf: 'flex-end'}}
+                      onPress={() => {
+                          setModalVisible(!isModalVisible);
+                      }}
+                />}
+              <Text style = {styles.textTracking}>{onSuccess? "Tracking Successful!":"Enter the number of minutes."}</Text>
+              {onSuccess?<AnimatedLottieView 
+                source={require('../../assets/lottie/91001-success.json')} 
+                autoPlay 
+                loop ={false}
+                duration={900}
+                style={{height: 80, width: 80, marginVertical: heightScreen * 0.01, alignSelf: 'center'}}
+              />
+              :<Input
+                placeholder="Minutes"
+                placeholderTextColor={colors.GRAYLIGHT}
+                keyboardType="numeric"
+                onChangeText={(text) => setMinutes(text)}
+                value={minutes}
+                error={error}
+                onFocus={() => setError('')}
+                stylesContainer={{width: widthScreen * 0.4, alignSelf: 'center'}}
+                  />}
+              {onSuccess?
+              <ButtonAdd
+                stylesContainer={styles.buttonModalSuccess}
+                title="Continue Tracking"
+                type="solid"
+                buttonStyle={{
+                  backgroundColor: colors.MAIN,
+                  borderRadius: 20
+                }}
+                titleStyle={{fontFamily: 'Poppins-Bold', fontSize: 15, fontWeight: 'bold'}}
+                      onPress={() => {
+                          setOnSuccess(false);
+                          setModalVisible(!isModalVisible);
+
+                      }} />
+              :<ButtonAdd
+                stylesContainer={styles.buttonModal}
+                title="Tracking"
+                type="solid"
+                buttonStyle={{
+                  backgroundColor: colors.MAIN,
+                  borderRadius: 20
+                }}
+                titleStyle={{fontFamily: 'Poppins-Bold', fontSize: 15, fontWeight: 'bold'}}
+                      onPress={() => {TrackingWorkout(minutes)}} />}
+                
+                </View>}</View>
+        </ReactNativeModal>
     </View>
   )
 }
@@ -377,5 +542,44 @@ const styles = StyleSheet.create({
     containerContent: {
         flex: 1,
         backgroundColor: colors.BG,
+    },
+    modal: {
+      alignSelf: 'center',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: colors.BG,
+      width: widthScreen * 0.7,
+      height: heightScreen * 0.3,
+      borderRadius: 20,
+      shadowColor: "#000",
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    textTracking: {
+      marginTop:heightScreen * 0.02,
+      fontSize: 16,
+      fontFamily: 'Poppins-Bold',
+      fontWeight: 'bold',
+      alignSelf: 'center',
+      color: colors.MAIN,
+    },
+    buttonModal: {
+      width: widthScreen * 0.3,
+      height: heightScreen * 0.05,
+      backgroundColor: colors.MAIN,
+      borderRadius: 20,
+      marginVertical: heightScreen * 0.03,
+    },
+    buttonModalSuccess: {
+      width: widthScreen * 0.5,
+      height: heightScreen * 0.05,
+      backgroundColor: colors.MAIN,
+      borderRadius: 20,
+      marginVertical: heightScreen * 0.03, 
     }
 })

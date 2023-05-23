@@ -4,7 +4,6 @@ import { colors, heightScreen, widthScreen } from '../../utility'
 import FastImage from 'react-native-fast-image'
 import { Button } from '@rneui/themed'
 import { AuthContext } from '../../context/AuthContext'
-import { addExerciseFav, deleteUserFav, getAllExerciseFav } from '../../api/Favorites'
 import { addFav, deleteFav } from '../../redux/action/favorites/favRequests'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -51,7 +50,6 @@ const Exercise = ({ item, index, onPress}) => {
     useEffect(() => {
         checkFav();
      }, [isCheck])
-
   return (
     <View style = {styles.container}>
         <View style = {styles.containerImage}>
