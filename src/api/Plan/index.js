@@ -1,8 +1,9 @@
 import axios from "axios";
 import { baseURL } from "../../utility";
 
-export function createPlanGPT(WeightGoal, TypeWorkout, FitnessLevel, ActivityLevel, Day) { 
-    return axios.post(`${baseURL}/api/gpt/generates-workout-plan`, {
+export async function createPlanGPT(id, WeightGoal, TypeWorkout, FitnessLevel, ActivityLevel, Day) { 
+    return await axios.post(`${baseURL}/api/gpt/generates-workout-plan`, {
+        "PersonId": id,
         "WeightGoal": WeightGoal,
         "TypeWorkout": TypeWorkout,
         "FitnessLevel": FitnessLevel,

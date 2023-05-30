@@ -1,24 +1,125 @@
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { AxiosContext } from '../../context/AxiosContext'
 
-const WorkoutPlanCard = ({item, index}) => {
-  return (
+const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
+    const [countdown, setCountdown] = useState(5);
+    const [isCounting, setIsCounting] = useState(false);
+    const axiosContext = useContext(AxiosContext)
+    console.log(item);
+
+    const [type, setType] = useState(
+        item?.Status === 'none'?'play':
+        item?.Status === 'done'? 'submit':
+        item?.Status === 'success'? 'success':"play"
+    );
+    useEffect(() => {
+        if (isCounting && countdown > 0) {
+            console.log(countdown);
+        const timer = setInterval(() => {
+            setCountdown((prevCountdown) => prevCountdown - 1);
+        }, 1000);
+
+        return () => {
+            clearInterval(timer);
+        };
+        }
+        else if (countdown == 0) {
+            setIsCounting(false);
+            axiosContext.updateStatusPlan(item?.Id,"done")
+            .then((response)=>{
+                console.log("response",response)
+              })
+              .catch((err)=>{
+                console.log(err)
+              })
+            setType('submit')
+        }
+    }, [isCounting, countdown]);
+
+    const formatTime = (time) => {
+        const minutes = Math.floor(time / 60);
+        const seconds = time % 60;
+        return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    };
+
+    const playCountdown = () => {
+        setType('pause')
+        setIsCounting(true)
+    };
+
+    const updateStatusSuccess = async () => {
+        await axiosContext.updateStatusPlan(item?.Id,"success")
+        .then((respone)=>{
+          console.log('responsedata',respone.data)
+        })
+        .catch((err)=>{
+          console.log(err.respone.data)
+        })
+      }
+
+    const PlayAfterPauseCountdown = () => {
+        setType('pause')
+        setIsCounting(true)
+    };
+    const pauseCountdown = () => {
+        // setType('pause')
+        // setIsCounting(true)
+        setType('playafterpause')
+        setIsCounting(false)
+    };
+    
+
+    return (
     <View style={styles.container}>
         <View style = {styles.header}>
             <View style = {styles.minutes}>
-                <Text style = {{ fontSize:35, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{item?.Minutes}</Text>
+            {type == 'play'?
+                <Text style = {{ fontSize:35, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{item?.Minutes}</Text>:
+            type == 'pause'?
+            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{formatTime(countdown)}</Text>:
+            type == 'playafterpause'?
+            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{formatTime(countdown)}</Text>:
+            type == 'submit'?
+            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{formatTime(countdown)}</Text>:
+            type == 'success'?
+            <Text style = {{ fontSize:35, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{item?.Minutes}</Text>:null
+            }
                 <Text style = {{fontSize:15, fontFamily:'Poppins', color:colors.BG, fontWeight:'500'}}>Minutes</Text>
             </View>
-            <TouchableOpacity style = {styles.icon}>
-                  <Ionicons name="md-play-outline" size={35} color={colors.BG} style={{marginLeft:heightScreen * 0.02}} />
-            </TouchableOpacity>
+            {isVisibleButton? null 
+            :type == 'play' ?
+            <TouchableOpacity style = {styles.icon} onPress ={playCountdown}>
+                  <Ionicons name={'ios-play-outline'} size={35} color={colors.BG} style={{marginLeft:heightScreen * 0.02}} />
+            </TouchableOpacity>:
+            type == 'playafterpause'? 
+            <TouchableOpacity style = {styles.icon} onPress ={PlayAfterPauseCountdown}>
+                  <Ionicons name={'ios-play-outline'} size={35} color={colors.BG} style={{marginLeft:heightScreen * 0.02}} />
+            </TouchableOpacity>:
+            type == 'pause'? 
+            <TouchableOpacity style = {styles.icon} onPress ={pauseCountdown}>
+                  <Ionicons name={'ios-pause-outline'} size={35} color={colors.BG} style={{marginLeft:heightScreen * 0.02}} />
+            </TouchableOpacity>:
+            type == 'submit'?
+            <TouchableOpacity style = {styles.icon} onPress ={()=>{
+                submitCountdown();
+                updateStatusSuccess();
+                setType('success')
+            }}>
+                  <Ionicons name={'ios-add-circle-outline'} size={38} color={colors.MAIN} style={{marginLeft:heightScreen * 0.02}} />
+            </TouchableOpacity>:
+            type == 'success'?
+            <View style = {styles.icon}>
+                  <Ionicons name={'ios-checkmark-circle-outline'} size={35} color={'#138636'} style={{marginLeft:heightScreen * 0.02}} />
+            </View>:null
+            }
         </View>
         <View style= {styles.containerTitle}>
         <Text
             numberOfLines={2}
-              style={styles.texttitle}>{item?.["Exercise Name"]}</Text>   
+              style={styles.texttitle}>{item?.ExerciseName}</Text>   
         </View>
         <View style = {styles.containerReps}>
             <Text style = {styles.textReps}>
@@ -31,7 +132,7 @@ const WorkoutPlanCard = ({item, index}) => {
             </Text>
         </View>
         <View style = {styles.calories}>
-              <Text style={styles.textcalories}>{item?.["Total Calories"]} calories</Text>
+              <Text style={styles.textcalories}>{item?.TotalCalories} calories</Text>
         </View>
     </View>
   )
@@ -53,19 +154,19 @@ const styles = StyleSheet.create({
         padding: heightScreen * 0.005,
     },
     header: {
-        width: widthScreen * 0.3,
+        width: widthScreen * 0.35,
         height: heightScreen * 0.08,
         flexDirection: 'row',
     },
     minutes: {
-        width: widthScreen * 0.17,
+        width: widthScreen * 0.19,
         height: heightScreen * 0.07,
         alignItems: 'center',
         justifyContent: 'center',
     },
     icon: {
-        width: widthScreen * 0.13,
-        height: heightScreen * 0.07,
+        // width: widthScreen * 0.23,
+        height: heightScreen * 0.08,
         alignItems: 'center',
         justifyContent: 'center',
     },

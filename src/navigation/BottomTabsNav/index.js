@@ -6,9 +6,7 @@ import {
 import { colors, heightScreen } from '../../utility';
 import ProfileScreen from '../../screens/ProfileScreen';
 import InsigntScreen from '../../screens/InsigntScreen';
-import TrackingScreen from '../../screens/TrackingScreen';
 import HomeScreen from '../../screens/HomeScreen';
-import { getPerson } from '../../api/Person/GetPerson';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import IconBottom from '../../assets/fonts';
 import FastImage from 'react-native-fast-image';
@@ -16,7 +14,7 @@ import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { AxiosContext } from '../../context/AxiosContext';
 import { AuthContext } from '../../context/AuthContext';
-import PlanScreen from '../../screens/PlanScreen';
+import YourPlan from '../../screens/YourPlan';
 const Tab = createBottomTabNavigator();
 const BottomTabsNav = () => {
     const [loading, setLoading] = useState(false);
@@ -74,8 +72,8 @@ const BottomTabsNav = () => {
               }}
         />
         <Tab.Screen 
-            name="PlanScreen" 
-            component={PlanScreen} 
+            name="YourPlan" 
+            component={YourPlan} 
               options={{
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (

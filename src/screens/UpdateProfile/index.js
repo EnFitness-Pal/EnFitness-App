@@ -23,6 +23,7 @@ const UpdateProfile = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
   const [isVisible, setVisible] = useState(false);
   const [isVisibleModal,setVisibleModal] = useState(false);
+  const [isVisibleImage, setIsVisibleImage] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [transferred, setTransferred] = useState(0);
   const [gender, setGender] = useState([
@@ -187,7 +188,7 @@ const UpdateProfile = ({ navigation }) => {
 
     }
   };
-
+  console.log(isVisibleImage)
   const animatedKeyBoard = (motion, value, duration) => {
     Animated.timing(
           motion,
@@ -257,7 +258,7 @@ const UpdateProfile = ({ navigation }) => {
       <FastImage
         style={{height: widthScreen * 0.26, width: widthScreen * 0.26, borderRadius: 60,}}
         source={{uri: inputs?.image}}
-        />
+        />        
       {edit?<TouchableOpacity onPress={handleChoosePhoto} style={styles.buttonCamera}>
         <Ionicons 
           name='camera-outline' 
@@ -371,7 +372,11 @@ const UpdateProfile = ({ navigation }) => {
       theme={theme == 'dark' ? 'DARK' : 'LIGHT'}
     >
       <View style={[styles.bottomSheet, { backgroundColor: theme == 'dark'? colors.WHITE: colors.BACK}]}>
-        <TouchableOpacity style = {styles.buttonOptions}>
+        <TouchableOpacity 
+        onPress={()=>{
+          setVisible(false);
+          setIsVisibleImage(true)}}
+        style = {styles.buttonOptions}>
           <View style = {{backgroundColor:colors.GRAYDARK, padding:7, borderRadius:20}}>
           <Ionicons name='ios-person-circle-outline' size={28} color={colors.WHITE} />
           </View>
@@ -416,6 +421,27 @@ const UpdateProfile = ({ navigation }) => {
         }}
         onAnimationComplete={() => console.log('onAnimationComplete')}
         backgroundColor={colors.BACK} />
+      </View>
+    </ReactNativeModal>
+    <ReactNativeModal
+      isVisible={isVisibleImage}
+    >
+      <View style = {styles.containerModalImage}>
+        <TouchableOpacity
+          onPress={() => setIsVisibleImage(!isVisibleImage)}
+        >
+        <Ionicons
+          name={'ios-close-circle'}
+          size={28}
+          color={colors.WHITE}
+          style = {{marginTop:heightScreen * 0.07, marginLeft:widthScreen * 0.9}}
+        />
+        </TouchableOpacity> 
+        <FastImage
+          source={{uri: inputs?.image}}
+          style={{flex: 1, marginBottom:heightScreen * 0.07}}
+          resizeMode={FastImage.resizeMode.contain}
+        />
       </View>
     </ReactNativeModal>
     </SafeAreaView>
@@ -525,5 +551,11 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#1CD760'
+  },
+  containerModalImage:{
+    width: widthScreen,
+    height: heightScreen,
+    right:widthScreen * 0.05,
+    backgroundColor:colors.BG,
   }
 })

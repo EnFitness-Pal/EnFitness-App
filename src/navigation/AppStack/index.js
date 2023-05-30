@@ -16,6 +16,7 @@ import PremiumScreen from '../../screens/PremiumScreen';
 import WorkoutPlanner from '../../screens/WorkoutPlanner';
 import License from '../../screens/License';
 import WorkoutPlanDetail from '../../screens/WorkoutPlanDetail';
+import PlanScreen from '../../screens/PlanScreen';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -65,6 +66,9 @@ const AppStack = () => {
             headerShown: false,
       }} />  
       <Stack.Screen name="WorkoutPlanDetail" component={WorkoutPlanDetail} options={{
+            headerShown: false,
+      }} /> 
+      <Stack.Screen name="PlanScreen" component={PlanScreen} options={{
             headerShown: false,
       }} /> 
       </Stack.Navigator>

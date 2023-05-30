@@ -1,268 +1,88 @@
 import { FlatList, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import CreatePlan from '../../components/CreatePlan'
 import WorkoutPlanCard from '../../components/WorkoutPlanCard'
 import Button from '../../components/Button'
-import { useNavigation } from '@react-navigation/native'
+import { useFocusEffect, useNavigation } from '@react-navigation/native'
 import { ScrollView } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import WorkoutAdmin from '../../components/WorkoutAdmin'
 import { planData } from '../../assets/PlanData'
+import { AxiosContext } from '../../context/AxiosContext'
+import { AuthContext } from '../../context/AuthContext'
+import AnimatedLottieView from 'lottie-react-native'
+import ReactNativeModal from 'react-native-modal'
+import { trackingExercise } from '../../api/Tracking'
+import ButtonBack from '../../components/ButtonBack'
 
 const PlanScreen = () => {
   const navigation = useNavigation();
+  const axiosContext = useContext(AxiosContext)
+  const authContext = useContext(AuthContext)
   const [day, setDay] = useState('Day1')
   const data = planData;
+  const [loading, setLoading] = useState(false)
+  const [dataArray, setDataArray] = useState([]);
+  const [dataWorkout, setDataWorkout] = useState([]);
+  const [loadingTracking, setLoadingTracking] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
-  const dataArray = 
-
-  {
-    "Day1": [
-      {
-        "Exercise Name": "Brisk Walking",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 400,
-        "Minutes": 20,
-        "Total Calories": 400
-      },
-      {
-        "Exercise Name": "Bench Step-Ups",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 175,
-        "Minutes": 10,
-        "Total Calories": 875
-      },
-      {
-        "Exercise Name": "Stationary Bicycle",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 600,
-        "Minutes": 20,
-        "Total Calories": 600
-      },
-      {
-        "Exercise Name": "Jogging",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 600,
-        "Minutes": 20,
-        "Total Calories": 600
-      }
-    ],
-    "Day2": [
-      {
-        "Exercise Name": "Step-Ups on Box",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 150,
-        "Minutes": 10,
-        "Total Calories": 750
-      },
-      {
-        "Exercise Name": "Elliptical Machine",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 800,
-        "Minutes": 20,
-        "Total Calories": 800
-      },
-      {
-        "Exercise Name": "Jumping Jacks",
-        "Sets": 5,
-        "Reps": 20,
-        "Calories Per Exercise": 75,
-        "Minutes": 10,
-        "Total Calories": 375
-      },
-      {
-        "Exercise Name": "Bicycling",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 700,
-        "Minutes": 20,
-        "Total Calories": 700
-      }
-    ],
-    "Day3": [
-      {
-        "Exercise Name": "Calf Raises",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 100,
-        "Minutes": 10,
-        "Total Calories": 500
-      },
-      {
-        "Exercise Name": "Stair Climbing",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 700,
-        "Minutes": 20,
-        "Total Calories": 700
-      },
-      {
-        "Exercise Name": "High-Knee Running in Place",
-        "Sets": 5,
-        "Reps": 20,
-        "Calories Per Exercise": 150,
-        "Minutes": 10,
-        "Total Calories": 750
-      },
-      {
-        "Exercise Name": "Rowing Machine",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 600,
-        "Minutes": 20,
-        "Total Calories": 600
-      }
-    ],
-    "Day4": [
-      {
-        "Exercise Name": "Jump Rope",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 100,
-        "Minutes": 10,
-        "Total Calories": 500
-      },
-      {
-        "Exercise Name": "Treadmill Jogging",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 700,
-        "Minutes": 20,
-        "Total Calories": 700
-      },
-      {
-        "Exercise Name": "Side Step-Ups",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 175,
-        "Minutes": 10,
-        "Total Calories": 875
-      },
-      {
-        "Exercise Name": "Elliptical Machine",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 800,
-        "Minutes": 20,
-        "Total Calories": 800
-      }
-    ],
-    "Day5": [
-      {
-        "Exercise Name": "Seated Bicycle",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 500,
-        "Minutes": 20,
-        "Total Calories": 500
-      },
-      {
-        "Exercise Name": "Touchdowns",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 150,
-        "Minutes": 10,
-        "Total Calories": 750
-      },
-      {
-        "Exercise Name": "Skaters",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 200,
-        "Minutes": 10,
-        "Total Calories": 1000
-      },
-      {
-        "Exercise Name": "Jogging",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 600,
-        "Minutes": 20,
-        "Total Calories": 600
-      }
-    ],
-    "Day6": [
-      {
-        "Exercise Name": "Tuck Jumps",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 250,
-        "Minutes": 5,
-        "Total Calories": 1250
-      },
-      {
-        "Exercise Name": "Mountain Climbers",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 150,
-        "Minutes": 10,
-        "Total Calories": 750
-      },
-      {
-        "Exercise Name": "Elliptical Machine",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 800,
-        "Minutes": 20,
-        "Total Calories": 800
-      },
-      {
-        "Exercise Name": "Jumping Jacks",
-        "Sets": 5,
-        "Reps": 20,
-        "Calories Per Exercise": 75,
-        "Minutes": 10,
-        "Total Calories": 375
-      }
-    ],
-    "Day7": [
-      {
-        "Exercise Name": "Stationary Bike",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 600,
-        "Minutes": 20,
-        "Total Calories": 600
-      },
-      {
-        "Exercise Name": "Bench Step-Ups",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 175,
-        "Minutes": 10,
-        "Total Calories": 875
-      },
-      {
-        "Exercise Name": "Lunges",
-        "Sets": 5,
-        "Reps": 10,
-        "Calories Per Exercise": 200,
-        "Minutes": 10,
-        "Total Calories": 1000
-      },
-      {
-        "Exercise Name": "Brisk Walking",
-        "Sets": 1,
-        "Reps": 1,
-        "Calories Per Exercise": 400,
-        "Minutes": 20,
-        "Total Calories": 400
-      }
-    ]
+  const handleGetDataArray = async () => {
+      setLoading(true);
+      await axiosContext.getPlan(authContext.userID)
+      .then((response) =>{
+          setDataArray(response.data)
+          setLoading(false);
+      })
+      .catch((error) => {
+          console.log(error);
+          setLoading(false);
+      });
+  }
+  for (let i = 1; i <= 7; i++) { 
+    if (dataArray[`Day${i}`] === null) {
+      delete dataArray[`Day${i}`];
     }
+  }
+
+  useFocusEffect(
+      useCallback(() => {
+        handleGetDataArray()
+      }, [])
+  );
+
+  const TrackingWorkout = async () => {
+      setLoadingTracking(true);
+      setIsVisible(true);
+      await trackingExercise(authContext?.userID, dataWorkout?.ExerciseName, (dataWorkout?.TotalCalories / dataWorkout?.Minutes), dataWorkout?.Minutes)
+        .then((res) => { 
+            console.log(res.data);
+            setLoadingTracking(false);
+          })
+        .catch((err) => { 
+          console.log('errorTrackingWK', err);
+          setLoadingTracking(false);
+        })
+  }
+
+  console.log('dataArray',dataArray)
 
   return (
     <SafeAreaView style = {styles.container}>
       <ScrollView>
-        <Text style = {styles.title}>My Plan</Text>
+        <View style = {{
+          flexDirection: 'row',
+          marginHorizontal: widthScreen * 0.05,
+          alignItems: 'center'}}>
+          <ButtonBack
+            name={'chevron-back'}
+            size={28}
+            onPress={() => navigation.goBack()}
+          />
+          <Text style = {styles.title}>My Plan</Text>
+        </View>
         <CreatePlan
           onPress={() => navigation.navigate('WorkoutPlanner')}
         />
@@ -278,9 +98,17 @@ const PlanScreen = () => {
             />
             <Text style = {styles.textplan}>See your workout plan</Text>
         </View>
-        <View style={styles.containerDay}>
+        {loading ? <AnimatedLottieView
+                source={require('../../assets/lottie/97930-loading.json')}
+                autoPlay
+                loop
+                style={{ width: 50, height: 50, alignSelf: 'center' }}
+                  />:
+          dataArray?
+          <>
+          <View style={styles.containerDay}>
           <FlatList
-            data={Object.keys(dataArray)}
+            data={Object.keys(dataArray).filter(key => key.startsWith('Day'))}
             renderItem={({ item }) =><Button
                     title={item.replace('Day', 'Day ')}
                     stylesContainer={{
@@ -301,11 +129,19 @@ const PlanScreen = () => {
         <View style = {{}}>
           <FlatList
             data={dataArray[day]}
-            renderItem={({ item }) => <WorkoutPlanCard item={item} />}
+            renderItem={({ item }) => <WorkoutPlanCard 
+              item={item} 
+              submitCountdown = {()=>{
+                TrackingWorkout();
+                setDataWorkout(item)
+              }}/>}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
           </View>
+        </>
+        : <Text style = {styles.textwarn}>You don't have any workout plan!</Text>
+        }
         <View style = {styles.seperator}/>
         <View style = {styles.containerPlan}>
           <FastImage
@@ -335,6 +171,36 @@ const PlanScreen = () => {
           }}
         />
       </ScrollView>
+      <ReactNativeModal 
+        animationIn="zoomIn"
+        animationOut="zoomOut"
+        animationInTiming={800}
+        isVisible={isVisible}>
+        {loadingTracking ?
+        <View style={styles.modal}>
+          <AnimatedLottieView 
+            source={require('../../assets/lottie/97930-loading.json')} 
+            autoPlay 
+            loop
+            style={{height: 50, width: 50, alignSelf:'center'}}
+          />
+        </View>
+        : <View style={styles.modal}>
+          <Text style = {styles.textTracking}>Tracking Successful!</Text>
+          <AnimatedLottieView 
+            source={require('../../assets/lottie/91001-success.json')} 
+            autoPlay 
+            loop ={false}
+            duration={900}
+            style={{height: 80, width: 80, marginVertical: heightScreen * 0.01}}
+          />
+          <Button
+            stylesContainer={styles.buttonModal}
+            title="Continue Tracking"
+            titleStyle={{fontFamily: 'Poppins-Bold', fontSize: 15, fontWeight: 'bold'}}
+            onPress={() => setIsVisible(!isVisible)} />
+        </View>}
+      </ReactNativeModal>
     </SafeAreaView>
   )
 }
@@ -352,6 +218,7 @@ const styles = StyleSheet.create({
         color: colors.WHITE,
         alignSelf: 'center',
         fontFamily: 'Poppins',
+        marginLeft: widthScreen * 0.23
     },
     seperator: {
       height: 6,
@@ -372,5 +239,44 @@ const styles = StyleSheet.create({
     },
     containerDay:{
       height: heightScreen * 0.07,
-    }
+    },
+  modal: {
+    alignSelf: 'center',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.BG,
+    width: widthScreen * 0.8,
+    height: heightScreen * 0.35,
+    borderRadius: 20,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  textTracking: {
+    fontSize: 20,
+    fontFamily: 'Poppins-Bold',
+    fontWeight: 'bold',
+    color: colors.MAIN,
+  },
+  buttonModal: {
+    width: widthScreen * 0.6,
+    height: heightScreen * 0.05,
+    backgroundColor: colors.MAIN,
+    borderRadius: 20,
+    marginVertical: heightScreen * 0.02,
+    marginTop: heightScreen * 0.05
+  },
+  textwarn:{
+    marginTop: heightScreen * 0.03,
+    alignSelf:'center',
+    fontSize: 16,
+    fontFamily:'Poppins',
+    color:colors.WHITE,
+    fontWeight:'600'
+  }
 })

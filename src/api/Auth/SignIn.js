@@ -9,3 +9,7 @@ export function getAllUsers() {
   
   return axios.get(`${baseURL}/api/account`);
 }
+
+export function TriggerCount(id) {
+  return axios.put(`${baseURL}/api/history/trigger/${id}`);
+}

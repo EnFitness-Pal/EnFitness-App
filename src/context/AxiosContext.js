@@ -137,9 +137,28 @@ export const AxiosProvider = ({ children }) => {
     }
 
     function createPlan(id, data) {
-        return axiosInstance.post(`/api/plan/${id}`, data)
+        console.log("id", id);
+        console.log("data", data);
+        return axiosInstance.post(`/api/plan/${id}`, data);
     }
 
+    function getPlan(id) {
+        return axiosInstance.get(`/api/plan/${id}`);
+    }
+
+    function checkPlan(id) {
+        return axiosInstance.get(`/api/plan/check/${id}`);
+    }
+    function deletePlan(id) {
+        return axiosInstance.delete(`/api/plan/${id}`);
+    }
+
+    function getCount(id) {
+        return axiosInstance.get(`/api/history/${id}`);
+    }
+    function updateStatusPlan(id, str){
+        return axiosInstance.put(`/api/plan/${id}?triggerStr=${str}`);
+    }
     useEffect(() => { 
         getPersonStack(authContext.userID);
     },[])
@@ -157,7 +176,12 @@ export const AxiosProvider = ({ children }) => {
                 loading,
                 getAllExercise,
                 getExerciseAdmin,
-                createPlan
+                createPlan,
+                getPlan,
+                deletePlan,
+                checkPlan,
+                getCount,
+                updateStatusPlan
             }}>
             {children}
         </Provider>

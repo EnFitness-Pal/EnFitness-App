@@ -1,5 +1,5 @@
 import { FlatList, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import ButtonBack from '../../components/ButtonBack'
 import CardDays from '../../components/CardDays'
@@ -9,24 +9,79 @@ import FastImage from 'react-native-fast-image'
 import Button from '../../components/Button'
 import { AxiosContext } from '../../context/AxiosContext'
 import { AuthContext } from '../../context/AuthContext'
+import ModalGlobal from '../../components/ModalGlobal'
 
 const WorkoutPlanDetail = ({ route, navigation }) => {
     const axiosContext = useContext(AxiosContext)
     const authContext = useContext(AuthContext)
     const [activeSections, setActiveSections] = useState([]);
+    const [isVisible, setIsVisible] = useState(false);
+    const [type, setType] = useState('');
+    const [check, setCheck] = useState(false);
+    console.log("item", item);
     const item = route.params.item
     const [loading, setLoading] = useState(false);
-    const handleJoinPlan = async () => {
-        setLoading(true);
-        await axiosContext.createPlan(authContext.userID, item)
-        .then((respone) => {
-            console.log(respone.data);
-            setLoading(false);
+    const handleCheck = async () => {
+        await axiosContext.checkPlan(authContext.userID)
+        .then((response) =>{
+            if (response.data) {
+                setCheck(true)
+            } else {
+                setCheck(false)
+            }
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((error) => {
+            console.log(error);
+            setCheck(false);
         });
     }
+
+    const handleJoinPlanCurrent = async () => {
+        setLoading(true);
+        setType('loading');
+        await axiosContext.deletePlan(authContext.userID)
+        .then(async (response)=>{
+            if (response.data) {
+                await axiosContext.createPlan(authContext.userID, item)
+                    .then((respone) => {
+                        setLoading(false);
+                        setType('success')
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                        setLoading(false);
+                    });     
+            }
+        })
+        .catch((error) => {
+            console.log(error);
+        });
+    }
+
+    const handleJoinPlan = async () => {
+        setLoading(true);
+        setType('loading')
+        setIsVisible(true)
+        if (check) {
+            setType('hasPlan');
+            setLoading(false);
+        }
+        else {
+            await axiosContext.createPlan(authContext.userID, item)
+            .then((respone) => {
+                setLoading(false);
+                setType('success')
+            })
+            .catch((err) => {
+                console.log(err);
+                setLoading(false);
+            });            
+        }
+
+    }
+    useEffect(() => {
+        handleCheck();
+    },[])
 
     let total = 0;
     let totalMinutes = 0;
@@ -34,7 +89,6 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
     for (const key in item) {
     if (key.startsWith('Day')) {
       const dayObjects = item[key];
-      const numberOfObjects = dayObjects.length;
       total += item[key].length;
     }
     }
@@ -42,7 +96,7 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
     _renderHeader = (section) => {
         let totalMinutes = 0;
         for (let i = 0; i < item[section].length; i++) {
-            totalMinutes += item[section][i].Minutes;
+            totalMinutes += Number(item[section][i].Minutes);
         }
     return (
         <CardDays 
@@ -56,7 +110,9 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
     return (
         <FlatList
         data={item[section]}
-        renderItem={({ item }) => <WorkoutPlanCard item={item} />}
+        renderItem={({ item }) => <WorkoutPlanCard 
+        isVisibleButton
+        item={item} />}
         horizontal
         showsHorizontalScrollIndicator={false}
         style={{marginLeft:widthScreen * 0.05}}
@@ -119,6 +175,20 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
         />
         </View>
         </View>
+        <ModalGlobal
+            isVisible = {isVisible}
+            type = {type}
+            onPress={() => {
+                setIsVisible(false);
+                navigation.goBack();
+            }}
+            onPressOK={handleJoinPlanCurrent}
+            lottie={type == 'loading'? require('../../assets/lottie/97930-loading.json'): type == 'success'? require('../../assets/lottie/successplan.json'):require('../../assets/lottie/sure-person.json')}
+            onPressCancel={()=> setIsVisible(false)}
+            loop={loading}
+            stylesIcon={type == 'loading'? styles.loading : type == 'success'? null: styles.hasPlan}
+            text={type == 'loading'? null: type == 'success'? "Amazing! You've joined this plan. Just do it!!!": "Do you want to leave your current plan?"}
+        />
     </ScrollView>
     </SafeAreaView>
   )
@@ -160,4 +230,15 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight:'700'
     },
+    hasPlan: {
+        width: widthScreen * 0.5,
+        height: heightScreen * 0.22,
+        marginTop: heightScreen * 0.017
+    },
+    loading: {
+        width: widthScreen * 0.22,
+        height: heightScreen * 0.1,
+        alignSelf: 'center',
+        marginTop:heightScreen * 0.07
+    }
 })

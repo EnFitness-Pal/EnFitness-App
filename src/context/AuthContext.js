@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useEffect, useState } from 'react'
 import { Alert } from 'react-native';
 import { forgot, verify } from '../api/Auth/Forgot';
-import { signIn } from '../api/Auth/SignIn';
+import { TriggerCount, signIn } from '../api/Auth/SignIn';
 import { signUp} from '../api/Auth/SignUp';
 import { getPerson } from '../api/Person';
 
@@ -95,7 +95,13 @@ export const AuthProvider = ({ children }) => {
                     { text: 'OK', onPress: logout }
                 ])
             }
-            
+            await TriggerCount(userID || null)
+            .then((res) => {
+                console.log(res.data)
+            })
+            .catch((err) => {
+                console.log('errortrigger', err);
+            });
             setLoading(false);
         } catch (err) {
             console.log(err);

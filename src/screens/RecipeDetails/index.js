@@ -118,7 +118,6 @@ const RecipeDetails = ({ route }) => {
       data?.find(nutrient => nutrient.name === "Fat")?.amount.toFixed(0),
       data?.find(nutrient => nutrient.name === "Protein")?.amount.toFixed(0),
     ).then((res) => {
-      console.log(res);
       setModalVisible(!isModalVisible);
       setLoading(false);
     })

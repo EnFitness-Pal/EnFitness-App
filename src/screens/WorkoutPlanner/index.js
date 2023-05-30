@@ -1,5 +1,5 @@
 import { FlatList, SafeAreaView, StyleSheet, Text, View } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { ScrollView } from 'react-native'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import ButtonBack from '../../components/ButtonBack'
@@ -11,17 +11,29 @@ import { useSelector } from 'react-redux'
 import TypeWorkout from '../../components/TypeWorkout'
 import { createPlanGPT } from '../../api/Plan'
 import ReactNativeModal from 'react-native-modal'
+import ModalPre from '../../components/Modal';
 import AnimatedLottieView from 'lottie-react-native'
+import { AuthContext } from '../../context/AuthContext'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import { Tooltip } from '@rneui/themed'
+import { AxiosContext } from '../../context/AxiosContext'
+import { useFocusEffect } from '@react-navigation/native'
 
 const WorkoutPlanner = ({ navigation }) => {
+    const authContext = useContext(AuthContext)
+    const axiosContext = useContext(AxiosContext)
+    const person = axiosContext?.person;
     const theme = useSelector(state => state.state.theme);
     const [buttonPress, setButtonPress] = useState('Beginner');
     const [open, setOpen] = useState(false);
+    const [openCount, setOpenCount] = useState(false);
+    const [count, setCount] = useState(0);
     const [openAL, setOpenAL] = useState(false);
     const [type, setType] = useState('Full Body');
     const [day, setDay] = useState('1');
     const [loading, setLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [isVisiblePre, setIsVisiblePre] = useState(false);
     const [weightgoal, setWeightgoal] = useState([
         { label: 'Maintain Weight', value: 'maintainweight' },
         { label: 'Cutting', value: 'cutting' },
@@ -60,19 +72,51 @@ const WorkoutPlanner = ({ navigation }) => {
             image: require('../../assets/typeworkout/stretching.png'),
         }
     ]
-    const handleCreate = async () => { 
-        setLoading(true);
-        setIsVisible(true);
-        await createPlanGPT(value, type, buttonPress, valueAL, Number(day))
-        .then((res) => {
-            console.log(res.data);
-            setLoading(false);
-            setIsVisible(false);
+
+    const getCount = async () => {
+        await axiosContext.getCount(authContext.userID)
+        .then((res)=>{
+            if (person?.IsPremium === false) {
+                setCount(2 - res.data)
+            } else {
+                setCount(10 - res.data)
+            }
         })
-        .catch((err) => {
-            console.log(err);
+        .catch((err)=>{
+            console.error(err)
         })
     }
+
+    const handleCreate = async () => {
+        setLoading(true);
+        setIsVisible(true);
+        try {
+          const res = await createPlanGPT(authContext.userID, value, type, buttonPress, valueAL, Number(day));
+          setLoading(false);
+          setIsVisible(false);
+          let dataGenerate = await {
+            "WeightGoal": value === 'maintainweight' ? "Maintain Weight" : value === 'cutting' ? "Cutting" : "Bulking",
+            "TypeWorkout": type,
+            "FitnessLevel": buttonPress,
+            "ActivityLevel": valueAL === 'sedentary' ?
+              "Sedentary" : valueAL === 'lightlyactive' ?
+                "Lightly Active" : valueAL === 'moderatelyactive' ?
+                  "Moderately Active" : valueAL === 'veryactive' ?
+                    "Very Active" : "Extremely Active",
+            ...res.data
+          };
+          console.log("dataGenerate", dataGenerate);
+          navigation.push('WorkoutPlanDetail', {
+            item: dataGenerate
+          });
+        } catch (err) {
+          console.log(err);
+        }
+      };
+    useFocusEffect(
+      useCallback(() => {
+        getCount();
+      }, []));
 
   return (
     <SafeAreaView style = {styles.container}>
@@ -82,7 +126,20 @@ const WorkoutPlanner = ({ navigation }) => {
                 size={28}
                 onPress={() => navigation.goBack()}
             />
-            <Text style = {{fontSize: 18, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center', marginLeft:widthScreen * 0.06}}>Create your workout plan</Text>
+            <Text style = {{fontSize: 18, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center'}}>Create your workout plan</Text>
+            <Tooltip
+                popover={<Text style={{color:colors.WHITE, fontWeight:"600"}}>You have {count || 0} turns</Text>}
+                visible={openCount}
+                onOpen={() => setOpenCount(true)}
+                onClose={() => setOpenCount(false)}
+                withOverlay={false}
+                closeOnlyOnBackdropPress={true}
+                backgroundColor={colors.SILVER}         
+                height={heightScreen*0.04}
+                width={widthScreen*0.6}
+                >
+                <MaterialIcons name="notification-important" color={colors.MAIN} size={30}/>
+            </Tooltip>
         </View>
         <View style = {styles.seperator}/>
         <ScrollView>
@@ -316,11 +373,18 @@ const WorkoutPlanner = ({ navigation }) => {
                 minimumTrackStyle={{backgroundColor: colors.MAIN}}
                 containerStyle={{width: widthScreen * 0.85, alignSelf: 'center'}}
             />
-            <Button
+            {count == 0 ?<Button
+                icon={'rocket1'}
+                stylesIcon={{fontSize:20, color: colors.MAIN}}
+                title={'Upgrade plan to continue'}
+                stylesContainer={{backgroundColor: colors.SILVER, width: widthScreen * 0.8, height: heightScreen * 0.05,alignSelf: 'center', marginTop: heightScreen * 0.03}}
+                stylesTitle={{fontSize:16,}}
+                onPress={() => setIsVisiblePre(!isVisiblePre)}
+            />:<Button
                 title={'Create Workout Plan'}
                 stylesContainer={{backgroundColor: colors.MAIN, width: widthScreen * 0.6, height: heightScreen * 0.05,alignSelf: 'center', marginTop: heightScreen * 0.03}}
                 onPress={() => handleCreate()}
-            />
+            />}
         </ScrollView>
     <ReactNativeModal
       isVisible = {isVisible}
@@ -334,6 +398,14 @@ const WorkoutPlanner = ({ navigation }) => {
                     /> 
       </View>
     </ReactNativeModal>
+    <ModalPre
+        onPressButton={() => {
+                setIsVisiblePre(false);
+                navigation.navigate('PremiumScreen');
+            }
+        }
+        onPressIgnore={() => setIsVisiblePre(false)}
+        isVisible={isVisiblePre} />
     </SafeAreaView>
   )
 }
@@ -349,6 +421,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginHorizontal: widthScreen * 0.05,
         alignItems: 'center',
+        justifyContent:'space-between'
     },
     seperator: {
       height: 0.5,
