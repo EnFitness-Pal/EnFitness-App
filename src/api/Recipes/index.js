@@ -31,3 +31,7 @@ export function addTrackingRecipe(id, meal, name, calories, carbs, fat, protein)
             "TrackingDate": new Date().toISOString()
         });
 }
+
+export function createMealPlan(date, targetCalories, diet, exclude){
+    return axios.get(`${RecipeURL}/mealplanner/generate?timeFrame=${date}&targetCalories=${targetCalories}&diet=${diet}&exclude=${exclude}&apiKey=${APIKeyRecipe}`)
+}

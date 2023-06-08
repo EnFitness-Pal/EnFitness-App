@@ -28,21 +28,14 @@ export const AxiosProvider = ({ children }) => {
     axiosInstance.interceptors.request.use(async (request) => {
         if (!authContext.getAccessToken()) {
             const authToken = await AsyncStorage.getItem('AccessToken');
-            console.log(authToken);
             request.headers.Authorization = `Bearer ${authToken}`;
         }
         const authToken1 = await AsyncStorage.getItem('AccessToken');
         const refreshToken1 = await AsyncStorage.getItem('RefreshToken');
-        // console.log("authTokenavc", authToken1);
-        // console.log("refreshTokenavc", refreshToken1);
         let date = new Date();
         const decodedAccessToken = jwt_decode(authToken1);
         const expireInToken = decodedAccessToken.exp;
-        // console.log(expireInToken > date.getTime() / 1000);
-        // console.log(expireInToken);
-        // console.log(date.getTime() / 1000);
         if (expireInToken > date.getTime() / 1000) {
-            // console.log("token chua het han",request);
             return request;
         }
         else {
@@ -63,7 +56,6 @@ export const AxiosProvider = ({ children }) => {
             await axios
                 .request(config)
                 .then(response => {
-                // console.log("responseAxios",response?.data);
                 AsyncStorage.setItem('AccessToken', response?.data?.Value?.Token);
                 AsyncStorage.setItem(
                     'RefreshToken',
@@ -73,13 +65,10 @@ export const AxiosProvider = ({ children }) => {
                         AccessToken: response?.data?.Value?.Token,
                         RefreshToken: response?.data?.Value?.RefreshToken,
                 })
-                console.log('authContext1',authContext.token.AccessToken);
-                console.log('authContext1',authContext.token.RefreshToken);
                 request.headers.Authorization = `Bearer ${response?.data?.Value?.Token}`;
                 return request;
                 })
                 .catch(error => {
-                // console.log("errorAxios",error.response);
                 return request;
                 });
             return request;            
@@ -92,8 +81,8 @@ export const AxiosProvider = ({ children }) => {
     const getPersonStack = async (id) => {
         setLoading(true);
         await axiosInstance.get(`/api/account/${id}`)
-            .then(res => {
-                setPerson(res?.data);
+            .then(async(res) => {
+                setPerson(res.data);
                 setLoading(false);
             })
             .catch(err => {
@@ -139,27 +128,50 @@ export const AxiosProvider = ({ children }) => {
     function createPlan(id, data) {
         console.log("id", id);
         console.log("data", data);
-        return axiosInstance.post(`/api/plan/${id}`, data);
+        return axiosInstance.post(`/api/workout-plan/${id}`, data);
     }
 
     function getPlan(id) {
-        return axiosInstance.get(`/api/plan/${id}`);
+        return axiosInstance.get(`/api/workout-plan/${id}`);
     }
 
     function checkPlan(id) {
-        return axiosInstance.get(`/api/plan/check/${id}`);
+        return axiosInstance.get(`/api/workout-plan/check/${id}`);
     }
     function deletePlan(id) {
-        return axiosInstance.delete(`/api/plan/${id}`);
+        return axiosInstance.delete(`/api/workout-plan/${id}`);
     }
 
     function getCount(id) {
         return axiosInstance.get(`/api/history/${id}`);
     }
     function updateStatusPlan(id, str){
-        return axiosInstance.put(`/api/plan/${id}?triggerStr=${str}`);
+        return axiosInstance.put(`/api/workout-plan/${id}?triggerStr=${str}`);
     }
+
+    function checkPlanMeal(id) {
+        return axiosInstance.get(`/api/meal-plan/check/${id}`);
+    }
+
+    function getPlanMeal(id) {
+        return axiosInstance.get(`/api/meal-plan/${id}`);
+    }
+
+    function createPlanMeal(id, data) {
+        return axiosInstance.post(`/api/meal-plan/${id}`, data);
+    }
+
+    function updateStatusMealPlan(id, str){
+        return axiosInstance.put(`/api/meal-plan/${id}?triggerStr=${str}`);
+    }
+
+    function deleteMealPlan(id) {
+        return axiosInstance.delete(`/api/meal-plan/${id}`);
+    }
+
+
     useEffect(() => { 
+        authContext.isLoggedIn();
         getPersonStack(authContext.userID);
     },[])
 
@@ -181,7 +193,12 @@ export const AxiosProvider = ({ children }) => {
                 deletePlan,
                 checkPlan,
                 getCount,
-                updateStatusPlan
+                updateStatusPlan,
+                checkPlanMeal,
+                getPlanMeal,
+                createPlanMeal,
+                updateStatusMealPlan,
+                deleteMealPlan
             }}>
             {children}
         </Provider>

@@ -29,7 +29,7 @@ const ModalGlobal = ({loop, isVisible,stylesContainer, text, lottie,onPress, sty
             />: type === 'hasPlan'?<View style = {{flexDirection:'row', marginHorizontal:widthScreen * 0.03, justifyContent:'space-between', marginTop:heightScreen * 0.1}}>
             <Button
                 title = {'Yes, sure!'}
-                stylesContainer = {[styles.button, {width: widthScreen * 0.3, backgroundColor: colors.WARNING}]}
+                stylesContainer = {[styles.button, {width: widthScreen * 0.3, backgroundColor: '#55c63f'}]}
                 stylesTitle={styles.titleButton}
                 onPress = {onPressOK}
             />

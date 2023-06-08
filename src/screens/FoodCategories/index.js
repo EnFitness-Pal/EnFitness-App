@@ -71,7 +71,7 @@ const FoodCategories = () => {
                 source={require('../../assets/lottie/8707-loading.json')}
                 autoPlay
                 loop
-                style={{width: widthScreen * 0.4, width: widthScreen * 0.4, alignSelf: 'center'}}
+                style={{width: widthScreen * 0.4, alignSelf: 'center'}}
             />
         )
     }

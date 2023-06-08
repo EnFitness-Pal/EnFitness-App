@@ -68,7 +68,7 @@ const WorkoutPlanner = ({ navigation }) => {
             image: require('../../assets/typeworkout/yoga.png'),
         },
         {
-            label: 'stretching',
+            label: 'Stretching',
             image: require('../../assets/typeworkout/stretching.png'),
         }
     ]
@@ -77,9 +77,9 @@ const WorkoutPlanner = ({ navigation }) => {
         await axiosContext.getCount(authContext.userID)
         .then((res)=>{
             if (person?.IsPremium === false) {
-                setCount(2 - res.data)
+                setCount(2 - res.data?.WorkoutCount)
             } else {
-                setCount(10 - res.data)
+                setCount(10 - res.data?.WorkoutCount)
             }
         })
         .catch((err)=>{
@@ -128,7 +128,7 @@ const WorkoutPlanner = ({ navigation }) => {
             />
             <Text style = {{fontSize: 18, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center'}}>Create your workout plan</Text>
             <Tooltip
-                popover={<Text style={{color:colors.WHITE, fontWeight:"600"}}>You have {count || 0} turns</Text>}
+                popover={<Text style={{color:colors.WHITE, fontWeight:"600"}}>{count == 1 || count == 0? `You have ${count || 0} turn`: `You have ${count || 0} turns`}</Text>}
                 visible={openCount}
                 onOpen={() => setOpenCount(true)}
                 onClose={() => setOpenCount(false)}
@@ -451,7 +451,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         color: colors.WHITE,
     },
-      modalSuccess: {
+  modalSuccess: {
     height: heightScreen * 0.3,
     width: widthScreen * 0.7,
     backgroundColor: colors.BG,

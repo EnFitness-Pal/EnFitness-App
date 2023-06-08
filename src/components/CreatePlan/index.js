@@ -4,12 +4,12 @@ import { colors, heightScreen, widthScreen } from '../../utility'
 import FastImage from 'react-native-fast-image'
 import Button from '../Button'
 
-const CreatePlan = ({onPress}) => {
+const CreatePlan = ({onPress, text, image}) => {
   return (
     <View style = {styles.container}>
         <View>
             <FastImage
-                source={require('../../assets/rewards/achievement4.png')}
+                source={image}
                 style={{
                     width: widthScreen * 0.25,
                     height: widthScreen * 0.25,
@@ -18,7 +18,7 @@ const CreatePlan = ({onPress}) => {
         </View>
         <View>
             <Text style = {styles.title}>
-                Build a plan workout for your daily or week!
+                {text}
             </Text>
             <Button
                 title = "Let's go"

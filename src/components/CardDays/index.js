@@ -3,7 +3,7 @@ import React from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
-const CardDays = ({ day, numworkout, minutes }) => {
+const CardDays = ({ day, numworkout, minutes, onActive }) => {
   return (
     <View style = {[styles.container]}>
         <View style = {styles.containerDay}>
@@ -33,7 +33,7 @@ const CardDays = ({ day, numworkout, minutes }) => {
             </View>
           </View>
         <Ionicons
-            name='ios-caret-down-outline'
+            name={onActive ? "ios-caret-up" : "ios-caret-down"}
             size={35}
             style={styles.arrow}
             color={colors.SILVER}

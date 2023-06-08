@@ -112,6 +112,12 @@ const InsigntScreen = () => {
     },
   ];
     _renderHeader = (section) => {
+      const index = SECTIONS.findIndex(
+
+        (item) =>
+          item.title=== section.title&&
+          item.content === section.content
+      );
       return (
         <CardInfo
           title={section.title == 'First' ? "Daily Tracking Meal" : "Daily Tracking Exercise"}
@@ -123,6 +129,7 @@ const InsigntScreen = () => {
             marginTop: heightScreen * 0.02,
             width: widthScreen * 0.9,
           }}
+          onActive={activeSections[0] === index ? true : false}
         />
       );
     };

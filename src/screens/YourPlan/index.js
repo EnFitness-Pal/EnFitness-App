@@ -23,6 +23,7 @@ const YourPlan = () => {
             <Text style = {[styles.textplan, {marginTop: heightScreen * 0.03}]}>Meal Plan</Text>
             <MealPlanMain
             kilo = {person?.Weight}
+            onPress={()=>navigation.navigate('MealPlan')}
             />
         </View>
     </SafeAreaView>

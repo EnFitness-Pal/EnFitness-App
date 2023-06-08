@@ -11,5 +11,9 @@ export function getAllUsers() {
 }
 
 export function TriggerCount(id) {
-  return axios.put(`${baseURL}/api/history/trigger/${id}`);
+  return axios.put(`${baseURL}/api/history/reset-count/${id}`);
+}
+
+export function TriggerCountMeal(id) {
+  return axios.put(`${baseURL}/api/history/trigger-meal-count/${id}`);
 }

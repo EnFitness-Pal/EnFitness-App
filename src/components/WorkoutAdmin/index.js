@@ -33,7 +33,7 @@ const WorkoutAdmin = ({ item }) => {
             fontFamily:'Poppins-Bold',
             marginLeft: widthScreen * 0.02,
             marginTop: heightScreen * 0.005,
-        }}>{total} WORKOUT IN {dayKeys.length} DAYS</Text>
+        }}>{total == 1 || total == 0 ? `${total} WORKOUT IN`: `${total} WORKOUTS IN`} {dayKeys.length == 1? `${dayKeys.length} DAY `: `${dayKeys.length} DAYS `} </Text>
         </View>
         <View style ={{flexDirection:'row', justifyContent:'space-between'}}>
         <View style ={{marginLeft:widthScreen * 0.03}}>

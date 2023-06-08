@@ -16,7 +16,7 @@ const Bookmarks = ({navigation}) => {
               size={28}
               onPress={() => navigation.goBack()}
           />
-          <Text style = {{fontSize: 18, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center', marginLeft:widthScreen * 0.18}}>My Bookmarks</Text>
+          <Text style = {{fontSize: 18, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center', marginLeft:widthScreen * 0.18}}>My Bookmark</Text>
       </View>
       <View style={{ flex: 1, marginTop: 10, backgroundColor:colors.BG }}>
         <Tab.Navigator

@@ -120,7 +120,6 @@ const WorkoutDetail = ({ route, navigation }) => {
           const METs = response.data?.METs;
           console.log(METs);
           const calories = (person?.Weight * METs * min) / (60 * min);
-          console.log(calories);
           await trackingExercise(authContext?.userID, route.params.item?.ExerciseName, Math.ceil(calories), min)
           .then(() => {
             setOnSuccess(true);

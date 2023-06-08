@@ -3,18 +3,48 @@ import React, { useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { AxiosContext } from '../../context/AxiosContext'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
-    const [countdown, setCountdown] = useState(5);
-    const [isCounting, setIsCounting] = useState(false);
+    const [isCounting, setIsCounting] = useState(item?.Status === 'working'?true:false);
+    const [countdown, setCountdown] = useState(item?.Minutes * 60);
     const axiosContext = useContext(AxiosContext)
-    console.log(item);
-
     const [type, setType] = useState(
         item?.Status === 'none'?'play':
         item?.Status === 'done'? 'submit':
+        item?.Status === 'working'? 'pause':
+        item?.Status === 'running'? 'playafterpause':
         item?.Status === 'success'? 'success':"play"
     );
+
+    const test = async () => {
+        const TimeRemaining  =  await AsyncStorage.getItem(`TimeRemaining${item?.Id}`);
+        const TimeCurrent = await AsyncStorage.getItem(`TimeCurrent${item?.Id}`);
+        if(type === 'play'){
+            await AsyncStorage.removeItem(`TimeRemaining${item?.Id}`);
+            await AsyncStorage.removeItem(`TimeCurrent${item?.Id}`);
+        }
+
+        if (TimeCurrent !== null){
+            setCountdown(parseInt(TimeCurrent) - 1)
+        }
+        if (TimeRemaining !== null && TimeCurrent !== null) {
+            const elapsedTime = Date.now() - parseInt(TimeRemaining);
+                const remaining = TimeCurrent - elapsedTime/1000;
+                setCountdown(Math.floor(remaining));
+        } else if (TimeRemaining !== null && TimeCurrent == null){
+            const elapsedTime = Date.now() - parseInt(TimeRemaining);
+                const remainingCD = countdown - elapsedTime/1000;
+                setCountdown(Math.floor(remainingCD));
+        }
+    }
+
+    useEffect(()=>{
+        test()
+    },[])
+
+
+
     useEffect(() => {
         if (isCounting && countdown > 0) {
             console.log(countdown);
@@ -29,8 +59,9 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
         else if (countdown == 0) {
             setIsCounting(false);
             axiosContext.updateStatusPlan(item?.Id,"done")
-            .then((response)=>{
-                console.log("response",response)
+            .then(async (response)=>{
+                await AsyncStorage.removeItem(`TimeCurrent${item?.Id}`);
+                await AsyncStorage.removeItem(`TimeRemaining${item?.Id}`);
               })
               .catch((err)=>{
                 console.log(err)
@@ -45,9 +76,18 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
         return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
     };
 
-    const playCountdown = () => {
-        setType('pause')
-        setIsCounting(true)
+    const playCountdown = async () => {
+        await axiosContext.updateStatusPlan(item?.Id,"working")
+        .then(async(respone)=>{
+          console.log('responsedata',respone.data)
+          await AsyncStorage.removeItem(`TimeCurrent${item?.Id}`);
+          await AsyncStorage.setItem(`TimeRemaining${item?.Id}`, Date.now().toString())
+          setType('pause')
+          setIsCounting(true);
+        })
+        .catch((err)=>{
+          console.log(err.respone.data)
+        })
     };
 
     const updateStatusSuccess = async () => {
@@ -60,30 +100,47 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
         })
       }
 
-    const PlayAfterPauseCountdown = () => {
+    const PlayAfterPauseCountdown = async () => {
+        await axiosContext.updateStatusPlan(item?.Id,"working")
+        .then(async(respone)=>{
+          console.log('responsedata',respone.data);
+        //   await AsyncStorage.removeItem(`TimeCurrent${item?.Id}`);
+          await AsyncStorage.setItem(`TimeRemaining${item?.Id}`, Date.now().toString())
+          setType('pause')
+          setIsCounting(true);
+        })
+        .catch((err)=>{
+          console.log(err.respone.data)
+        })
+
         setType('pause')
         setIsCounting(true)
     };
-    const pauseCountdown = () => {
-        // setType('pause')
-        // setIsCounting(true)
-        setType('playafterpause')
-        setIsCounting(false)
+    const pauseCountdown = async () => {
+        await axiosContext.updateStatusPlan(item?.Id,"running")
+        .then(async(respone)=>{
+          console.log('responsedata',respone.data)
+          await AsyncStorage.removeItem(`TimeRemaining${item?.Id}`);
+          await AsyncStorage.setItem(`TimeCurrent${item?.Id}`, countdown.toString());
+          setType('playafterpause')
+          setIsCounting(false)
+        })
+        .catch((err)=>{
+          console.log(err.respone.data)
+        })
     };
-    
-
     return (
     <View style={styles.container}>
         <View style = {styles.header}>
             <View style = {styles.minutes}>
             {type == 'play'?
-                <Text style = {{ fontSize:35, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{item?.Minutes}</Text>:
+            <Text style = {{ fontSize:35, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{item?.Minutes}</Text>:
             type == 'pause'?
-            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{formatTime(countdown)}</Text>:
+            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{countdown > 0 ?formatTime(countdown): formatTime(0)}</Text>:
             type == 'playafterpause'?
-            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{formatTime(countdown)}</Text>:
+            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{countdown > 0 ?formatTime(countdown): formatTime(0)}</Text>:
             type == 'submit'?
-            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{formatTime(countdown)}</Text>:
+            <Text style = {{ fontSize:25, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{formatTime(0)}</Text>:
             type == 'success'?
             <Text style = {{ fontSize:35, fontFamily:'Poppins-Bold', color:colors.BG, marginTop:10 }}>{item?.Minutes}</Text>:null
             }
@@ -108,7 +165,7 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
                 updateStatusSuccess();
                 setType('success')
             }}>
-                  <Ionicons name={'ios-add-circle-outline'} size={38} color={colors.MAIN} style={{marginLeft:heightScreen * 0.02}} />
+                <Ionicons name={'ios-add-circle-outline'} size={38} color={colors.MAIN} style={{marginLeft:heightScreen * 0.02}} />
             </TouchableOpacity>:
             type == 'success'?
             <View style = {styles.icon}>

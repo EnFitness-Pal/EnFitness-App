@@ -737,3 +737,248 @@ export const planData = [
     ]
     }
 ]
+
+
+export const dataMeal =
+  {
+    "week": {
+        "monday": {
+            "meals": [
+                {
+                    "id": 636026,
+                    "imageType": "jpg",
+                    "title": "Breakfast Biscuits and Gravy",
+                    "readyInMinutes": 45,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/breakfast-biscuits-and-gravy-636026"
+                },
+                {
+                    "id": 645607,
+                    "imageType": "jpg",
+                    "title": "Grilled Buffalo Chicken Wraps",
+                    "readyInMinutes": 20,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/grilled-buffalo-chicken-wraps-645607"
+                },
+                {
+                    "id": 663745,
+                    "imageType": "jpg",
+                    "title": "Totally Fresh Tomato Lasagna",
+                    "readyInMinutes": 75,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/totally-fresh-tomato-lasagna-663745"
+                }
+            ],
+            "nutrients": {
+                "calories": 1999.88,
+                "protein": 98.18,
+                "fat": 125.47,
+                "carbohydrates": 119.6
+            }
+        },
+        "tuesday": {
+            "meals": [
+                {
+                    "id": 645315,
+                    "imageType": "jpg",
+                    "title": "Greek Inspired Spring Omelet",
+                    "readyInMinutes": 20,
+                    "servings": 1,
+                    "sourceUrl": "https://spoonacular.com/greek-inspired-spring-omelet-645315"
+                },
+                {
+                    "id": 1095806,
+                    "imageType": "jpg",
+                    "title": "Spanish style salmon fillets",
+                    "readyInMinutes": 30,
+                    "servings": 2,
+                    "sourceUrl": "https://spoonacular.com/spanish-style-salmon-fillets-1095806"
+                },
+                {
+                    "id": 658357,
+                    "imageType": "jpg",
+                    "title": "Rigatoni With Sweet Sausages In Creamy Tomato Sauce",
+                    "readyInMinutes": 45,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/rigatoni-with-sweet-sausages-in-creamy-tomato-sauce-658357"
+                }
+            ],
+            "nutrients": {
+                "calories": 1999.93,
+                "protein": 99.97,
+                "fat": 105.38,
+                "carbohydrates": 167.99
+            }
+        },
+        "wednesday": {
+            "meals": [
+                {
+                    "id": 638257,
+                    "imageType": "jpg",
+                    "title": "Chicken Porridge",
+                    "readyInMinutes": 45,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/chicken-porridge-638257"
+                },
+                {
+                    "id": 1063645,
+                    "imageType": "jpg",
+                    "title": "The Secret to Easy Skillet Filet Mignon Steak Tacos",
+                    "readyInMinutes": 20,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/the-secret-to-easy-skillet-filet-mignon-steak-tacos-1063645"
+                },
+                {
+                    "id": 1697599,
+                    "imageType": "jpg",
+                    "title": "Baked Ziti with Ricotta and Italian Sausage",
+                    "readyInMinutes": 75,
+                    "servings": 6,
+                    "sourceUrl": "https://spoonacular.com/baked-ziti-with-ricotta-and-italian-sausage-1697599"
+                }
+            ],
+            "nutrients": {
+                "calories": 2000.09,
+                "protein": 105.74,
+                "fat": 107.68,
+                "carbohydrates": 151.66
+            }
+        },
+        "thursday": {
+            "meals": [
+                {
+                    "id": 655313,
+                    "imageType": "jpg",
+                    "title": "Peanut Butter Granola",
+                    "readyInMinutes": 45,
+                    "servings": 18,
+                    "sourceUrl": "https://spoonacular.com/peanut-butter-granola-655313"
+                },
+                {
+                    "id": 668492,
+                    "imageType": "jpg",
+                    "title": "Creamy zucchini and ham pasta",
+                    "readyInMinutes": 25,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/creamy-zucchini-and-ham-pasta-668492"
+                },
+                {
+                    "id": 1697611,
+                    "imageType": "jpg",
+                    "title": "Chili con Carne that'll make your taste buds go silly",
+                    "readyInMinutes": 150,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/chili-con-carne-thatll-make-your-taste-buds-go-silly-1697611"
+                }
+            ],
+            "nutrients": {
+                "calories": 1999.94,
+                "protein": 113.88,
+                "fat": 99.93,
+                "carbohydrates": 166.43
+            }
+        },
+        "friday": {
+            "meals": [
+                {
+                    "id": 637210,
+                    "imageType": "jpg",
+                    "title": "Carrot Oat Muffins",
+                    "readyInMinutes": 45,
+                    "servings": 18,
+                    "sourceUrl": "https://spoonacular.com/carrot-oat-muffins-637210"
+                },
+                {
+                    "id": 1697577,
+                    "imageType": "jpg",
+                    "title": "Spanish Sardines Pasta",
+                    "readyInMinutes": 25,
+                    "servings": 2,
+                    "sourceUrl": "https://spoonacular.com/spanish-sardines-pasta-1697577"
+                },
+                {
+                    "id": 663149,
+                    "imageType": "jpg",
+                    "title": "Thai Sausage Salad",
+                    "readyInMinutes": 45,
+                    "servings": 2,
+                    "sourceUrl": "https://spoonacular.com/thai-sausage-salad-663149"
+                }
+            ],
+            "nutrients": {
+                "calories": 2000.1,
+                "protein": 89.5,
+                "fat": 113.07,
+                "carbohydrates": 158.41
+            }
+        },
+        "saturday": {
+            "meals": [
+                {
+                    "id": 638257,
+                    "imageType": "jpg",
+                    "title": "Chicken Porridge",
+                    "readyInMinutes": 45,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/chicken-porridge-638257"
+                },
+                {
+                    "id": 649141,
+                    "imageType": "jpg",
+                    "title": "La Bella Italian Turkey Burger",
+                    "readyInMinutes": 30,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/la-bella-italian-turkey-burger-649141"
+                },
+                {
+                    "id": 715573,
+                    "imageType": "jpg",
+                    "title": "Simple Skillet Lasagna",
+                    "readyInMinutes": 35,
+                    "servings": 5,
+                    "sourceUrl": "https://spoonacular.com/simple-skillet-lasagna-715573"
+                }
+            ],
+            "nutrients": {
+                "calories": 1999.99,
+                "protein": 122.37,
+                "fat": 104.13,
+                "carbohydrates": 145.34
+            }
+        },
+        "sunday": {
+            "meals": [
+                {
+                    "id": 649431,
+                    "imageType": "jpg",
+                    "title": "Leek and Mushroom Quiche",
+                    "readyInMinutes": 45,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/leek-and-mushroom-quiche-649431"
+                },
+                {
+                    "id": 638369,
+                    "imageType": "jpg",
+                    "title": "Korean Sweet n Sour Chicken",
+                    "readyInMinutes": 30,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/korean-sweet-n-sour-chicken-638369"
+                },
+                {
+                    "id": 640349,
+                    "imageType": "jpg",
+                    "title": "Cranberry and Orange Juice Spareribs",
+                    "readyInMinutes": 210,
+                    "servings": 4,
+                    "sourceUrl": "https://spoonacular.com/cranberry-and-orange-juice-spareribs-640349"
+                }
+            ],
+            "nutrients": {
+                "calories": 2000.09,
+                "protein": 126.03,
+                "fat": 123.47,
+                "carbohydrates": 91.72
+            }
+        }
+    }
+}

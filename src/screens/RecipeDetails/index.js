@@ -25,9 +25,11 @@ import { addTrackingRecipe, getRecipeById } from '../../api/Recipes';
 import { AuthContext } from '../../context/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFoodFav, deleteFoodFav, getAllFoodFav } from '../../redux/action/favorites/foodRequests';
+import { AxiosContext } from '../../context/AxiosContext';
 
 const Tab = createMaterialTopTabNavigator();
 const RecipeDetails = ({ route }) => {
+  const axiosContext = useContext(AxiosContext)
   const [isCheck, setIsCheck] = useState(false);
   const [favID, setFavID] = useState(null);
   const authContext = useContext(AuthContext);
@@ -117,7 +119,16 @@ const RecipeDetails = ({ route }) => {
       data?.find(nutrient => nutrient.name === "Carbohydrates")?.amount.toFixed(0),
       data?.find(nutrient => nutrient.name === "Fat")?.amount.toFixed(0),
       data?.find(nutrient => nutrient.name === "Protein")?.amount.toFixed(0),
-    ).then((res) => {
+    ).then(async(res) => {
+      if(route.params.type !== undefined){
+          await axiosContext.updateStatusMealPlan(route.params.type,"success")
+          .then((respone)=>{
+            console.log('responsedata',respone.data)
+          })
+          .catch((err)=>{
+            console.log(err.respone.data)
+          })
+      }
       setModalVisible(!isModalVisible);
       setLoading(false);
     })

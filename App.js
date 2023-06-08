@@ -1,5 +1,5 @@
 import {StatusBar, StyleSheet, View } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { AuthProvider } from './src/context/AuthContext'
 import AppNavigation from './src/navigation/AppNavigation'
 import { AxiosProvider } from './src/context/AxiosContext'
@@ -20,7 +20,6 @@ const App = () => {
         </View>
       </PersistGate>
     </Provider>
-
   )
 }
 

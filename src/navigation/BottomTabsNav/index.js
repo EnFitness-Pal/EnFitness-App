@@ -15,12 +15,15 @@ import { useFocusEffect } from '@react-navigation/native';
 import { AxiosContext } from '../../context/AxiosContext';
 import { AuthContext } from '../../context/AuthContext';
 import YourPlan from '../../screens/YourPlan';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Tab = createBottomTabNavigator();
 const BottomTabsNav = () => {
     const [loading, setLoading] = useState(false);
     const authContext = useContext(AuthContext);
     const theme = useSelector(state => state.state.theme);
     const axiosContext = useContext(AxiosContext);
+
+
     const person = axiosContext?.person;
     useFocusEffect(useCallback(() => {
         setLoading(true)

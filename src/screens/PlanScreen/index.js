@@ -16,6 +16,7 @@ import AnimatedLottieView from 'lottie-react-native'
 import ReactNativeModal from 'react-native-modal'
 import { trackingExercise } from '../../api/Tracking'
 import ButtonBack from '../../components/ButtonBack'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const PlanScreen = () => {
   const navigation = useNavigation();
@@ -25,7 +26,6 @@ const PlanScreen = () => {
   const data = planData;
   const [loading, setLoading] = useState(false)
   const [dataArray, setDataArray] = useState([]);
-  const [dataWorkout, setDataWorkout] = useState([]);
   const [loadingTracking, setLoadingTracking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
@@ -41,34 +41,20 @@ const PlanScreen = () => {
           setLoading(false);
       });
   }
-  for (let i = 1; i <= 7; i++) { 
-    if (dataArray[`Day${i}`] === null) {
-      delete dataArray[`Day${i}`];
+
+    for (let i = 1; i <= 7; i++) { 
+      if (dataArray[`Day${i}`] === null) {
+        delete dataArray[`Day${i}`];
+      }
     }
-  }
+
+  
 
   useFocusEffect(
       useCallback(() => {
         handleGetDataArray()
-      }, [])
+      }, [day])
   );
-
-  const TrackingWorkout = async () => {
-      setLoadingTracking(true);
-      setIsVisible(true);
-      await trackingExercise(authContext?.userID, dataWorkout?.ExerciseName, (dataWorkout?.TotalCalories / dataWorkout?.Minutes), dataWorkout?.Minutes)
-        .then((res) => { 
-            console.log(res.data);
-            setLoadingTracking(false);
-          })
-        .catch((err) => { 
-          console.log('errorTrackingWK', err);
-          setLoadingTracking(false);
-        })
-  }
-
-  console.log('dataArray',dataArray)
-
   return (
     <SafeAreaView style = {styles.container}>
       <ScrollView>
@@ -81,10 +67,12 @@ const PlanScreen = () => {
             size={28}
             onPress={() => navigation.goBack()}
           />
-          <Text style = {styles.title}>My Plan</Text>
+          <Text style = {styles.title}>Workout Plan</Text>
         </View>
         <CreatePlan
           onPress={() => navigation.navigate('WorkoutPlanner')}
+          text = {'Build a workout plan for your daily or week!'}
+          image={require('../../assets/images/workout.png')}
         />
         <View style = {styles.seperator}/>
         <View style={styles.containerPlan}>
@@ -104,7 +92,7 @@ const PlanScreen = () => {
                 loop
                 style={{ width: 50, height: 50, alignSelf: 'center' }}
                   />:
-          dataArray?
+          dataArray.length !== 0?
           <>
           <View style={styles.containerDay}>
           <FlatList
@@ -131,9 +119,19 @@ const PlanScreen = () => {
             data={dataArray[day]}
             renderItem={({ item }) => <WorkoutPlanCard 
               item={item} 
-              submitCountdown = {()=>{
-                TrackingWorkout();
-                setDataWorkout(item)
+              submitCountdown = {async ()=>{
+                // setDataWorkout(item)
+                setLoadingTracking(true);
+                setIsVisible(true);
+                await trackingExercise(authContext?.userID, item?.ExerciseName, Math.floor(Number(item?.TotalCalories) / Number(item?.Minutes)), Number(item?.Minutes))
+                  .then((res) => { 
+                      console.log(res.data);
+                      setLoadingTracking(false);
+                    })
+                  .catch((err) => { 
+                    console.log('errorTrackingWK', err.response);
+                    setLoadingTracking(false);
+                  })
               }}/>}
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -218,7 +216,7 @@ const styles = StyleSheet.create({
         color: colors.WHITE,
         alignSelf: 'center',
         fontFamily: 'Poppins',
-        marginLeft: widthScreen * 0.23
+        marginLeft: widthScreen * 0.16
     },
     seperator: {
       height: 6,

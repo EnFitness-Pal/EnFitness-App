@@ -1,9 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
+import Feather from 'react-native-vector-icons/Feather';
 import moment from 'moment-timezone';
+import { Swipeable } from 'react-native-gesture-handler';
 const CardEx = ({
     styleTitle,
     styleIcon,
@@ -14,7 +16,22 @@ const CardEx = ({
 const dateTimeString = item?.TrackingDate;
 const dateTime = moment.utc(dateTimeString).tz('Asia/Ho_Chi_Minh');
 const convertedDateTimeString = dateTime.format('h:mm A D MMM');
+
+const rightSwipe = () => {
+    return(
+        <View>
+            <TouchableOpacity style={styles.icondelete} onPress={()=>{}}>
+                <Feather name='trash-2' color={'red'} size={40}/>
+            </TouchableOpacity>
+        </View>
+    )
+}
+
+
   return (
+    <Swipeable
+        renderRightActions={rightSwipe}
+    >
     <View style = {[styles.container, styleContainer]}>
         <View style = {{flexDirection: 'column'}}>
               <View style={{ flexDirection: 'row', justifyContent:'space-between', marginHorizontal:widthScreen * 0.05}}>
@@ -63,6 +80,7 @@ const convertedDateTimeString = dateTime.format('h:mm A D MMM');
             </View>
         </View>
     </View>
+    </Swipeable>
   )
 }
 
@@ -103,5 +121,10 @@ const styles = StyleSheet.create({
         color: "#03C988",
         fontWeight: 'bold',
         marginTop: heightScreen * 0.02,
-    }
+    },
+    icondelete:{
+        marginTop: heightScreen * 0.04,
+        paddingLeft:widthScreen * 0.05,
+        paddingRight:widthScreen * 0.01,
+    },
 })

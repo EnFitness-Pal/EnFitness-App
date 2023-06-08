@@ -18,7 +18,6 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
     const [isVisible, setIsVisible] = useState(false);
     const [type, setType] = useState('');
     const [check, setCheck] = useState(false);
-    console.log("item", item);
     const item = route.params.item
     const [loading, setLoading] = useState(false);
     const handleCheck = async () => {
@@ -84,7 +83,6 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
     },[])
 
     let total = 0;
-    let totalMinutes = 0;
     const dayKeys = Object.keys(item).filter(key => key.startsWith('Day'));
     for (const key in item) {
     if (key.startsWith('Day')) {
@@ -94,6 +92,11 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
     }
 
     _renderHeader = (section) => {
+    const index = dayKeys.findIndex(
+
+        (item) =>
+            item=== section
+        );
         let totalMinutes = 0;
         for (let i = 0; i < item[section].length; i++) {
             totalMinutes += Number(item[section][i].Minutes);
@@ -103,6 +106,7 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
             day={section.slice(3, 4)}
             numworkout={item[section].length}
             minutes={totalMinutes}
+            onActive={activeSections[0] === index ? true : false}
         />
     );
     };
@@ -130,7 +134,7 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
                 size={28}
                 onPress={() => navigation.goBack()}
             />
-            <Text style = {{fontSize: 20, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center', marginLeft:widthScreen * 0.23}}>Workouts</Text>
+            <Text style = {{fontSize: 20, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center', marginLeft:widthScreen * 0.23}}>Workout</Text>
         </View>
         <View style = {{flexDirection:'row'}}>
         <FastImage
@@ -138,7 +142,7 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
             style={{width:widthScreen * 0.1, height:heightScreen * 0.05, marginTop:heightScreen * 0.05, marginLeft:widthScreen * 0.05}}
         />
           <Text style={styles.title}>Plan to make your health changing!</Text></View>
-          <Text style={styles.subtitle}>Our workout plan designed to help you achieve your fitness goals and transfom your body and mind.</Text>
+          <Text style={styles.subtitle}>Our workout plan designed to help you achieve your fitness goals and transform your body and mind.</Text>
         <View style = {{flexDirection:'row', marginTop: heightScreen * 0.02, alignSelf:'center'}}>
             <Text style = {{fontSize:20, color:colors.WHITE, fontWeight:'600'}}>Woohoo!</Text>
             <FastImage

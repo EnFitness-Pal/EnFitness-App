@@ -26,6 +26,7 @@ import { AxiosContext } from '../../context/AxiosContext';
 import ModalPre from '../../components/Modal';
 import { getPremium, restorePremium, restoreTest } from '../../redux/action/premium/preRequests';
 import { getAllFav } from '../../redux/action/favorites/favRequests';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const HomeScreen = () => {
     const [time, setTime] = useState(new Date().getHours());
     const [loading, setLoading] = useState(true);
@@ -54,6 +55,7 @@ const HomeScreen = () => {
         return 'Good night';
         }
     };
+
     const date = new Date();
     const data = TipsData;
     const navigation = useNavigation();
@@ -191,6 +193,7 @@ const HomeScreen = () => {
             });
     }
     };
+
     useEffect(() => {
         setLoading(true);
         getWorkout();

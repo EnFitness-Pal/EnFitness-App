@@ -3,9 +3,6 @@ import React, { createContext, useEffect, useState } from 'react'
 import { Alert } from 'react-native';
 import { forgot, verify } from '../api/Auth/Forgot';
 import { TriggerCount, signIn } from '../api/Auth/SignIn';
-import { signUp} from '../api/Auth/SignUp';
-import { getPerson } from '../api/Person';
-
 export const AuthProvider = ({ children }) => {
     const [loading, setLoading] = useState(false);
     const [userID, setUserID] = useState();
@@ -108,10 +105,6 @@ export const AuthProvider = ({ children }) => {
             setLoading(false);
         }
     }
-
-    useEffect(() => { 
-        isLoggedIn();
-    },[])
 
     return (
         <AuthContext.Provider
