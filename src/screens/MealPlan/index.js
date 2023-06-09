@@ -43,7 +43,6 @@ const MealPlan = ({navigation}) => {
       console.log(dataArray);
     
     const renderDetail = (rowData, sectionID, rowID) =>{
-        console.log(rowData);
             return (
                 <View style = {{flex:1}}>
                     <Text style={styles.titlePlan}>{rowData?.title}</Text>
@@ -144,7 +143,7 @@ const MealPlan = ({navigation}) => {
             renderFullLine={true}
         />
         </View>
-        </View></>:<Text style = {styles.textwarn}>You don't have any workout plan!</Text>}
+        </View></>:<Text style = {styles.textwarn}>You don't have any meal plan!</Text>}
         </ScrollView>
     </SafeAreaView>
   )

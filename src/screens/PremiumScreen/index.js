@@ -129,6 +129,7 @@ const PremiumScreen = ({navigation}) => {
                     loop={true}
                 />
                 </View>
+              <Text onPress={()=>{}} style={styles.textRestore}>Restore payment</Text>
             </ScrollView>
         {showGateway ? (
         <Modal
@@ -238,7 +239,7 @@ const styles = StyleSheet.create({
     sliderPre: {
         marginTop: heightScreen * 0.02,
         marginBottom: heightScreen * 0.02,
-        height: heightScreen * 0.4,
+        height: heightScreen * 0.3,
         width: widthScreen * 0.9,
     },
     webViewCon: {
@@ -253,4 +254,12 @@ const styles = StyleSheet.create({
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
     },
+    textRestore:{
+        textDecorationLine:'underline',
+        fontSize:16,
+        color: colors.MAIN,
+        fontWeight:'bold',
+        fontFamily:'Poppins',
+        alignSelf:'center',
+    }
 })

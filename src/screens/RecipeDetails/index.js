@@ -26,6 +26,8 @@ import { AuthContext } from '../../context/AuthContext';
 import { useDispatch, useSelector } from 'react-redux';
 import { addFoodFav, deleteFoodFav, getAllFoodFav } from '../../redux/action/favorites/foodRequests';
 import { AxiosContext } from '../../context/AxiosContext';
+import { TriggerTrackingPoint } from '../../api/Tracking';
+import ModalRanking from '../../components/ModalRanking';
 
 const Tab = createMaterialTopTabNavigator();
 const RecipeDetails = ({ route }) => {
@@ -38,6 +40,8 @@ const RecipeDetails = ({ route }) => {
   const navigation = useNavigation();
   const [isModalVisible, setModalVisible] = useState(false);
   const [time, setTime] = useState(new Date().getHours());
+  const [dataRank, setDataRank] = useState([]);
+  const [modalRank, setModalRank] = useState(false);
   const dispatch = useDispatch();
   const isFetching = useSelector((state) => state.food.isFetching);
   const getAllFood = async () => { 
@@ -129,8 +133,22 @@ const RecipeDetails = ({ route }) => {
             console.log(err.respone.data)
           })
       }
-      setModalVisible(!isModalVisible);
-      setLoading(false);
+      await TriggerTrackingPoint(authContext.userID, "true")
+      .then((response)=>{
+        setDataRank(response.data)
+        console.log('response', response.data)
+        if (response.data.IsUpRank){
+          setLoading(false);
+          setModalRank(true);
+        }
+        else  {
+          setModalVisible(!isModalVisible);
+          setLoading(false);
+        }
+      })
+      .catch ((err)=>{
+        console.log(err.respone.data)
+      });
     })
       .catch((err) => { 
         setLoading(false);
@@ -282,6 +300,8 @@ const RecipeDetails = ({ route }) => {
                 onPress={() => setModalVisible(!isModalVisible)} />
             </View>
           </Modal>
+          <ModalRanking isVisible={modalRank} onPressButton={()=> {
+            setModalRank(!modalRank)}} item={dataRank}/>
     </SafeAreaView>
   )
 }

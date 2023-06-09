@@ -14,9 +14,10 @@ import { AxiosContext } from '../../context/AxiosContext'
 import { AuthContext } from '../../context/AuthContext'
 import AnimatedLottieView from 'lottie-react-native'
 import ReactNativeModal from 'react-native-modal'
-import { trackingExercise } from '../../api/Tracking'
+import { TriggerTrackingPoint, trackingExercise } from '../../api/Tracking'
 import ButtonBack from '../../components/ButtonBack'
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import ModalRanking from '../../components/ModalRanking'
 
 const PlanScreen = () => {
   const navigation = useNavigation();
@@ -28,6 +29,8 @@ const PlanScreen = () => {
   const [dataArray, setDataArray] = useState([]);
   const [loadingTracking, setLoadingTracking] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [modalRank, setModalRank] = useState(false);
+  const [dataRank, setDataRank] = useState([]);
 
   const handleGetDataArray = async () => {
       setLoading(true);
@@ -124,8 +127,21 @@ const PlanScreen = () => {
                 setLoadingTracking(true);
                 setIsVisible(true);
                 await trackingExercise(authContext?.userID, item?.ExerciseName, Math.floor(Number(item?.TotalCalories) / Number(item?.Minutes)), Number(item?.Minutes))
-                  .then((res) => { 
+                  .then(async (res) => { 
                       console.log(res.data);
+                      await TriggerTrackingPoint(authContext.userID, "true")
+                      .then((response)=>{
+                        setDataRank(response.data)
+                        console.log('response', response.data)
+                        if (response.data.IsUpRank){
+                          setLoadingTracking(false);
+                          setIsVisible(false);
+                          setTimeout(()=>setModalRank(true),1000)
+                        }
+                      })
+                      .catch ((err)=>{
+                        console.log(err.respone.data)
+                      });
                       setLoadingTracking(false);
                     })
                   .catch((err) => { 
@@ -199,6 +215,8 @@ const PlanScreen = () => {
             onPress={() => setIsVisible(!isVisible)} />
         </View>}
       </ReactNativeModal>
+      <ModalRanking isVisible={modalRank} onPressButton={()=> {
+            setModalRank(!modalRank)}} item={dataRank}/>
     </SafeAreaView>
   )
 }

@@ -15,10 +15,5 @@ export function updatePremiumAPI(id, PaypalToken, ExpirationDate, Money) {
 }
 
 export function restorePremiumAPI(id) { 
-    return axios.post(`${baseURL}/api/transaction/${id}`,
-    {
-        "PaypalToken": null,
-        "ExpirationDate": null,
-        "Money": null
-    });
+    return axios.put(`${baseURL}/api/transaction/reset-transaction/${id}`)
 }

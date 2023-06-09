@@ -22,7 +22,7 @@ const MealCard = ({stylesContainer, image, title, serving, minutes, item}) => {
         console.log(err)
       })
   }
-  useEffect(() => {
+  useMemo(() => {
     getNutritions();
   },[])  
 

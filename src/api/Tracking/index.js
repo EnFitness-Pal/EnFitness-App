@@ -34,3 +34,7 @@ export function getMets(ExerciseName,minutes,ActivityLevel,Height, Weight,BodyFa
         'Gender': Gender
     });
 }
+
+export function TriggerTrackingPoint(id, status){
+    return axios.post(`${baseURL}/api/tracking-points/${id}&${status}`)
+}

@@ -18,8 +18,9 @@ import Input from '../../components/Input'
 import ReactNativeModal from 'react-native-modal'
 import ButtonAdd from '../../components/Button'
 import AnimatedLottieView from 'lottie-react-native'
-import { getMets, trackingExercise } from '../../api/Tracking'
+import { TriggerTrackingPoint, getMets, trackingExercise } from '../../api/Tracking'
 import { AxiosContext } from '../../context/AxiosContext'
+import ModalRanking from '../../components/ModalRanking'
 const WorkoutDetail = ({ route, navigation }) => {
   const [activeSections, setActiveSections] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -31,6 +32,8 @@ const WorkoutDetail = ({ route, navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [onSuccess, setOnSuccess] = useState(false);
   const [minutes, setMinutes] = useState(null);
+  const [modalRank, setModalRank] = useState(false);
+  const [dataRank, setDataRank] = useState([]);
   const axiosContext = useContext(AxiosContext);
   const person = axiosContext?.person;
 
@@ -93,15 +96,6 @@ const WorkoutDetail = ({ route, navigation }) => {
             return;
 
         } else {
-        // await trackingExercise(authContext?.userID, name, calo, min)
-        //     .then((response) => {
-        //         setOnSuccess(true);
-        //         setLoadingModal(false);
-        //     }).catch((error) => {
-        //         console.log(error);
-        //         console.log(error.response.data);
-        //         setLoadingModal(false);
-        //     });
         await getMets(
           route.params.item?.ExerciseName,
           min,
@@ -121,7 +115,26 @@ const WorkoutDetail = ({ route, navigation }) => {
           console.log(METs);
           const calories = (person?.Weight * METs * min) / (60 * min);
           await trackingExercise(authContext?.userID, route.params.item?.ExerciseName, Math.ceil(calories), min)
-          .then(() => {
+          .then(async() => {
+            await TriggerTrackingPoint(authContext.userID, "true")
+            .then((response)=>{
+              setDataRank(response.data)
+              console.log('response', response.data)
+              if (response.data.IsUpRank){
+                setLoadingModal(false);
+                setOnSuccess(true);
+                setModalVisible(false);
+                setTimeout(()=>setModalRank(true),1000)
+              }
+              else {
+                setOnSuccess(true);
+                setLoadingModal(false);
+              }
+            })
+            .catch ((err)=>{
+              console.log(err.respone.data)
+            });
+            
             setOnSuccess(true);
             setLoadingModal(false);
           })
@@ -457,6 +470,9 @@ const WorkoutDetail = ({ route, navigation }) => {
                 
                 </View>}</View>
         </ReactNativeModal>
+        <ModalRanking isVisible={modalRank} onPressButton={()=> {
+            setOnSuccess(false);
+            setModalRank(!modalRank)}} item={dataRank}/>
     </View>
   )
 }

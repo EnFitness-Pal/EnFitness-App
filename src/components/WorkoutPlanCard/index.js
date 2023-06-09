@@ -7,7 +7,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
     const [isCounting, setIsCounting] = useState(item?.Status === 'working'?true:false);
-    const [countdown, setCountdown] = useState(item?.Minutes * 60);
+    // const [countdown, setCountdown] = useState(item?.Minutes * 60);
+    const [countdown, setCountdown] = useState(5);
     const axiosContext = useContext(AxiosContext)
     const [type, setType] = useState(
         item?.Status === 'none'?'play':

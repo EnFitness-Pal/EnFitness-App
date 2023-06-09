@@ -20,13 +20,14 @@ import Exercise from '../../components/Exercise';
 import Lottie from 'lottie-react-native';
 import Modal from "react-native-modal";
 import Input from '../../components/Input';
-import { getExerciseAdmin, trackingExercise } from '../../api/Tracking';
+import { TriggerTrackingPoint, getExerciseAdmin, trackingExercise } from '../../api/Tracking';
 import { useDispatch, useSelector } from 'react-redux';
 import { AxiosContext } from '../../context/AxiosContext';
 import ModalPre from '../../components/Modal';
 import { getPremium, restorePremium, restoreTest } from '../../redux/action/premium/preRequests';
 import { getAllFav } from '../../redux/action/favorites/favRequests';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ModalRanking from '../../components/ModalRanking';
 const HomeScreen = () => {
     const [time, setTime] = useState(new Date().getHours());
     const [loading, setLoading] = useState(true);
@@ -34,9 +35,11 @@ const HomeScreen = () => {
     const [isModalVisible, setModalVisible] = useState(false);
     const [onSuccess, setOnSuccess] = useState(false);
     const [modalPre, setModalPre] = useState(false);
+    const [modalRank, setModalRank] = useState(false);
     const [error, setError] = useState(null);
     const [minutes, setMinutes] = useState(null);
     const [dataex, setDataEx] = useState([]);
+    const [dataRank,setDataRank] = useState([]);
     const theme = useSelector(state => state.state.theme);
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -183,7 +186,25 @@ const HomeScreen = () => {
 
         } else {
         await trackingExercise(authContext?.userID, name, calo, min)
-            .then((response) => {
+            .then(async (response) => {
+                await TriggerTrackingPoint(authContext.userID, "true")
+                .then((response)=>{
+                  setDataRank(response.data)
+                  console.log('response', response.data)
+                  if (response.data.IsUpRank){
+                    setLoadingModal(false);
+                    setOnSuccess(true);
+                    setModalVisible(false);
+                    setTimeout(()=>setModalRank(true),1000)
+                  }
+                  else {
+                    setOnSuccess(true);
+                    setLoadingModal(false);
+                  }
+                })
+                .catch ((err)=>{
+                  console.log(err.respone.data)
+                });
                 setOnSuccess(true);
                 setLoadingModal(false);
             }).catch((error) => { 
@@ -428,6 +449,10 @@ const HomeScreen = () => {
                 </View>}</View>
         </Modal>
           <ModalPre isVisible={modalPre} />
+          <ModalRanking isVisible={modalRank} onPressButton={()=> {
+            setItemEx(null);
+            setOnSuccess(false);
+            setModalRank(!modalRank)}} item={dataRank}/>
     </SafeAreaView>
   )
 }

@@ -7,9 +7,10 @@ import AnimatedLottieView from 'lottie-react-native';
 import Modal from 'react-native-modal';
 import Button from '../../components/Button';
 import Input from '../../components/Input';
-import { trackingExercise } from '../../api/Tracking';
+import { TriggerTrackingPoint, trackingExercise } from '../../api/Tracking';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllFav } from '../../redux/action/favorites/favRequests';
+import ModalRanking from '../../components/ModalRanking';
 
 const ExerciseFav = ({navigation}) => {
     const authContext = useContext(AuthContext);
@@ -20,6 +21,8 @@ const ExerciseFav = ({navigation}) => {
     const [onSuccess, setOnSuccess] = useState(false);
     const [error, setError] = useState(null);
     const [minutes, setMinutes] = useState(null);  
+    const [modalRank, setModalRank] = useState(false);
+    const [dataRank, setDataRank] = useState([]);
     const dispatch = useDispatch();
     const data = useSelector((state) => state.favorite.favorite);
     const getExerciseFav = async () => {
@@ -48,7 +51,25 @@ const ExerciseFav = ({navigation}) => {
 
         } else {
         await trackingExercise(authContext?.userID, name, calo, min)
-            .then((response) => {
+            .then(async (response) => {
+              await TriggerTrackingPoint(authContext.userID, "true")
+              .then((response)=>{
+                setDataRank(response.data)
+                console.log('response', response.data)
+                if (response.data.IsUpRank){
+                  setLoadingModal(false);
+                  setOnSuccess(true);
+                  setModalVisible(false);
+                  setTimeout(()=>setModalRank(true),1000)
+                }
+                else {
+                  setOnSuccess(true);
+                  setLoadingModal(false);
+                }
+              })
+              .catch ((err)=>{
+                console.log(err.respone.data)
+              });
                 setOnSuccess(true);
                 setLoadingModal(false);
             }).catch((error) => { 
@@ -158,6 +179,10 @@ const ExerciseFav = ({navigation}) => {
                 
                 </View>}</View>
         </Modal>
+        <ModalRanking isVisible={modalRank} onPressButton={()=> {
+            setItemEx(null);
+            setOnSuccess(false);
+            setModalRank(!modalRank)}} item={dataRank}/>
     </View>
   )
 }

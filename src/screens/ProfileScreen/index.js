@@ -15,6 +15,7 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import { getTotalTracking } from '../../api/Calories';
 import AnimatedLottieView from 'lottie-react-native';
+import { getRankingPerson } from '../../api/Ranking';
 
 
 
@@ -39,12 +40,26 @@ const ProfileScreen = ({route}) => {
   const dispatch = useDispatch();
   const authContext = useContext(AuthContext)
   const axiosContext = useContext(AxiosContext);
+  const [rank, setRank] = useState('')
+  const [point, setPoint] = useState(0)
+  const handleGetRank = async () =>{
+    await getRankingPerson(authContext.userID)
+    .then((response)=>{
+        setRank(response.data.CurrentRank);
+        setPoint(response.data.CurrentPoint);
+    })
+    .catch((error) =>{
+      console.log('errorRank', error);
+    })
+  }
+
   const toggleSwitch = () => {
     setChecked(!checked);
     dispatch(setTheme(checked ? 'light' : 'dark'));
   };
   useFocusEffect(useCallback(()=> {
     getTotalTrackingStack();
+    handleGetRank()
     setLoading(false)
   },[]))
   return (
@@ -88,38 +103,25 @@ const ProfileScreen = ({route}) => {
           />
         <View style = {styles.containerJoined}>
           <Text style={[styles.textJoined, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>Joined</Text>
-          <Text style={[styles.textDate, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>2 months ago</Text>
+          <Text style={[styles.textDate, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>{axiosContext?.person?.EmailConfirmedAt}</Text>
         </View>
       </View>}
       <Text style={[styles.textName, { color: theme == 'dark' ? colors.WHITE : colors.BG }]}>{axiosContext?.person?.FullName}</Text>
       <View style={styles.containerBadges}>
-        <IconBottom
-            name='cup-reward'
-            size={30}
-            color={colors.MAIN}
+        <FastImage
+          source = {rank === 'Master' ? require('../../assets/rank/master.png'):
+                    rank === 'Bronze' ? require('../../assets/rank/brozone.png'):
+                    rank === 'Silver' ? require('../../assets/rank/silver.png') :
+                    rank === 'Gold' ? require('../../assets/rank/gold.png') :
+                    rank === 'Platinum' ? require('../../assets/rank/platinum.png'):
+                    rank === 'Diamond' ? require('../../assets/rank/diamond.png'):
+                    require('../../assets/rank/unranked.png')
+        }
+          style={{ height: widthScreen * 0.1, width: widthScreen * 0.1}}
         />
-        <FlatList
-          data={[1, 2, 3]}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          keyExtractor={(item, index) => index.toString()}
-          style={{ marginLeft: widthScreen * 0.02 }}
-          renderItem={({ item }) => (
-            <TouchableOpacity
-              style={{
-                height: widthScreen * 0.085,
-                width: widthScreen * 0.085,
-                marginRight: -heightScreen * 0.008,
-              }}
-              onPress={() => navigation.push('Achievement', { achievement: item })}
-            >
-            <FastImage
-              style={{ height: widthScreen * 0.085, width: widthScreen * 0.085, borderRadius: 60, position:'absolute',   }}
-              source={require("../../assets/rewards/achievement3.png")}
-            />
-            </TouchableOpacity>
-          )}
-        />
+        <Text style={styles.ranked}>{rank}</Text>
+        <Text style={styles.dot}>{'\u2B24'}</Text>
+        <Text style={styles.point}>{point == 0 || point == 1? `${point} point`: `${point} points`}</Text>
       </View>
       <View style = {styles.seperator}/>
       <View style={styles.containerOptions}>
@@ -150,11 +152,11 @@ const ProfileScreen = ({route}) => {
           onPress={() => navigation.navigate('Settings')}
         >
           <Ionicons
-            name='md-settings-sharp'
+            name='ios-podium'
             size={30}
             color={theme == 'dark'? colors.WHITE: colors.BG }
           />
-          <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>Settings</Text>
+          <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>Ranking</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.containerOption}
@@ -238,6 +240,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: colors.WHITE,
+    marginTop: heightScreen * 0.01,
   },
   textName: {
     fontSize: 36,
@@ -274,5 +277,29 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginLeft: widthScreen * 0.04,
     alignSelf: 'center',
+  },
+  ranked:{
+    alignSelf:'center',
+    fontWeight:'700',
+    fontSize: 20,
+    color:'#FFFFFF',
+    fontFamily:'Poppins',
+    marginLeft: widthScreen * 0.03
+  },
+  dot:{
+    alignSelf:'center',
+    fontWeight:'700',
+    fontSize: 10,
+    color:'#FFFFFF',
+    fontFamily:'Poppins',
+    marginLeft: widthScreen * 0.03
+  },
+  point:{
+    alignSelf:'center',
+    fontWeight:'700',
+    fontSize: 20,
+    color:'#FFFFFF',
+    fontFamily:'Poppins',
+    marginLeft: widthScreen * 0.03
   }
 })

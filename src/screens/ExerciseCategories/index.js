@@ -8,12 +8,13 @@ import Lottie from 'lottie-react-native';
 import { getAllExercise } from '../../api/Exercise'
 import Modal from 'react-native-modal';
 import Exercise from '../../components/Exercise'
-import { trackingExercise } from '../../api/Tracking'
+import { TriggerTrackingPoint, trackingExercise } from '../../api/Tracking'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
 import { getPerson } from '../../api/Person/GetPerson'
 import { AuthContext } from '../../context/AuthContext'
 import { AxiosContext } from '../../context/AxiosContext'
+import ModalRanking from '../../components/ModalRanking'
 
 
 const ExerciseCategories = ({ navigation }) => {
@@ -28,6 +29,8 @@ const ExerciseCategories = ({ navigation }) => {
   const [minutes, setMinutes] = useState(null);
   const [itemEx, setItemEx] = useState(null);
   const [search, setSearch] = useState("");
+  const [dataRank, setDataRank] = useState([]);
+  const [modalRank, setModalRank] = useState(false);
   const axiosContext = useContext(AxiosContext);
 
   const searchFilterFunction = async (text) => {
@@ -78,7 +81,25 @@ const ExerciseCategories = ({ navigation }) => {
 
         } else {
         await trackingExercise(authContext?.userID, name, calo, min)
-            .then((response) => {
+            .then(async (response) => {
+                await TriggerTrackingPoint(authContext.userID, "true")
+                .then((response)=>{
+                  setDataRank(response.data)
+                  console.log('response', response.data)
+                  if (response.data.IsUpRank){
+                    setLoadingModal(false);
+                    setOnSuccess(true);
+                    setModalVisible(false);
+                    setTimeout(()=>setModalRank(true),1000)
+                  }
+                  else {
+                    setOnSuccess(true);
+                    setLoadingModal(false);
+                  }
+                })
+                .catch ((err)=>{
+                  console.log(err.respone.data)
+                });
                 setOnSuccess(true);
                 setLoadingModal(false);
             }).catch((error) => { 
@@ -243,6 +264,10 @@ const ExerciseCategories = ({ navigation }) => {
                 
                 </View>}</View>
         </Modal>
+        <ModalRanking isVisible={modalRank} onPressButton={()=> {
+            setItemEx(null);
+            setOnSuccess(false);
+            setModalRank(!modalRank)}} item={dataRank}/>
     </SafeAreaView>
   )
 }
