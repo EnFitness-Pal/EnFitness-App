@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet } from 'react-native'
 import React from 'react'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import RecipeDetails from '../../screens/RecipeDetails';
@@ -14,12 +14,13 @@ import Achievement from '../../screens/Achievement';
 import Settings from '../../screens/Settings';
 import PremiumScreen from '../../screens/PremiumScreen';
 import WorkoutPlanner from '../../screens/WorkoutPlanner';
-import License from '../../screens/License';
 import WorkoutPlanDetail from '../../screens/WorkoutPlanDetail';
 import PlanScreen from '../../screens/PlanScreen';
 import MealPlan from '../../screens/MealPlan';
 import MealPlanner from '../../screens/MealPlanner';
 import MealPlanDetail from '../../screens/MealPlanDetail';
+import NewsFeed from '../../screens/NewsFeed';
+import CreatePost from '../../screens/CreatePost';
 const Stack = createNativeStackNavigator();
 const AppStack = () => {
   return (
@@ -65,7 +66,7 @@ const AppStack = () => {
       <Stack.Screen name="WorkoutPlanner" component={WorkoutPlanner} options={{
             headerShown: false,
       }} />  
-      <Stack.Screen name="License" component={License} options={{
+      <Stack.Screen name="NewsFeed" component={NewsFeed} options={{
             headerShown: false,
       }} />  
       <Stack.Screen name="WorkoutPlanDetail" component={WorkoutPlanDetail} options={{
@@ -81,6 +82,9 @@ const AppStack = () => {
             headerShown: false,
       }} /> 
       <Stack.Screen name="MealPlanDetail" component={MealPlanDetail} options={{
+            headerShown: false,
+      }} /> 
+      <Stack.Screen name="CreatePost" component={CreatePost} options={{
             headerShown: false,
       }} /> 
       </Stack.Navigator>

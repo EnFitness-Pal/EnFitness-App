@@ -22,6 +22,7 @@ const ModalRanking = ({isVisible, stylesContainer, onPressButton, item}) => {
             item?.TierName === 'Diamond' ? require('../../assets/rank/diamond.png'):
             require('../../assets/rank/unranked.png')
             }
+            resizeMode={FastImage.resizeMode.contain}
             style = {styles.image}
         />
       <View style = {styles.containerTitle}>

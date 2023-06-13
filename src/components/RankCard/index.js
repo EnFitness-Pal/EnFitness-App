@@ -15,7 +15,8 @@ const RankCard = ({item}) => {
         item?.TierName === 'Diamond' ? require('../../assets/rank/diamond.png'):
         require('../../assets/rank/unranked.png')
         }
-        style={{ height: widthScreen * 0.35, width: widthScreen * 0.35}}
+        resizeMode={FastImage.resizeMode.contain}
+        style={{ height: widthScreen * 0.27, width: widthScreen * 0.35}}
       />
       <Text style ={[styles.title, {
         color: item?.TierName === 'Master' ? "#E696F4":

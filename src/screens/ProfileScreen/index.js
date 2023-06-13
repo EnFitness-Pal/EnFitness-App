@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { baseURL, colors, heightScreen, widthScreen } from '../../utility';
 import { SafeAreaView } from 'react-native';
 import FastImage from 'react-native-fast-image';
-import IconBottom from '../../assets/fonts';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Button, Switch } from '@rneui/base';
 import { useDispatch, useSelector } from 'react-redux';
@@ -117,6 +117,7 @@ const ProfileScreen = ({route}) => {
                     rank === 'Diamond' ? require('../../assets/rank/diamond.png'):
                     require('../../assets/rank/unranked.png')
         }
+          resizeMode={FastImage.resizeMode.contain}
           style={{ height: widthScreen * 0.1, width: widthScreen * 0.1}}
         />
         <Text style={styles.ranked}>{rank}</Text>
@@ -160,14 +161,14 @@ const ProfileScreen = ({route}) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.containerOption}
-          onPress={() => navigation.navigate('License')}
+          onPress={() => navigation.navigate('NewsFeed')}
         >
-          <Ionicons
-            name='ios-card'
+          <MaterialCommunityIcons
+            name='newspaper-variant'
             size={30}
             color={theme == 'dark'? colors.WHITE: colors.BG }
           />
-          <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>License</Text>
+          <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>News Feed</Text>
         </TouchableOpacity>
         <View style={styles.containerOption}>
           <Ionicons
@@ -184,6 +185,7 @@ const ProfileScreen = ({route}) => {
           />
         </View>
       </View>
+      <Text onPress={()=>{}} style={styles.textRestore}>Restore payment</Text>
       <Button
         title='Logout'
         type='solid'
@@ -194,7 +196,6 @@ const ProfileScreen = ({route}) => {
           height: heightScreen * 0.05,
           width: widthScreen * 0.8,
           alignSelf: 'center',
-          marginTop: heightScreen * 0.05,
         }}
         titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
         onPress={() => authContext.logout()}
@@ -301,5 +302,15 @@ const styles = StyleSheet.create({
     color:'#FFFFFF',
     fontFamily:'Poppins',
     marginLeft: widthScreen * 0.03
-  }
+  },
+  textRestore:{
+    textDecorationLine:'underline',
+    fontSize:16,
+    color: colors.MAIN,
+    fontWeight:'bold',
+    fontFamily:'Poppins',
+    alignSelf:'flex-end',
+    marginRight: widthScreen * 0.05,
+    marginTop: heightScreen * 0.02
+}
 })
