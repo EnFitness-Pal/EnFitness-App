@@ -38,3 +38,10 @@ export function getMets(ExerciseName,minutes,ActivityLevel,Height, Weight,BodyFa
 export function TriggerTrackingPoint(id, status){
     return axios.post(`${baseURL}/api/tracking-points/${id}&${status}`)
 }
+
+export function deleteTrackingFood(id){
+    return axios.delete(`${baseURL}/api/tracking-calories/${id}`)
+}
+export function deleteTrackingEx(id){
+    return axios.delete(`${baseURL}/api/tracking-exercise/${id}`)
+}

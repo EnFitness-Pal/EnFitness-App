@@ -197,14 +197,16 @@ const CreatePost = ({navigation, route}) => {
       }
     }
 
-    
 
     const renderItem = ({item, index}) => {
         return (
-            <View style={{marginTop: heightScreen * 0.02, marginLeft:heightScreen * 0.01}}>
-              {item?.type === 'image/jpg' && <FastImage resizeMode={FastImage.resizeMode.cover} source={{ uri: item.uri }} style={styles.image} />}
+            <View style={{marginTop: heightScreen * 0.02, marginLeft:route.params?.data?.length ===1 ? null:heightScreen * 0.01}}>
+              {item?.type === 'image/jpg' && <FastImage 
+              resizeMode={((route.params.data[0]?.type).split('/')[0] === 'image' && route.params?.data?.length ===1)?FastImage.resizeMode.contain:FastImage.resizeMode.cover} 
+              source={{ uri: item.uri }} 
+              style={((route.params.data[0]?.type).split('/')[0] === 'image' && route.params?.data?.length ===1)? styles.imageonly: styles.image} />}
               {item?.type === 'video/mp4' && <Video
-                  source={{uri: item.uri}} style={styles.carouselVideo}
+                  source={{uri: item.uri}} style={((route.params.data[0]?.type).split('/')[0] === 'video' && route.params?.data?.length ===1) ?styles.carouselVideoOnly: styles.carouselVideo}
                   resizeMode="contain"
                   muted={true}
                   autoplay={true}
@@ -212,6 +214,7 @@ const CreatePost = ({navigation, route}) => {
                   ignoreSilentSwitch={"obey"}
                   playInBackground={true}
                   playWhenInactive={true}
+                  pictureInPicture={true}
                   />}
             </View>
           );
@@ -339,9 +342,17 @@ const styles = StyleSheet.create({
         width: widthScreen * 0.48,
         height: heightScreen * 0.35,
     },
+    imageonly:{
+      width: widthScreen,
+      height: heightScreen * 0.45,
+    },
     carouselVideo: {
         width: widthScreen * 0.48,
         height: heightScreen * 0.35,
+    },
+    carouselVideoOnly:{
+      width: widthScreen,
+      height: heightScreen * 0.45,
     },
     modal:{
       height: heightScreen * 0.3,

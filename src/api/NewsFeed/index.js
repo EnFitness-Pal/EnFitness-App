@@ -13,3 +13,18 @@ export function createNewsFeed(id, status, image, video){
         "PersonId": id
     });
 }
+export function reactionNewsFeed(id, personId, string){
+    return axios.put(`${baseURL}/api/news-feed/reaction`,{
+        "StatusVote": string,
+        "PersonId": personId,
+        "NewsFeedId": id
+    })
+}
+
+export function getDetailsNewsFeed(id, personId){
+    return axios.get(`${baseURL}/api/news-feed/${id}?personId=${personId}`);
+}
+
+export function deletePost(id){
+    return axios.delete(`${baseURL}/api/news-feed/${id}`)
+}

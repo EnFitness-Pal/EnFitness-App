@@ -1,4 +1,4 @@
-import { Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Alert, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import CalendarStrip from 'react-native-calendar-strip';
@@ -12,11 +12,12 @@ import Accordion from 'react-native-collapsible/Accordion';
 import Lottie from 'lottie-react-native';
 import CardInfo from '../../components/CardInfo';
 import CardFood from '../../components/CardFood';
-import { getDailyTrackingExercise, getDailyTrackingFood } from '../../api/Tracking';
+import { deleteTrackingEx, deleteTrackingFood, getDailyTrackingExercise, getDailyTrackingFood } from '../../api/Tracking';
 import { FlatList } from 'react-native';
 import CardEx from '../../components/CardEx';
 import Circular from '../../components/Circular';
 import { useFocusEffect } from '@react-navigation/native';
+import ModalGlobal from '../../components/ModalGlobal';
 
 
 const InsigntScreen = () => {
@@ -29,6 +30,11 @@ const InsigntScreen = () => {
   const [trackingFood, setTrackingFood] = useState();
   const [trackingEx, setTrackingEx] = useState(); 
   const [chartDataProcess, setChartDataProcess] = useState();
+  const [isVisible, setIsVisible] = useState(false);
+  const [type, setType] = useState('hasPlan');
+  const [itemFood, setItemFood] = useState(null);
+  const [itemEx, setItemEx] = useState(null);
+  const [loadingModal, setLoadingModal] = useState(false);
 
   const getDataStatisticCalories = async () => {
     setLoading(true);
@@ -43,9 +49,6 @@ const InsigntScreen = () => {
         setLoading(false);
       })
   }
-  useEffect(() => {
-    getDataStatisticCalories();
-  }, [date])
   
   const onHeaderSelected = (date) => {
     setShowCalendar(true);
@@ -74,7 +77,6 @@ const InsigntScreen = () => {
         setLoading(false);
       })
       .catch(err => { 
-        console.log('err:', err);
         setTrackingFood(null);
         setLoading(false)
       })
@@ -84,19 +86,56 @@ const InsigntScreen = () => {
     setLoading(true)
     await getDailyTrackingExercise(authContext.userID, new Date(date)?.toISOString().split("T").shift())
       .then(res => { 
-
         setTrackingEx(res.data);
         setLoading(false);
       })
       .catch(error => { 
-        console.log('err:', error);
         setTrackingEx(null);
         setLoading(false)
       })
     }
 
+  const onPressDel = () => {
+    setIsVisible(true);
+  }
+
+  const handleDeleteTrackingFood = async () =>{
+    setLoading(true);
+    setType('loading');
+    await deleteTrackingFood(itemFood)
+    .then((response)=>{
+      console.log(response.data);
+      setLoading(false);
+      setType('success')
+    })
+    .catch((error) =>{
+      console.log(error);
+      setLoading(false);
+      setType('hasPlan');
+      setIsVisible(false);
+    })
+  }
+
+  const handleDeleteTrackingEx = async () =>{
+    setLoading(true);
+    setType('loading');
+    await deleteTrackingEx(itemEx)
+    .then((response)=>{
+      console.log(response.data);
+      setLoading(false);
+      setType('success')
+    })
+    .catch((error) =>{
+      console.log(error);
+      setLoading(false);
+      setType('hasPlan');
+      setIsVisible(false);
+    })
+  }
+
   useFocusEffect(useCallback(()=> {
     getTotalTrackingStack();
+    getDataStatisticCalories()
     getTrackingFood();
     getTrackingEx();
     setTimeout(() => setLoading(false),1000)
@@ -145,37 +184,53 @@ const InsigntScreen = () => {
         />)
     } else {
       if (section.title === 'First') {
-        return (
+        if(section.content){
+          return (
             <FlatList
               data={section?.content}
-              renderItem={({ item, index }) => <CardFood item= {item} index = {index} />}
+              renderItem={({ item, index }) => <CardFood item= {item} index = {index} onPressDel={()=>{
+                setItemFood(item.Id)
+                onPressDel()
+              }}/>}
               keyExtractor={(item) => item.Id}
               scrollEnabled={false}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
-              style = {{alignSelf: 'center', paddingBottom: heightScreen * 0.05}}
-              maxToRenderPerBatch={5}
-              initialNumToRender={5}
-              updateCellsBatchingPeriod={5}
+              style = {{alignSelf: 'center', paddingBottom: heightScreen * 0.02}}
               
             />
         )
+        } else {
+          return (
+            <View>
+              <Text style={styles.textnone}>You don't have any tracking meal today!</Text>
+            </View>
+          )
+        }
       }
       else {
-        return (
+        if(section?.content){
+          return (
             <FlatList
               data={section?.content}
-              renderItem={({ item, index }) => <CardEx item= {item} index = {index} />}
+              renderItem={({ item, index }) => <CardEx item= {item} index = {index} onPressDel={()=>{
+                setItemEx(item.TrackingExerciseId)
+                onPressDel()
+              }}/>}
               keyExtractor={(item) => item.TrackingExerciseId}
               scrollEnabled={false}
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator={false}
-              style = {{alignSelf: 'center', paddingBottom: heightScreen * 0.08}}
-              maxToRenderPerBatch={5}
-              initialNumToRender={5}
-              updateCellsBatchingPeriod={5}
+              style = {{alignSelf: 'center', paddingBottom: heightScreen * 0.02}}
             />
-        )    
+        ) 
+        } else {
+          return(
+          <View>
+            <Text style={styles.textnone}>You don't have any tracking exercise today!</Text>
+          </View>
+          )
+        }
       }    
     }
 
@@ -313,7 +368,7 @@ const InsigntScreen = () => {
             activeStrokeColor={'#rgba(150,15,15,1)'}
             inActiveStrokeColor={colors.GRAYDARK}
             activeStrokeSecondaryColor={'#rgba(247,0,0,1)'}
-            title='Cabs'
+            title='Carbs'
             titleColor={colors.GRAYLIGHT}
             titleStyle={{ fontSize: 13, fontWeight: 'bold' }}
             progressValueColor={colors.WHITE}
@@ -442,6 +497,24 @@ const InsigntScreen = () => {
       />
       </View>
       </ScrollView>}
+      <ModalGlobal
+            isVisible = {isVisible}
+            type = {type}
+            onPress={() => {
+                setIsVisible(false);
+                setType('hasPlan');
+                setItemEx(null);
+                setItemFood(null);
+                getTrackingFood();
+                getTrackingEx();
+            }}
+            onPressOK={itemFood? handleDeleteTrackingFood : handleDeleteTrackingEx}
+            lottie={type == 'loading'? require('../../assets/lottie/97930-loading.json'): type == 'success'? require('../../assets/lottie/successplan.json'):require('../../assets/lottie/sure-person.json')}
+            onPressCancel={()=> setIsVisible(false)}
+            loop={loadingModal}
+            stylesIcon={type == 'loading'? styles.loading : type == 'success'? null: styles.hasPlan}
+            text={type == 'loading'? null: type == 'success'? "You've deleted this tracking!": "Do you want to delete this tracking?"}
+        />
     </View>
   )
 }
@@ -518,5 +591,24 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: 'Poppins-Light',
     fontWeight: '500',
+  },
+  textnone:{
+    marginTop: heightScreen * 0.03,
+    alignSelf:'center',
+    fontSize: 16,
+    fontFamily:'Poppins',
+    color:colors.WHITE,
+    fontWeight:'600'
+  },
+  hasPlan: {
+    width: widthScreen * 0.5,
+    height: heightScreen * 0.22,
+    marginTop: heightScreen * 0.017
+  },
+  loading: {
+    width: widthScreen * 0.22,
+    height: heightScreen * 0.1,
+    alignSelf: 'center',
+    marginTop:heightScreen * 0.07
   }
 })

@@ -11,7 +11,8 @@ const CardEx = ({
     styleIcon,
     icon,
     styleContainer,
-    item
+    item,
+    onPressDel
 }) => {
 const dateTimeString = item?.TrackingDate;
 const dateTime = moment.utc(dateTimeString).tz('Asia/Ho_Chi_Minh');
@@ -20,7 +21,7 @@ const convertedDateTimeString = dateTime.format('h:mm A D MMM');
 const rightSwipe = () => {
     return(
         <View>
-            <TouchableOpacity style={styles.icondelete} onPress={()=>{}}>
+            <TouchableOpacity style={styles.icondelete} onPress={onPressDel}>
                 <Feather name='trash-2' color={'red'} size={40}/>
             </TouchableOpacity>
         </View>
@@ -56,7 +57,7 @@ const rightSwipe = () => {
                       />
                       <Text
                         style = {{color:colors.WHITE, fontSize:13, fontWeight:'bold'}}
-                      >{item?.Calories} {item?.ExerciseCalories} Calo</Text>
+                      >{item?.Calories} {item?.ExerciseCalories} kcal</Text>
 
                 </View>
                 <View style = {{
@@ -78,6 +79,12 @@ const rightSwipe = () => {
                       > {item?.Minutes} Min</Text>
                 </View>
             </View>
+            <Ionicons
+                name='ios-arrow-back'
+                size={20}
+                style={{alignSelf:'flex-end', marginRight:widthScreen *0.03, bottom:widthScreen *0.01}}
+                color={colors.GRAYLIGHT}
+            />
         </View>
     </View>
     </Swipeable>

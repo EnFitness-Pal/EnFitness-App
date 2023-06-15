@@ -63,7 +63,7 @@ const Exercise = ({ item, index, onPress}) => {
               <Text style={styles.title}>{ item?.Name }</Text>
               <Text style={styles.categories}>{item?.Categories}</Text>
             <View style = {styles.containerCalories}>
-                  <Text style={styles.calories}>{item?.Calories} cal/m</Text>
+                  <Text style={styles.calories}>{item?.Calories} kcal/m</Text>
             </View>
         </View>
         <View style = {styles.containerButton}>

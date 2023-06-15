@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useState } from 'react'
+import { Alert, FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 import FastImage from 'react-native-fast-image'
 import Entypo from 'react-native-vector-icons/Entypo';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,9 +7,94 @@ import { colors, heightScreen, widthScreen } from '../../utility';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
 import Video from 'react-native-video';
 import Highlighter from 'react-native-highlight-words';
+import ImageZoom from 'react-native-image-pan-zoom';
+import { AuthContext } from '../../context/AuthContext';
+import { getDetailsNewsFeed, reactionNewsFeed } from '../../api/NewsFeed';
 
 const FeedCard = ({onPressDot, item}) => {
     const [activeSlide, setActiveSlide] = useState(0);
+    const authContext = useContext(AuthContext)
+    const [loading, setLoading] = useState(false);
+    const [data,setData] = useState([]);
+    const [type, setType] = useState(item?.StatusVotes);
+    const [isCheck, setIsCheck] = useState(item?.StatusVotes);
+    const handleUpVote = async() =>{
+      setLoading(true);
+      if(type === 'UpVote'){
+        await reactionNewsFeed(item?.Id, authContext.userID, 'UpVote')
+        .then((response) =>{
+          getDetailLoading()
+          console.log(response.data)
+          setIsCheck('None')
+          setLoading(false);
+        })
+        .catch((error)=>{
+          console.log('errorUp', error.response)
+          Alert.alert('Something went wrong','Reaction failed, please try again.')
+          setLoading(false);
+        })        
+      } else{
+        await reactionNewsFeed(item?.Id, authContext.userID, 'UpVote')
+        .then((response) =>{
+          getDetailLoading()
+          console.log(response.data)
+          setIsCheck('UpVote')
+          setLoading(false);
+        })
+        .catch((error)=>{
+          console.log('errorUp', error)
+          Alert.alert('Something went wrong','Reaction failed, please try again.')
+          setLoading(false);
+        })        
+      }
+
+    }
+    const handleDownVote =  async() =>{
+      setLoading(true);
+      if(type === 'DownVote'){
+        await reactionNewsFeed(item?.Id, authContext.userID, 'DownVote')
+        .then((response) =>{
+          getDetailLoading()
+          console.log(response.data)
+          setIsCheck('None')
+          setLoading(false);
+        })
+        .catch((error)=>{
+          console.log('errorDown', error)
+          Alert.alert('Something went wrong','Reaction failed, please try again.')
+          setLoading(false);
+        })        
+      } else{
+        await reactionNewsFeed(item?.Id, authContext.userID, 'DownVote')
+        .then((response) =>{
+          getDetailLoading()
+          console.log(response.data)
+          setIsCheck('DownVote')
+          setLoading(false);
+        })
+        .catch((error)=>{
+          console.log('errorDown', error)
+          Alert.alert('Something went wrong','Reaction failed, please try again.')
+          setLoading(false);
+        })
+      }
+    }
+    const getDetailLoading = async () => {
+      setLoading(true);
+      await getDetailsNewsFeed(item?.Id, authContext.userID)
+      .then((response)=>{
+        setData(response.data);
+        setIsCheck(response.data.StatusVotes)
+      })
+      .catch((error) => {
+        console.log('error', error);
+      })
+    }
+
+    useMemo(() => {
+      getDetailLoading();
+    },[])
+
     const carouselData = [];
     if (item?.Image) {
         carouselData.push({ type: 'image', source: item?.Image });
@@ -21,16 +106,21 @@ const FeedCard = ({onPressDot, item}) => {
       const CarouselItem = ({ item }) => {
         return (
           <View>
-            {item.source !== null && item.type === 'image' && <FastImage resizeMode={FastImage.resizeMode.cover} source={{ uri: item.source }} style={styles.carouselImage} />}
+            {item.source !== null && item.type === 'image' && 
+            <ImageZoom cropWidth={widthScreen}
+            cropHeight={styles.carouselImage.height}
+            imageWidth={widthScreen}
+            imageHeight={styles.carouselImage.height}>
+            <FastImage  resizeMode={FastImage.resizeMode.cover} source={{ uri: item.source }} style={styles.carouselImage} />
+            </ImageZoom>
+            }
             {item.source !== null && item.type === 'video' && <Video
                 source={{uri: item.source}} style={styles.carouselVideo}
                 resizeMode="contain"
-                muted={true}
                 autoplay={true}
                 controls={true}
-                ignoreSilentSwitch={"obey"}
                 playInBackground={true}
-                playWhenInactive={true}
+                pictureInPicture={true}
                 />}
           </View>
         );
@@ -82,20 +172,20 @@ const FeedCard = ({onPressDot, item}) => {
             itemWidth={widthScreen}
         />
         <View style ={styles.containerBody}>
-            <TouchableOpacity onPress={()=>{console.log('b')}} style ={{flexDirection:'row', marginLeft: heightScreen * 0.015}}>
-                <Text onPress={()=>{console.log('a')}} style={styles.numofvote}>{item?.UpVotes}</Text>
+            <TouchableOpacity onPress={handleUpVote} style ={{flexDirection:'row', marginLeft: heightScreen * 0.015}}>
+                <Text style={styles.numofvote}>{data?.UpVotes}</Text>
                 <MaterialCommunityIcons 
                     name = 'arrow-up-bold'
-                    color={colors.MAIN}
+                    color={isCheck === 'UpVote' ?  colors.MAIN: colors.WHITE}
                     size={25}
                     style={{ marginLeft: widthScreen * 0.01}}
                 />
             </TouchableOpacity>
-            <TouchableOpacity style ={{flexDirection:'row', marginLeft: heightScreen * 0.01}}>
-                <Text style={styles.numofvote}>{item?.DownVotes}</Text>
+            <TouchableOpacity onPress={handleDownVote} style ={{flexDirection:'row', marginLeft: heightScreen * 0.01}}>
+                <Text style={styles.numofvote}>{data?.DownVotes}</Text>
                 <MaterialCommunityIcons 
                     name = 'arrow-down-bold'
-                    color={colors.WHITE}
+                    color={isCheck === 'DownVote' ?  colors.MAIN: colors.WHITE}
                     size={25}
                     style={{ marginLeft: widthScreen * 0.01}}
                 />
@@ -110,15 +200,6 @@ const FeedCard = ({onPressDot, item}) => {
             inactiveDotScale={0.6}
         />
         </View>
-        {/* <View style ={{flexDirection:'row', marginTop: heightScreen * 0.01, marginHorizontal: widthScreen * 0.03}}>
-            <Text style={[styles.name, {alignSelf:null}]}>Gerard</Text>
-            <Text 
-                numberOfLines={readmore ? null : 1}
-                style={styles.status}>
-                Hom nay that dep, qua tuyet voi, Hom nay that dep, qua tuyet voi Hom nay that dep, qua tuyet voi
-            </Text>
-            <Text onPress = {() => setReadmore(!readmore)} style = {styles.readmore}>{readmore? 'less' : 'more'}</Text>
-        </View> */}
             <Highlighter
                 highlightStyle={styles.namestatus}
                 searchWords={[item?.PersonName]}
@@ -168,7 +249,7 @@ const styles = StyleSheet.create({
         alignSelf:'center',
         marginLeft: widthScreen * 0.02,
     },
-    containerSlider: {
+      containerSlider: {
         flex: 1,
       },
       carouselImage: {
@@ -178,7 +259,7 @@ const styles = StyleSheet.create({
         height: heightScreen * 0.4,
       },
       paginationContainer: {
-        marginLeft:widthScreen * 0.08,
+        marginLeft:widthScreen * 0.13,
         paddingBottom:heightScreen * 0.01,
         paddingTop:heightScreen * 0.01
       },

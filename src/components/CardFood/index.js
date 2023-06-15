@@ -2,6 +2,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
 import { colors, heightScreen, widthScreen } from '../../utility'
 import Feather from 'react-native-vector-icons/Feather';
+import Ionicons from 'react-native-vector-icons/Ionicons';
 import moment from 'moment-timezone';
 import { Swipeable } from 'react-native-gesture-handler';
 
@@ -10,7 +11,8 @@ const CardFood = ({
     styleIcon,
     icon,
     styleContainer,
-    item
+    item,
+    onPressDel
 }) => {
 const dateTimeString = item?.TrackingDate;
 const dateTime = moment.utc(dateTimeString).tz('Asia/Ho_Chi_Minh');
@@ -20,7 +22,7 @@ const convertedDateTimeString = dateTime.format('h:mm A D MMM');
 const rightSwipe = () => {
     return(
         <View>
-            <TouchableOpacity style={styles.icondelete} onPress={()=>{}}>
+            <TouchableOpacity style={styles.icondelete} onPress={onPressDel}>
                 <Feather name='trash-2' color={'red'} size={40}/>
             </TouchableOpacity>
         </View>
@@ -98,6 +100,12 @@ const rightSwipe = () => {
                 </View>
             </View>
         </View>
+        <Ionicons
+                name='ios-arrow-back'
+                size={20}
+                style={{alignSelf:'flex-end'}}
+                color={colors.GRAYLIGHT}
+            />
     </View>
     </Swipeable>
   )

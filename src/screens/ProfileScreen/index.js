@@ -159,17 +159,6 @@ const ProfileScreen = ({route}) => {
           />
           <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>Ranking</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.containerOption}
-          onPress={() => navigation.navigate('NewsFeed')}
-        >
-          <MaterialCommunityIcons
-            name='newspaper-variant'
-            size={30}
-            color={theme == 'dark'? colors.WHITE: colors.BG }
-          />
-          <Text style={[styles.textOption, {color: theme == 'dark'? colors.WHITE: colors.BG }]}>News Feed</Text>
-        </TouchableOpacity>
         <View style={styles.containerOption}>
           <Ionicons
             name='ios-eye'

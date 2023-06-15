@@ -9,13 +9,14 @@ import InsigntScreen from '../../screens/InsigntScreen';
 import HomeScreen from '../../screens/HomeScreen';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import IconBottom from '../../assets/fonts';
+import Ionicons from 'react-native-vector-icons/Ionicons'
 import FastImage from 'react-native-fast-image';
 import { useSelector } from 'react-redux';
 import { useFocusEffect } from '@react-navigation/native';
 import { AxiosContext } from '../../context/AxiosContext';
 import { AuthContext } from '../../context/AuthContext';
 import YourPlan from '../../screens/YourPlan';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import NewsFeed from '../../screens/NewsFeed';
 const Tab = createBottomTabNavigator();
 const BottomTabsNav = () => {
     const [loading, setLoading] = useState(false);
@@ -59,6 +60,20 @@ const BottomTabsNav = () => {
                 )
                 
             }}
+        />
+        <Tab.Screen 
+            name="NewsFeed"
+            component={NewsFeed} 
+              options={{
+                headerShown: false,
+                tabBarIcon: ({ focused }) => (
+                    <Ionicons
+                        name='ios-newspaper'
+                        size={28}
+                        color={focused ? colors.MAIN : colors.GRAYICON}
+                    />
+                )
+              }}
         />
         <Tab.Screen 
             name="InsigntScreen"

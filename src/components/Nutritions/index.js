@@ -48,7 +48,7 @@ const Nutritions = ({ route }) => {
           fontSize: 17,
           fontFamily: "Roboto-Bold",
           fontWeight: "bold",
-          }}>Calories/cal</Text>
+          }}>Calories/{data?.find(nutrient => nutrient.name === "Calories")?.unit}</Text>
         </View>
       <View style = {styles.containerNutrition}>
         <View style={{
