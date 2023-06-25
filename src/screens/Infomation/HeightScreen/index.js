@@ -16,7 +16,7 @@ const HeightScreen = ({ route }) => {
   const [height, setHeight] = useState(172);
   const navigation = useNavigation()
   const handleNext = () => {
-    navigation.push('GoalScreen', {
+    navigation.push('BaselineScreen', {
       ...route.params,
       height: height,
     })

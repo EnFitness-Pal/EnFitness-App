@@ -261,20 +261,21 @@ const CreatePost = ({navigation, route}) => {
     >
       <View style={styles.modal}>
         <Text style={styles.titleModal}>Uploading</Text>
-        <View style={{marginTop: heightScreen * 0.02}}>
+        <View style = {{marginVertical: heightScreen * 0.01}}>
+        <View style={{marginVertical: heightScreen * 0.02}}>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
             <Text style={styles.textUpload}>Image</Text>
             <Text style={[styles.textUpload, {marginRight:widthScreen * 0.05}]}>{transferredImage}%</Text>              
           </View>
           <Progress.Bar progress={transferredImage/100} width={widthScreen * 0.7} style={{alignSelf:'center'}} color={colors.MAIN}/>          
         </View>
-        <View style={{marginTop: heightScreen * 0.05}}>
+        <View style={{marginVertical: heightScreen * 0.02}}>
           <View style={{flexDirection:'row', justifyContent:'space-between'}}>
             <Text style={styles.textUpload}>Video</Text>
             <Text style={[styles.textUpload, {marginRight:widthScreen * 0.05}]}>{transferredVideo}%</Text>              
           </View>
-
           <Progress.Bar progress={transferredVideo/100} width={widthScreen * 0.7} style={{alignSelf:'center'}} color={colors.MAIN}/>          
+        </View>
         </View>
       </View>
     </ReactNativeModal>

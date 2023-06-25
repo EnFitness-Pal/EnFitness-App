@@ -6,7 +6,7 @@ import { AxiosProvider } from './src/context/AxiosContext'
 import { Provider } from 'react-redux'
 import { persistor, store } from './src/redux/store'
 import { PersistGate } from 'redux-persist/integration/react'
-StatusBar.setBarStyle('dark-content');
+StatusBar.setBarStyle('light-content');
 const App = () => {
   return (
     <Provider store={store}>

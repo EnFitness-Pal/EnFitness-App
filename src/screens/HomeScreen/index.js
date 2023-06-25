@@ -261,9 +261,9 @@ const HomeScreen = () => {
                 {person?.IsPremium === false?<TouchableOpacity onPress={()=> navigation.navigate('PremiumScreen')}>
                     <IconBottom name={'crown-svgrepo-com'} size={28} color={'orange'} style={{marginTop:-1}} />
                 </TouchableOpacity>:null}
-                <TouchableOpacity onPress={()=> navigation.navigate('Bookmarks')}>
+                {/* <TouchableOpacity onPress={()=> navigation.navigate('Bookmarks')}>
                     <Ionicons name={'ios-notifications'} size={25} color={colors.GRAYLIGHT} style={{marginHorizontal:widthScreen * 0.02}}/>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={()=> navigation.navigate('Bookmarks')}>
                     <Ionicons name={'ios-bookmark'} size={25} color={colors.GRAYLIGHT} />
                 </TouchableOpacity>

@@ -26,7 +26,7 @@ const NewsFeed = ({navigation}) => {
   const [data, setData] = useState([]);
   const getAllFeeds = async () =>{
     setLoading(true);
-    await getAllNewsFeed(authContext.userID, 1, 10)
+    await getAllNewsFeed(authContext.userID, 1, 20)
     .then((response)=>{
       setData(response.data.Data);
       setLoading(false);
@@ -38,16 +38,16 @@ const NewsFeed = ({navigation}) => {
   }
 
   const handleDeletePost = async () =>{
-    setLoading(true);
+    setLoadingModal(true);
     setType('loading');
     await deletePost(itemFeed)
     .then((response) =>{
-      setLoading(false);
+      setLoadingModal(false);
       setType('success')
     })
     .catch((error) =>{
         console.log(error);
-        setLoading(false);
+        setLoadingModal(false);
         setType('hasPlan');
         setIsVisible(false);
         Alert.alert('Error','Something went wrong!')
@@ -93,15 +93,26 @@ const NewsFeed = ({navigation}) => {
       </View>
     )
   }
+  const renderFooter = () => {
+    return (
+        <AnimatedLottieView
+            source={require('../../assets/lottie/8707-loading.json')}
+            autoPlay
+            loop
+            style={{width: widthScreen * 0.4, alignSelf: 'center'}}
+        />
+    )
+}
+
   return (
     <View style ={styles.container}>
       <View style = {styles.containerHeader}>
-      <ButtonBack
+      {/* <ButtonBack
               name='chevron-back'
               size={28}
               onPress={() => navigation.goBack()}
               styleButton={{marginTop:heightScreen * 0.044, backgroundColor:colors.GRAYDARK}}
-          />
+          /> */}
         <Text style = {styles.textHeader}>News Feed</Text>
         <TouchableOpacity onPress={selectedLibrary}>
         <MaterialCommunityIcons
@@ -124,6 +135,9 @@ const NewsFeed = ({navigation}) => {
         data={data}
         renderItem={renderItem}
         style = {{paddingTop: heightScreen * 0.02}}
+        initialNumToRender={20}
+        maxToRenderPerBatch={20}
+        updateCellsBatchingPeriod={20}
       />}
       <BottomSheet
       isVisible={isVisibleDot}

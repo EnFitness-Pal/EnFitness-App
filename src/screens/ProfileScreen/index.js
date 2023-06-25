@@ -16,6 +16,8 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import { getTotalTracking } from '../../api/Calories';
 import AnimatedLottieView from 'lottie-react-native';
 import { getRankingPerson } from '../../api/Ranking';
+import ModalGlobal from '../../components/ModalGlobal';
+import { restorePremiumAPI } from '../../api/Premium';
 
 
 
@@ -42,6 +44,9 @@ const ProfileScreen = ({route}) => {
   const axiosContext = useContext(AxiosContext);
   const [rank, setRank] = useState('')
   const [point, setPoint] = useState(0)
+  const [isVisible, setIsVisible] = useState(false);
+  const [loadingModal, setLoadingModal] = useState(false);
+  const [type, setType] = useState('hasPlan');
   const handleGetRank = async () =>{
     await getRankingPerson(authContext.userID)
     .then((response)=>{
@@ -50,6 +55,23 @@ const ProfileScreen = ({route}) => {
     })
     .catch((error) =>{
       console.log('errorRank', error);
+    })
+  }
+
+  const handleRestorePayment = async () =>{
+      setLoadingModal(true);
+      setType('loading');
+      await restorePremiumAPI(authContext.userID)
+      .then((response) =>{
+        setLoadingModal(false);
+        setType('success')
+      })
+      .catch((error) =>{
+        console.log(error);
+        setLoadingModal(false);
+        setType('hasPlan');
+        setIsVisible(false);
+        Alert.alert('Error','Something went wrong!')
     })
   }
 
@@ -120,9 +142,9 @@ const ProfileScreen = ({route}) => {
           resizeMode={FastImage.resizeMode.contain}
           style={{ height: widthScreen * 0.1, width: widthScreen * 0.1}}
         />
-        <Text style={styles.ranked}>{rank}</Text>
-        <Text style={styles.dot}>{'\u2B24'}</Text>
-        <Text style={styles.point}>{point == 0 || point == 1? `${point} point`: `${point} points`}</Text>
+        <Text style={[styles.ranked, { color: theme == 'dark' ? colors.WHITE : colors.BG }]}>{rank}</Text>
+        <Text style={[styles.dot, { color: theme == 'dark' ? colors.WHITE : colors.BG }]}>{'\u2B24'}</Text>
+        <Text style={[styles.point, { color: theme == 'dark' ? colors.WHITE : colors.BG }]}>{point == 0 || point == 1? `${point} point`: `${point} points`}</Text>
       </View>
       <View style = {styles.seperator}/>
       <View style={styles.containerOptions}>
@@ -174,7 +196,7 @@ const ProfileScreen = ({route}) => {
           />
         </View>
       </View>
-      <Text onPress={()=>{}} style={styles.textRestore}>Restore payment</Text>
+      <Text onPress={()=>setIsVisible(true)} style={styles.textRestore}>Restore payment</Text>
       <Button
         title='Logout'
         type='solid'
@@ -189,6 +211,34 @@ const ProfileScreen = ({route}) => {
         titleStyle={{ fontSize: 15, fontWeight: 'bold' }}
         onPress={() => authContext.logout()}
       />
+    {axiosContext.person.IsPremium?<ModalGlobal
+            isVisible = {isVisible}
+            type = {type}
+            onPress={() => {
+                setIsVisible(false);
+                axiosContext.getPersonStack(authContext?.userID)
+            }}
+            onPressOK={handleRestorePayment}
+            lottie={type == 'loading'? require('../../assets/lottie/97930-loading.json'): type == 'success'? require('../../assets/lottie/successplan.json'):require('../../assets/lottie/sure-person.json')}
+            onPressCancel={()=> setIsVisible(false)}
+            loop={loadingModal}
+            stylesIcon={type == 'loading'? styles.loading : type == 'success'? null: styles.hasPlan}
+            text={type == 'loading'? null: type == 'success'? "You've restored your payment!": "Do you want to restore your payment?"}
+        />:
+        <ModalGlobal
+            isVisible = {isVisible}
+            type = {'success'}
+            onPress={() => {
+                setIsVisible(false);
+            }}
+            lottie={require('../../assets/lottie/sure-person.json')}
+            onPressCancel={()=> setIsVisible(false)}
+            loop={loadingModal}
+            stylesIcon={styles.icon}
+            text={"You haven't payment to restore!"}
+            stylesButton={styles.button}
+        />
+        }
     </ScrollView>
   )
 }
@@ -301,5 +351,24 @@ const styles = StyleSheet.create({
     alignSelf:'flex-end',
     marginRight: widthScreen * 0.05,
     marginTop: heightScreen * 0.02
-}
+},
+  hasPlan: {
+    width: widthScreen * 0.5,
+    height: heightScreen * 0.22,
+    marginTop: heightScreen * 0.017
+  },
+  loading: {
+    width: widthScreen * 0.22,
+    height: heightScreen * 0.1,
+    alignSelf: 'center',
+    marginTop:heightScreen * 0.07
+  },
+  icon:{
+    width: widthScreen * 0.3,
+    height: heightScreen * 0.25,
+    marginTop: heightScreen * 0.015,
+  },
+  button:{
+    marginTop:heightScreen * 0.08
+  }
 })

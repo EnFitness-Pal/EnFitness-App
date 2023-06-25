@@ -164,7 +164,7 @@ const WorkoutPlanDetail = ({ route, navigation }) => {
             marginLeft: widthScreen * 0.05,
             marginTop: heightScreen * 0.04,
             fontSize:15
-        }}>{total} WORKOUT IN {dayKeys.length} DAYS</Text>
+        }}>{total ===1 ? `${total} WORKOUT`: `${total} WORKOUTS`} IN {dayKeys.length === 1? `${dayKeys.length} DAY`: `${dayKeys.length} DAYS`}</Text>
         <View>
         <Accordion
             sections={dayKeys}

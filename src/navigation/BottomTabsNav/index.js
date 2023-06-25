@@ -62,18 +62,19 @@ const BottomTabsNav = () => {
             }}
         />
         <Tab.Screen 
-            name="NewsFeed"
-            component={NewsFeed} 
+            name="YourPlan" 
+            component={YourPlan} 
               options={{
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
-                    <Ionicons
-                        name='ios-newspaper'
+                    <IconBottom
+                        name='task'
                         size={28}
                         color={focused ? colors.MAIN : colors.GRAYICON}
                     />
                 )
-              }}
+            
+            }}    
         />
         <Tab.Screen 
             name="InsigntScreen"
@@ -90,19 +91,18 @@ const BottomTabsNav = () => {
               }}
         />
         <Tab.Screen 
-            name="YourPlan" 
-            component={YourPlan} 
+            name="NewsFeed"
+            component={NewsFeed} 
               options={{
                 headerShown: false,
                 tabBarIcon: ({ focused }) => (
-                    <IconBottom
-                        name='task'
+                    <Ionicons
+                        name='ios-newspaper'
                         size={28}
                         color={focused ? colors.MAIN : colors.GRAYICON}
                     />
                 )
-            
-            }}    
+              }}
         />
         <Tab.Screen 
             name="ProfileScreen" 

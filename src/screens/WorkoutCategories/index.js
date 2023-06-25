@@ -22,24 +22,39 @@ const WorkoutCategories = ({navigation}) => {
     const [buttonPress, setButtonPress] = useState('Beginner');
     const [modalPre, setModalPre] = useState(false);
     const [search, setSearch] = useState("");
-    const [itemSearch, setItemSearch] = useState(0);
+    const [newData, setNewData] = useState([]);
     const [pageNumber, setPageNumber] = useState(1)
     const [loading, setLoading] = useState(false);
+
+    const getWorkout = async (filter,page,setDataFunc) => {
+        setLoading(true)
+        await getRandomWorkout(page, filter)
+        .then((response) => { 
+            setDataFunc(response?.data.Data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.log(error);
+            setLoading(false);
+        })
+    }
+
+    const getWorkoutSearch = async (word, filter, page, setDataFunc) => {
+        setLoading(true)
+        await getWorkoutCategories(page,filter, word)
+        .then((response) => { 
+            setDataFunc(response?.data.Data);
+            setLoading(false);
+        })
+        .catch((error) => {
+            console.log(error);
+            setLoading(false);
+        })
+    }
+
     const searchFilterFunction = (text) => {
-        setSearch(text);
-        setData([]);
         setLoading(true);
-        setPageNumber(1);
-        getWorkoutCategories(1, buttonPress, text)
-            .then((response) => {
-                console.log('TotalRecords', response?.data.TotalRecords)
-                setData(response?.data.Data);
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-             });
+        getWorkoutSearch(text,buttonPress,1,setData)
     }
 
     useFocusEffect(
@@ -47,34 +62,15 @@ const WorkoutCategories = ({navigation}) => {
             axiosContext?.getPersonStack(authContext?.userID)
       }, [navigation]));
 
-    const getWorkout = async () => { 
-        await getRandomWorkout(pageNumber, buttonPress)
-        .then((response) => { 
-            setData(data.concat(response?.data.Data));
-            setLoading(false);
-        })
-        .catch((error) => {
-            console.log(error);
-        })
-    }
-    useEffect(() => {
-        console.log('effect');
-        console.log('effect page number', pageNumber);    
-        setLoading(true);
-        if (search === "") {
-            getWorkout();
-        } else { 
-            getWorkoutCategories(pageNumber, buttonPress, search)
-            .then((response) => {
-                setData(data.concat(response?.data.Data));
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-             });    
+      useEffect(() => {
+        getWorkout(buttonPress,1,setData);
+      }, [buttonPress]);
+      const handleLoadMore = () => {
+        if (loading || data.length === 0) {
+          return;
         }
-    }, [buttonPress, pageNumber]);
+        setPageNumber(prevPage => prevPage + 1);
+      };
     const premium = useSelector((state) => state.premium.premium);
     const renderItem = ({ item, index }) => {
         return (
@@ -111,27 +107,46 @@ const WorkoutCategories = ({navigation}) => {
             />
         )
     }
-    const handleLoadMore = () => { 
-        console.log('handleLoadMore');
-        setPageNumber(pageNumber + 1);
-        setLoading(true);
-        getWorkout();
-    }
 
-    const handleLoadMoreSearch = () => { 
-        console.log('handleLoadMoreSearch');
-        setPageNumber(pageNumber + 1);
-        setLoading(true);
-        getWorkoutCategories(pageNumber, buttonPress, search)
-            .then((response) => {
-                setData(data.concat(response?.data.Data));
-                setLoading(false);
-            })
-            .catch((error) => {
-                console.log(error);
-                setLoading(false);
-             });
-    }
+
+    useEffect(() => {
+        if (pageNumber !== 1) {
+          console.log('page', pageNumber);
+          if (search !== '') {
+            setLoading(true);
+            getWorkoutSearch(search, buttonPress, pageNumber, setNewData);
+          } else {
+            setLoading(true);
+            getWorkout(buttonPress, pageNumber, setNewData);
+          }
+        }
+      }, [pageNumber]);
+    
+      useEffect(() => {
+        setData(prevItems => [...prevItems, ...newData]);
+      }, [newData]);
+    // const handleLoadMore = () => { 
+    //     console.log('handleLoadMore');
+    //     setPageNumber(pageNumber + 1);
+    //     setLoading(true);
+    //     getWorkout();
+    // }
+
+    // const handleLoadMoreSearch = () => { 
+    //     console.log('handleLoadMoreSearch');
+    //     setPageNumber(pageNumber + 1);
+    //     setLoading(true);
+    //     getWorkoutCategories(pageNumber, buttonPress, search)
+    //         .then((response) => {
+    //             setData(data.concat(response?.data.Data));
+    //             setLoading(false);
+    //         })
+    //         .catch((error) => {
+    //             console.log(error);
+    //             setLoading(false);
+    //          });
+    // }
+    console.log(pageNumber);
 return (
     <SafeAreaView style = {styles.container}>
     <View style = {styles.containerHeader}>
@@ -145,7 +160,12 @@ return (
     <View style = {styles.containerSearch}>
     <SearchBar
                 placeholder="Search your workout..."
-                onChangeText={searchFilterFunction}
+                onChangeText={(text)=> {
+                    setSearch(text);
+                    setPageNumber(1)
+                    searchFilterFunction(search)
+                }}
+                // onSubmitEditing={()=>searchFilterFunction(search)}
                 value={search}
                 platform="ios"
                 containerStyle={{
@@ -186,7 +206,6 @@ return (
             onPress={() => {
                 setButtonPress('Beginner');
                 setPageNumber(1);
-                setData([]);
             }}
         />       
         <Button
@@ -196,7 +215,6 @@ return (
             onPress={() => {
                 setButtonPress('Intermediate')
                 setPageNumber(1);
-                setData([]);
             }}
         /> 
         <Button
@@ -206,7 +224,6 @@ return (
             onPress={() => {
                 setButtonPress('Advanced');
                 setPageNumber(1);
-                setData([]);
             }}
     /> 
     </View>
@@ -217,8 +234,8 @@ return (
             keyExtractor={(item, index) => index.toString()}
             showsVerticalScrollIndicator={false}
             ListFooterComponent={renderFooter}
-            onEndReached={search === ''? handleLoadMore : handleLoadMoreSearch}
-            onEndReachedThreshold={0.1}
+            onEndReached={handleLoadMore}
+            onEndReachedThreshold={0.35}
             maxToRenderPerBatch={10}
             initialNumToRender={10}
             removeClippedSubviews={true}

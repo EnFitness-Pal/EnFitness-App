@@ -107,12 +107,12 @@ const FeedCard = ({onPressDot, item}) => {
         return (
           <View>
             {item.source !== null && item.type === 'image' && 
-            <ImageZoom cropWidth={widthScreen}
-            cropHeight={styles.carouselImage.height}
-            imageWidth={widthScreen}
-            imageHeight={styles.carouselImage.height}>
+            // <ImageZoom cropWidth={widthScreen}
+            // cropHeight={styles.carouselImage.height}
+            // imageWidth={widthScreen}
+            // imageHeight={styles.carouselImage.height}>
             <FastImage  resizeMode={FastImage.resizeMode.cover} source={{ uri: item.source }} style={styles.carouselImage} />
-            </ImageZoom>
+            // </ImageZoom>
             }
             {item.source !== null && item.type === 'video' && <Video
                 source={{uri: item.source}} style={styles.carouselVideo}

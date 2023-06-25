@@ -16,7 +16,7 @@ const BFScreen = ({ route }) => {
       BF: BF
     })
   }
-  const [BF, setBF] = useState(10);
+  const [BF, setBF] = useState(15);
   return (
     <SafeAreaView style = {styles.container}>
       <HeaderGetting
@@ -35,7 +35,7 @@ const BFScreen = ({ route }) => {
         valueTextStyle={{color: colors.WHITE, fontSize:60}}
         unitTextStyle={{color: colors.WHITE, fontSize:15}}
         fractionDigits={2}
-        initialValue={10}
+        initialValue={15}
         onValueChange={(number) => setBF(number)}
         onValueChangeEnd={(number) => setBF(number)}
         unit="%"

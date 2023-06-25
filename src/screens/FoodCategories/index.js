@@ -90,7 +90,7 @@ const FoodCategories = () => {
                 size={28}
                 onPress={() => navigation.goBack()}
             />
-            <Text style = {{fontSize: 20, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center', marginLeft:widthScreen * 0.15}}>Food Categories</Text>
+            <Text style = {{fontSize: 20, fontWeight: 'bold', color: colors.WHITE, alignSelf:'center', marginLeft:widthScreen * 0.15}}>Dish Categories</Text>
         </View>
     <View style = {styles.containerSearch}>
         <SearchBar
