@@ -70,10 +70,8 @@ const PremiumScreen = ({navigation}) => {
     async function onMessage(e) {
         let data = e.nativeEvent.data;
         setShowGateway(false);
-        console.log(data);
         let payment = JSON.parse(data);
             if (payment.status === 'COMPLETED') {
-              console.log("payment");
               navigation.goBack();
               updatePremium(dispatch,
                 authContext?.userID,

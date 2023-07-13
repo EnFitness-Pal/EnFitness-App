@@ -104,7 +104,6 @@ const InsigntScreen = () => {
     setType('loading');
     await deleteTrackingFood(itemFood)
     .then((response)=>{
-      console.log(response.data);
       setLoading(false);
       setType('success')
     })
@@ -121,7 +120,6 @@ const InsigntScreen = () => {
     setType('loading');
     await deleteTrackingEx(itemEx)
     .then((response)=>{
-      console.log(response.data);
       setLoading(false);
       setType('success')
     })
@@ -478,7 +476,7 @@ const InsigntScreen = () => {
             </View>
             <View style={styles.dateline}>
               <Text style={styles.textDate}>{new Date(chartDataProcess?.[0]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
-              <Text style={[styles.textDate, { marginLeft: widthScreen * 0.6 }]}>{new Date(chartDataProcess?.[6]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
+              <Text style={[styles.textDate, { marginLeft: widthScreen * 0.67 }]}>{new Date(chartDataProcess?.[6]?.date)?.toLocaleString('default', { month: 'short', day: 'numeric' }).split(",").shift()}</Text>
             </View>
           </View>    
 

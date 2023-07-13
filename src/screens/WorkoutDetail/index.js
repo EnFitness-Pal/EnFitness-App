@@ -21,6 +21,8 @@ import AnimatedLottieView from 'lottie-react-native'
 import { TriggerTrackingPoint, getMets, trackingExercise } from '../../api/Tracking'
 import { AxiosContext } from '../../context/AxiosContext'
 import ModalRanking from '../../components/ModalRanking'
+import { useSelector } from 'react-redux'
+import DropDownPicker from 'react-native-dropdown-picker'
 const WorkoutDetail = ({ route, navigation }) => {
   const [activeSections, setActiveSections] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -36,7 +38,14 @@ const WorkoutDetail = ({ route, navigation }) => {
   const [dataRank, setDataRank] = useState([]);
   const axiosContext = useContext(AxiosContext);
   const person = axiosContext?.person;
-
+  const theme = useSelector(state => state.state.theme);
+  const [level, setLevel] = useState([
+    { label: 'Lightly Active', value: 'light' },
+    {label: 'Normal', value: 'normal'},
+    { label: 'Very Active', value: 'extreme' },
+])
+  const [value, setValue] = useState("normal");
+  const [open, setOpen] = useState(false);
 
   const getWorkoutFav = async () => {
     setLoading(true)
@@ -68,7 +77,6 @@ const WorkoutDetail = ({ route, navigation }) => {
         setLoading(false)
       })
   }
-  console.log(person);
 
   const handleRemoveFav = async () => { 
     setLoading(true)
@@ -99,11 +107,7 @@ const WorkoutDetail = ({ route, navigation }) => {
         await getMets(
           route.params.item?.ExerciseName,
           min,
-          person?.ActivityLevel === 0 ? 'Sedentary' :
-          person?.ActivityLevel === 1 ? 'Lightly Active' :
-          person?.ActivityLevel === 2 ? 'Moderately Active' :
-          person?.ActivityLevel === 3 ? 'Very Active' :
-          'Extremely Active',
+          value,
           person?.Height,
           person?.Weight,
           person?.BodyFat,
@@ -119,7 +123,6 @@ const WorkoutDetail = ({ route, navigation }) => {
             await TriggerTrackingPoint(authContext.userID, "true")
             .then((response)=>{
               setDataRank(response.data)
-              console.log('response', response.data)
               if (response.data.IsUpRank){
                 setLoadingModal(false);
                 setOnSuccess(true);
@@ -130,6 +133,7 @@ const WorkoutDetail = ({ route, navigation }) => {
                 setOnSuccess(true);
                 setLoadingModal(false);
               }
+              setValue('normal')
             })
             .catch ((err)=>{
               console.log(err.respone.data)
@@ -430,9 +434,11 @@ const WorkoutDetail = ({ route, navigation }) => {
                 autoPlay 
                 loop ={false}
                 duration={900}
-                style={{height: 80, width: 80, marginVertical: heightScreen * 0.01, alignSelf: 'center'}}
+                style={{height: 100, width: 100, marginVertical: heightScreen * 0.01, alignSelf: 'center'}}
               />
-              :<Input
+              :
+              <View style={{zIndex:1}}>
+                <Input
                 placeholder="Minutes"
                 placeholderTextColor={colors.GRAYLIGHT}
                 keyboardType="numeric"
@@ -440,8 +446,50 @@ const WorkoutDetail = ({ route, navigation }) => {
                 value={minutes}
                 error={error}
                 onFocus={() => setError('')}
-                stylesContainer={{width: widthScreen * 0.4, alignSelf: 'center'}}
-                  />}
+                stylesContainer={{width: widthScreen * 0.4, alignSelf: 'center', marginBottom:heightScreen * 0.02}}
+                  />
+                <DropDownPicker
+                open={open}
+                value={value}
+                items={level}
+                setOpen={setOpen}
+                setValue={setValue}
+                enableOnAndroid={true}
+                  style={[styles.dropdown, {
+                      backgroundColor: theme == 'dark' ? colors.BG : colors.WHITE,
+                      borderColor: open? colors.MAIN:"gray",
+                      marginTop: heightScreen * 0.01,
+                  }]}
+                containerStyle={{
+                    width: widthScreen * 0.4,
+                    alignSelf: 'center',
+                    height: heightScreen * 0.05,
+                    backgroundColor: theme == 'dark' ? colors.BG : colors.WHITE,
+                }}
+                textStyle={{marginLeft:2,fontSize: 17, fontWeight:'bold' , color: theme == 'dark' ? colors.WHITE : colors.BG}}
+                listItemContainerStyle={{
+                    borderRadius: 20,
+                    borderBottomWidth: 1,
+                    borderBottomColor:'gray',
+                    width: widthScreen * 0.4,
+                }}
+                arrowIconStyle={{
+                    tintColor: theme == 'dark' ? colors.WHITE : colors.BG,
+                }}
+                dropDownContainerStyle={{
+                    marginTop: heightScreen * 0.02,
+                    backgroundColor: theme == 'dark' ? colors.BG : colors.WHITE,
+                    borderColor: theme == 'dark' ? colors.WHITE : colors.BG,
+                    borderWidth: 0.5,
+                }}
+                theme={theme == 'dark' ? 'DARK' : 'LIGHT'}
+                listMode='SCROLLVIEW'
+                
+            />
+              </View>
+                  
+                  
+                  }
               {onSuccess?
               <ButtonAdd
                 stylesContainer={styles.buttonModalSuccess}
@@ -463,7 +511,7 @@ const WorkoutDetail = ({ route, navigation }) => {
                 type="solid"
                 buttonStyle={{
                   backgroundColor: colors.MAIN,
-                  borderRadius: 20
+                  borderRadius: 20,
                 }}
                 titleStyle={{fontFamily: 'Poppins-Bold', fontSize: 15, fontWeight: 'bold'}}
                       onPress={() => {TrackingWorkout(minutes)}} />}
@@ -563,8 +611,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
       backgroundColor: colors.BG,
-      width: widthScreen * 0.7,
-      height: heightScreen * 0.3,
+      width: widthScreen * 0.8,
+      height: heightScreen * 0.4,
       borderRadius: 20,
       shadowColor: "#000",
       shadowOffset: {
@@ -577,7 +625,7 @@ const styles = StyleSheet.create({
     },
     textTracking: {
       marginTop:heightScreen * 0.02,
-      fontSize: 16,
+      fontSize: 20,
       fontFamily: 'Poppins-Bold',
       fontWeight: 'bold',
       alignSelf: 'center',
@@ -588,13 +636,13 @@ const styles = StyleSheet.create({
       height: heightScreen * 0.05,
       backgroundColor: colors.MAIN,
       borderRadius: 20,
-      marginVertical: heightScreen * 0.03,
+      marginVertical: heightScreen * 0.05
     },
     buttonModalSuccess: {
-      width: widthScreen * 0.5,
+      width: widthScreen * 0.6,
       height: heightScreen * 0.05,
       backgroundColor: colors.MAIN,
       borderRadius: 20,
-      marginVertical: heightScreen * 0.03, 
+      marginVertical: heightScreen * 0.04, 
     }
 })

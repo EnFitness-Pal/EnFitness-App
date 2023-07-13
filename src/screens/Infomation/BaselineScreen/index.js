@@ -21,7 +21,6 @@ const BaselineScreen = ({ route }) => {
   const handleData = (data) => {
     setBaseline(data);
   }
-  console.log(route.params);
   return (
     <SafeAreaView style={styles.container}>
       <HeaderGetting

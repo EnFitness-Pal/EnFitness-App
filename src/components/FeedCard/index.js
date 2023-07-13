@@ -24,7 +24,6 @@ const FeedCard = ({onPressDot, item}) => {
         await reactionNewsFeed(item?.Id, authContext.userID, 'UpVote')
         .then((response) =>{
           getDetailLoading()
-          console.log(response.data)
           setIsCheck('None')
           setLoading(false);
         })
@@ -37,7 +36,6 @@ const FeedCard = ({onPressDot, item}) => {
         await reactionNewsFeed(item?.Id, authContext.userID, 'UpVote')
         .then((response) =>{
           getDetailLoading()
-          console.log(response.data)
           setIsCheck('UpVote')
           setLoading(false);
         })
@@ -55,7 +53,6 @@ const FeedCard = ({onPressDot, item}) => {
         await reactionNewsFeed(item?.Id, authContext.userID, 'DownVote')
         .then((response) =>{
           getDetailLoading()
-          console.log(response.data)
           setIsCheck('None')
           setLoading(false);
         })
@@ -68,7 +65,6 @@ const FeedCard = ({onPressDot, item}) => {
         await reactionNewsFeed(item?.Id, authContext.userID, 'DownVote')
         .then((response) =>{
           getDetailLoading()
-          console.log(response.data)
           setIsCheck('DownVote')
           setLoading(false);
         })

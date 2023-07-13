@@ -71,6 +71,9 @@ const styles = StyleSheet.create({
         width: widthScreen * 0.7,
         bottom:heightScreen * 0.02
     },
+    containerTitle:{
+        marginTop: heightScreen * 0.03
+    },
     button: {
         width: widthScreen * 0.55,
         height: heightScreen * 0.05,

@@ -188,7 +188,6 @@ const UpdateProfile = ({ navigation }) => {
 
     }
   };
-  console.log(isVisibleImage)
   const animatedKeyBoard = (motion, value, duration) => {
     Animated.timing(
           motion,
@@ -225,7 +224,6 @@ const UpdateProfile = ({ navigation }) => {
       cropping: true,
       compressImageQuality: 0.7,
     }).then((image) => {
-      console.log(image);
       const imageUri = image.path;
       setImage(imageUri);
       setInputs({...inputs, image: imageUri});
@@ -371,7 +369,7 @@ const UpdateProfile = ({ navigation }) => {
       onBackdropPress={() => setVisible(false)}
       theme={theme == 'dark' ? 'DARK' : 'LIGHT'}
     >
-      <View style={[styles.bottomSheet, { backgroundColor: theme == 'dark'? colors.WHITE: colors.BACK}]}>
+      <View style={[styles.bottomSheet]}>
         <TouchableOpacity 
         onPress={()=>{
           setVisible(false);

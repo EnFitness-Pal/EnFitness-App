@@ -126,8 +126,6 @@ export const AxiosProvider = ({ children }) => {
     }
 
     function createPlan(id, data) {
-        console.log("id", id);
-        console.log("data", data);
         return axiosInstance.post(`/api/workout-plan/${id}`, data);
     }
 

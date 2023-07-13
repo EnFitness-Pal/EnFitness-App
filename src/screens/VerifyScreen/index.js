@@ -25,7 +25,6 @@ const VerifyScreen = ({ navigation, route }) => {
       .then(res => {
         if (res.data === true) {
           Alert.alert('Success', 'Please confirm new password.');
-          console.log('res:', res);
           setLoading(false);
           navigation.push('ConfirmPass', {
             code: code
@@ -35,7 +34,6 @@ const VerifyScreen = ({ navigation, route }) => {
           Alert.alert('Error', 'Please check your code again.');
           setLoading(false);
         }
-        console.log('res:', res.data);
       }).catch(err => {
         console.log('err:', err);
         Alert.alert('Error', 'Please check your code again.');

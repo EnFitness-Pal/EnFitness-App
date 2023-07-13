@@ -125,7 +125,6 @@ const FoodCategories = () => {
                     />
                 )
             }}
-                  onCancel={() => { console.log('abc')}}
             autoFocus={true}
             showLoading={loadingitem}
         />

@@ -106,9 +106,12 @@ const WorkoutPlanner = ({ navigation }) => {
             ...res.data
           };
           console.log("dataGenerate", dataGenerate);
-          navigation.push('WorkoutPlanDetail', {
-            item: dataGenerate
-          });
+          setTimeout(()=>{
+            navigation.push('WorkoutPlanDetail', {
+              item: dataGenerate
+            });            
+          },1000)
+
         } catch (err) {
           console.log(err);
         }

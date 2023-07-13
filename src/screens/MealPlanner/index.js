@@ -85,7 +85,6 @@ const MealPlanner = ({navigation}) => {
         setDataPlan(response.data);
         await TriggerCountMeal(authContext.userID)
         .then((response) =>{
-          console.log('count', response.data);
           setLoading(false);
           setIsVisible(false);
         })

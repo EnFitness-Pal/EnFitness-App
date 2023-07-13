@@ -4,9 +4,11 @@ import { colors, widthScreen } from '../../utility'
 import ButtonBack from '../../components/ButtonBack'
 import { getAllRank } from '../../api/Ranking'
 import RankCard from '../../components/RankCard'
+import { useSelector } from 'react-redux'
 
 const Settings = ({navigation}) => {
-  const [data, setData] = useState([])
+  const [data, setData] = useState([]);
+  const theme = useSelector(state => state.state.theme);
   const handleGetAllRank = async ()  =>{
     await getAllRank()
     .then((response) =>{
@@ -22,7 +24,6 @@ const Settings = ({navigation}) => {
   },[])
 
   const renderItem = ({item, index}) => {
-    console.log(item)
     return (
       <RankCard
         item={item}
@@ -30,10 +31,8 @@ const Settings = ({navigation}) => {
     )
   }
 
-  console.log(data)
-
   return (
-    <SafeAreaView style = {styles.container}>
+    <SafeAreaView style={theme == 'dark' ? styles.container: styles.containerlight}>
       <View style = {styles.containerHeader}>
         <ButtonBack
             name='chevron-back'
@@ -59,6 +58,10 @@ const styles = StyleSheet.create({
   container:{
     flex:1,
     backgroundColor:colors.BG
+  },
+  containerlight: {
+    flex: 1,
+    backgroundColor: colors.WHITE,
   },
   containerHeader: {
     flexDirection: 'row',

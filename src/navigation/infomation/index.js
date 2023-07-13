@@ -18,12 +18,8 @@ import VerifyScreen from '../../screens/VerifyScreen';
 import ConfirmPass from '../../screens/ConfirmPass';
 const Stack = createNativeStackNavigator();
 const InfoNavigation = () => {
-    const dispatch = useDispatch();
     const lauch = useSelector((state) => state.state.lauch);
-    useEffect(() => { 
-        console.log('lauch', lauch)
-    }, [])
-
+    
     return (
         
         <Stack.Navigator>

@@ -5,22 +5,24 @@ import WorkoutPlanMain from '../../components/WorkoutPlanMain'
 import MealPlanMain from '../../components/MealPlanMain'
 import { useNavigation } from '@react-navigation/native'
 import { AxiosContext } from '../../context/AxiosContext'
+import { useSelector } from 'react-redux'
 
 const YourPlan = () => {
     const navigation = useNavigation()
     const axiosContext = useContext(AxiosContext)
     const person = axiosContext.person;
+    const theme = useSelector(state => state.state.theme)
   return (
-    <SafeAreaView style = {styles.container}>
+    <SafeAreaView style = {theme == 'dark' ? styles.container: styles.containerlight}>
         <View>
-            <Text style = {styles.title}>Your Plan</Text>
-            <Text style = {styles.textplan}>Workout Plan</Text>
+            <Text style = {[styles.title, { color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}>Your Plan</Text>
+            <Text style = {[styles.textplan, { color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}>Workout Plan</Text>
             <WorkoutPlanMain
                 onPress={()=>navigation.navigate('PlanScreen')}
                 calories = {Math.floor(person?.DailyCalories)}
             />
             <View style = {styles.seperator}/>
-            <Text style = {[styles.textplan, {marginTop: heightScreen * 0.03}]}>Meal Plan</Text>
+            <Text style = {[styles.textplan, {marginTop: heightScreen * 0.03, color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}>Meal Plan</Text>
             <MealPlanMain
             kilo = {person?.Weight}
             onPress={()=>navigation.navigate('MealPlan')}
@@ -37,6 +39,10 @@ const styles = StyleSheet.create({
         flex:1,
         backgroundColor:colors.BG
     },
+    containerlight: {
+      flex: 1,
+      backgroundColor: colors.WHITE,
+  },
     title: {
         fontSize: 20,
         fontWeight: 'bold',

@@ -13,7 +13,6 @@ import Button from '../../components/Button';
 import { useNavigation } from '@react-navigation/native';
 
 const LoginNav = ({ route }) => {
-  console.log(route?.params);
   const authContext = useContext(AuthContext);
   const navigation = useNavigation();
   const pagerViewRef = useRef('');

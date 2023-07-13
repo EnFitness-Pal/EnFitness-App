@@ -6,7 +6,6 @@ export const getPremium = async (dispatch, id) => {
     dispatch(getPremiumStart());
     await getPremiumAPI(id)
         .then((res) => {
-            console.log('res:', res.data)
             dispatch(getPremiumSuccess(res.data));
         })
         .catch((err) => { 
@@ -18,7 +17,6 @@ export const updatePremium = async (dispatch, id, PaypalToken, ExpirationDate, M
     dispatch(updatePremiumStart());
     await updatePremiumAPI(id, PaypalToken, ExpirationDate, Money)
         .then((res) => {
-            console.log('res1:', res.data)
             dispatch(updatePremiumSuccess(res.data));
         })
         .catch((err) => { 
@@ -31,7 +29,6 @@ export const restorePremium = async (dispatch, id) => {
     dispatch(restorePremiumStart());
     await restorePremiumAPI(id)
         .then((res) => {
-            console.log('res1:', res.data)
             dispatch(restorePremiumSuccess(res.data));
         })
         .catch((err) => { 

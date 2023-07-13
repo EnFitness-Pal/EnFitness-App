@@ -111,7 +111,6 @@ const WorkoutCategories = ({navigation}) => {
 
     useEffect(() => {
         if (pageNumber !== 1) {
-          console.log('page', pageNumber);
           if (search !== '') {
             setLoading(true);
             getWorkoutSearch(search, buttonPress, pageNumber, setNewData);
@@ -125,28 +124,6 @@ const WorkoutCategories = ({navigation}) => {
       useEffect(() => {
         setData(prevItems => [...prevItems, ...newData]);
       }, [newData]);
-    // const handleLoadMore = () => { 
-    //     console.log('handleLoadMore');
-    //     setPageNumber(pageNumber + 1);
-    //     setLoading(true);
-    //     getWorkout();
-    // }
-
-    // const handleLoadMoreSearch = () => { 
-    //     console.log('handleLoadMoreSearch');
-    //     setPageNumber(pageNumber + 1);
-    //     setLoading(true);
-    //     getWorkoutCategories(pageNumber, buttonPress, search)
-    //         .then((response) => {
-    //             setData(data.concat(response?.data.Data));
-    //             setLoading(false);
-    //         })
-    //         .catch((error) => {
-    //             console.log(error);
-    //             setLoading(false);
-    //          });
-    // }
-    console.log(pageNumber);
 return (
     <SafeAreaView style = {styles.container}>
     <View style = {styles.containerHeader}>

@@ -127,7 +127,6 @@ const RecipeDetails = ({ route }) => {
       if(route.params.type !== undefined){
           await axiosContext.updateStatusMealPlan(route.params.type,"success")
           .then((respone)=>{
-            console.log('responsedata',respone.data)
           })
           .catch((err)=>{
             console.log(err.respone.data)
@@ -136,7 +135,6 @@ const RecipeDetails = ({ route }) => {
       await TriggerTrackingPoint(authContext.userID, "true")
       .then((response)=>{
         setDataRank(response.data)
-        console.log('response', response.data)
         if (response.data.IsUpRank){
           setLoading(false);
           setModalRank(true);

@@ -21,7 +21,6 @@ const MacroNutrients = ({ route }) => {
   const handleData = (data) => {
     setMN(data);
   }
-  console.log(route.params);
   return (
     <SafeAreaView style={styles.container}>
       <HeaderGetting

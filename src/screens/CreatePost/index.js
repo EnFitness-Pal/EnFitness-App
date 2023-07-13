@@ -56,7 +56,6 @@ const CreatePost = ({navigation, route}) => {
             await taskImage;
       
             const urlImage = await storageImageRef.getDownloadURL();
-            console.log("urlImage",urlImage)
             setUploadingImage(false);
             uri.Image = urlImage;
             return {
@@ -91,7 +90,6 @@ const CreatePost = ({navigation, route}) => {
             try {
               await taskVideo
               const urlVideo = await storageVideoRef.getDownloadURL();
-              console.log("urlVideo",urlVideo)
               setUploadingVideo(false);
               uri.Video = urlVideo;
               return {
@@ -153,8 +151,6 @@ const CreatePost = ({navigation, route}) => {
       
             const urlImage = await storageImageRef.getDownloadURL();
             const urlVideo = await storageVideoRef.getDownloadURL();
-            console.log("urlImage",urlImage)
-            console.log("urlVideo",urlVideo)
             setUploadingImage(false);
             setUploadingVideo(false);
 
@@ -179,14 +175,12 @@ const CreatePost = ({navigation, route}) => {
     const handleSharePost = async ()=>{
       setLoading(true);
       const uriFile = await uploadLibrary();
-      console.log('uri',uri)
       if (uriFile === null) {
         Alert.alert("Something went wrong!")
         return;
       } else {
           await createNewsFeed(authContext.userID,status,uri?.Image,uri?.Video)
           .then((response)=>{
-            console.log(response.data);
             setLoading(false);
             navigation.goBack();
           })

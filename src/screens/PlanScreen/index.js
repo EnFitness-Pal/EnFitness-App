@@ -128,11 +128,9 @@ const PlanScreen = () => {
                 setIsVisible(true);
                 await trackingExercise(authContext?.userID, item?.ExerciseName, Math.floor(Number(item?.TotalCalories) / Number(item?.Minutes)), Number(item?.Minutes))
                   .then(async (res) => { 
-                      console.log(res.data);
                       await TriggerTrackingPoint(authContext.userID, "true")
                       .then((response)=>{
                         setDataRank(response.data)
-                        console.log('response', response.data)
                         if (response.data.IsUpRank){
                           setLoadingTracking(false);
                           setIsVisible(false);

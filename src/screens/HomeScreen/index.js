@@ -190,7 +190,6 @@ const HomeScreen = () => {
                 await TriggerTrackingPoint(authContext.userID, "true")
                 .then((response)=>{
                   setDataRank(response.data)
-                  console.log('response', response.data)
                   if (response.data.IsUpRank){
                     setLoadingModal(false);
                     setOnSuccess(true);
@@ -252,7 +251,7 @@ const HomeScreen = () => {
                 <Text style={{
                     fontSize: 36,
                     marginLeft:10, 
-                    color:colors.WHITE,
+                    color:theme == 'dark'?colors.WHITE: colors.GRAYDARK,
                     fontWeight: 'bold',
                     width: widthScreen * 0.6,
                 }}>{'Hello' + ', ' + `${person?.FullName || ''}!`}
@@ -282,10 +281,10 @@ const HomeScreen = () => {
                   />
                   <Text style={styles.textdate}>{(date.toUTCString()).slice(0,12)}</Text>
             </View>
-              <Text style={styles.texttip}>{tip?.title.toUpperCase()}</Text>
+              <Text style={[styles.texttip, { color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}>{tip?.title.toUpperCase()}</Text>
             <ScrollView style ={styles.scrolltext}>
                   <Text
-                      style={styles.text}
+                      style={[styles.text, { color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}
                   >{tip?.content}</Text>
                   </ScrollView>
             <View style ={styles.containerImg}>
@@ -299,7 +298,7 @@ const HomeScreen = () => {
         </View>
         <View style = {styles.containerRecipes}>
         <View style = {styles.containerTitleRecipe}>
-            <Text style = {styles.textTitle}>Dishes</Text>
+            <Text style = {[styles.textTitle, { color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}>Dishes</Text>
             <Text 
                 style = {styles.textmore}
                 onPress={() => {navigation.navigate('FoodCategories')}}      
@@ -317,7 +316,7 @@ const HomeScreen = () => {
           </View>
         <View style = {styles.containerWorkout}>
         <View style = {styles.containerTitleWorkout}>
-            <Text style = {styles.textTitle}>Workout</Text>
+            <Text style = {[styles.textTitle, { color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}>Workout</Text>
             <Text 
                 style = {styles.textmore}
                 onPress={() => {navigation.navigate('WorkoutCategories')}}    
@@ -356,7 +355,7 @@ const HomeScreen = () => {
           </View>
           <View style = {styles.containerExercise}>
             <View style = {styles.containerTitleRecipe}>
-                <Text style = {styles.textTitle}>Exercise</Text>
+                <Text style = {[styles.textTitle, { color: theme == 'dark'? colors.WHITE: colors.GRAYDARK }]}>Exercise</Text>
                 <Text 
                     style = {styles.textmore}
                     onPress={() => {navigation.navigate('ExerciseCategories')}}      

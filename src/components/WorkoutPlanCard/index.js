@@ -47,7 +47,7 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
 
     useEffect(() => {
         if (isCounting && countdown > 0) {
-            console.log(countdown);
+
         const timer = setInterval(() => {
             setCountdown((prevCountdown) => prevCountdown - 1);
         }, 1000);
@@ -79,7 +79,6 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
     const playCountdown = async () => {
         await axiosContext.updateStatusPlan(item?.Id,"working")
         .then(async(respone)=>{
-          console.log('responsedata',respone.data)
           await AsyncStorage.removeItem(`TimeCurrent${item?.Id}`);
           await AsyncStorage.setItem(`TimeRemaining${item?.Id}`, Date.now().toString())
           setType('pause')
@@ -93,7 +92,6 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
     const updateStatusSuccess = async () => {
         await axiosContext.updateStatusPlan(item?.Id,"success")
         .then((respone)=>{
-          console.log('responsedata',respone.data)
         })
         .catch((err)=>{
           console.log(err.respone.data)
@@ -103,7 +101,6 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
     const PlayAfterPauseCountdown = async () => {
         await axiosContext.updateStatusPlan(item?.Id,"working")
         .then(async(respone)=>{
-          console.log('responsedata',respone.data);
         //   await AsyncStorage.removeItem(`TimeCurrent${item?.Id}`);
           await AsyncStorage.setItem(`TimeRemaining${item?.Id}`, Date.now().toString())
           setType('pause')
@@ -119,7 +116,6 @@ const WorkoutPlanCard = ({ item, index, submitCountdown, isVisibleButton}) => {
     const pauseCountdown = async () => {
         await axiosContext.updateStatusPlan(item?.Id,"running")
         .then(async(respone)=>{
-          console.log('responsedata',respone.data)
           await AsyncStorage.removeItem(`TimeRemaining${item?.Id}`);
           await AsyncStorage.setItem(`TimeCurrent${item?.Id}`, countdown.toString());
           setType('playafterpause')

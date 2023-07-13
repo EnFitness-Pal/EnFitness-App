@@ -2,10 +2,10 @@ import { Dimensions } from "react-native";
 import * as colors from "./colors";
 export const heightScreen = Dimensions.get('window').height;
 export const widthScreen = Dimensions.get('window').width;
-export const baseURL = 'https://7lb3feyviqv7itc4v3qveses3m0alvvu.lambda-url.ap-east-1.on.aws'
+export const baseURL = 'https://qdfd3vamwuca2ou6a63flfzvqy0nvuds.lambda-url.ap-east-1.on.aws/'
 export const RecipeURL = 'https://api.spoonacular.com';
 // export const APIKeyRecipe = '1ad0139b54ab412fbb9e7604a4b29def'
-export const APIKeyRecipe = '1ad0139b54ab412fbb9e7604a4b29def'
+export const APIKeyRecipe = '470685e625d942a6a5c4f214478c4976'
 //470685e625d942a6a5c4f214478c4976
 // 99596199e568485a983c09710a84343b
 //53d93e6acb7a4956a721dc0cc37769c8

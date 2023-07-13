@@ -55,7 +55,6 @@ const ExerciseFav = ({navigation}) => {
               await TriggerTrackingPoint(authContext.userID, "true")
               .then((response)=>{
                 setDataRank(response.data)
-                console.log('response', response.data)
                 if (response.data.IsUpRank){
                   setLoadingModal(false);
                   setOnSuccess(true);
@@ -79,7 +78,6 @@ const ExerciseFav = ({navigation}) => {
             });
     }
   };  
-  console.log(data);
     useEffect(() => {
       getExerciseFav();
     }, []);

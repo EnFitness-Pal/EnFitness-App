@@ -85,7 +85,6 @@ export const AuthProvider = ({ children }) => {
             });
             setUserID(Number(userID));
             const tokenExpired = await AsyncStorage.getItem('TokenExpired');
-            console.log(tokenExpired > new Date().toISOString())
             if (tokenExpired < new Date().toISOString()) {
                 console.log('Token Expired');
                 Alert.alert('Too Long!', 'Please login again.', [
@@ -94,7 +93,6 @@ export const AuthProvider = ({ children }) => {
             }
             await TriggerCount(userID || null)
             .then((res) => {
-                console.log(res.data)
             })
             .catch((err) => {
                 console.log('errortrigger', err);

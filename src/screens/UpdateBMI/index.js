@@ -56,7 +56,6 @@ const UpdateBMI = ({navigation}) => {
     setOpenGW(false);
     setEdit(!edit);
   };
-  console.log(axiosContext.person?.Height)
   const [inputs, setInputs] = useState({
     height: (axiosContext.person?.Height).toString(),
     weight: (axiosContext.person?.Weight).toString(),

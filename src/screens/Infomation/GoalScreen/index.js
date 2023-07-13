@@ -27,7 +27,6 @@ const GoalScreen = ({ route }) => {
       setGoal('Maintain weight');
     }
   }
-  console.log(route.params);
   return (
     <SafeAreaView style={styles.container}>
       <HeaderGetting

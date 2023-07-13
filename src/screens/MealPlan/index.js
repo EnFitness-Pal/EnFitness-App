@@ -40,7 +40,6 @@ const MealPlan = ({navigation}) => {
           delete dataArray[`Day${i}`];
         }
       }
-      console.log(dataArray);
     
     const renderDetail = (rowData, sectionID, rowID) =>{
             return (

@@ -74,7 +74,6 @@ const SignUpScreen = ({ data }) => {
                 inputs.email,
                 inputs.password,
             ).then(res => {
-                console.log('res:', res);
                 Alert.alert('Success', 'Please login to continue!');
                 navigation.replace('Loging')
                 setLoading(false);

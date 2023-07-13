@@ -9,7 +9,6 @@ import Loading from '../../components/Loading';
 import { confirm } from '../../api/Auth/Forgot';
 
 const ConfirmPass = ({ route, navigation }) => {
-    console.log('route:', route.params.code);
     const [errors, setErrors] = useState({});
     const [loading, setLoading] = useState(false);
     const [inputs, setInputs] = useState({
@@ -39,7 +38,6 @@ const ConfirmPass = ({ route, navigation }) => {
     confirm(route.params.code, inputs.password, inputs.rePassword)
         .then(res => {
           Alert.alert('Success', 'Please login with your new password.');
-          console.log('res:', res.data);
           navigation.push('Login');
           setLoading(false);
         }
